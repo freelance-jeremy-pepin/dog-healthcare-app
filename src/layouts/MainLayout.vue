@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          Dog healthcare
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
@@ -32,11 +32,6 @@
         >
           Essential Links
         </q-item-label>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
       </q-list>
     </q-drawer>
 
@@ -47,14 +42,9 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink';
 
 export default {
   name: 'MainLayout',
-
-  components: {
-    EssentialLink,
-  },
 
   data() {
     return {

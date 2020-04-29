@@ -44,7 +44,7 @@ module.exports = configure((ctx) => ({
   // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
   framework: {
     iconSet: 'material-icons', // Quasar icon set
-    lang: 'en-us', // Quasar language pack
+    lang: 'fr', // Quasar language pack
 
     // Possible values for "all":
     // * 'auto' - Auto-import needed Quasar components & directives
@@ -104,9 +104,10 @@ module.exports = configure((ctx) => ({
 
   // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
   devServer: {
+    host: '192.168.131.129',
     https: false,
-    port: 8080,
-    open: false, // opens browser window automatically
+    port: 4000,
+    open: true, // opens browser window automatically
   },
 
   // animations: 'all', // --- includes all animations

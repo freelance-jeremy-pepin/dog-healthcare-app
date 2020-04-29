@@ -93,7 +93,9 @@ module.exports = configure((ctx) => ({
           loader: 'eslint-loader',
           exclude: /node_modules/,
           options: {
-            formatter: require('eslint').CLIEngine.getFormatter('stylish'),
+            formatter: require('eslint')
+              .CLIEngine
+              .getFormatter('stylish'),
           },
         });
       }
@@ -104,7 +106,7 @@ module.exports = configure((ctx) => ({
   devServer: {
     https: false,
     port: 8080,
-    open: true, // opens browser window automatically
+    open: false, // opens browser window automatically
   },
 
   // animations: 'all', // --- includes all animations

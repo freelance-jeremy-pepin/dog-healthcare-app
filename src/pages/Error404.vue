@@ -19,7 +19,10 @@
 </template>
 
 <script lang="ts">
-export default {
-  name: 'Error404',
-};
+import { Component, Vue } from 'vue-property-decorator';
+
+@Component
+export default class Error404 extends Vue {
+
+}
 </script>

@@ -54,12 +54,12 @@ export default class LoginForm extends Vue {
       email: this.email,
       password: this.password,
     }).then((response) => {
-      this.login(response.data.token, false);
+      this.login(response.data.token, response.data.refresh_token, false);
     });
   }
 
-  public login(tokenPlainText: string, noRedirect: boolean) {
-    login(tokenPlainText);
+  public login(tokenPlainText: string, refreshToken: string, noRedirect: boolean) {
+    login(tokenPlainText, refreshToken);
 
     if (!noRedirect) {
       this.$router.push('/');

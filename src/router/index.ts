@@ -8,7 +8,6 @@ import routes from './routes';
  * If not building with SSR mode, you can
  * directly export the Router instantiation
  */
-
 export default route<StoreInterface>(({ Vue }) => {
   Vue.use(VueRouter);
 
@@ -24,7 +23,6 @@ export default route<StoreInterface>(({ Vue }) => {
   });
 
   Router.beforeEach((to, from, next) => {
-    console.log('isAuthenticate', isAuthenticate());
     if (to.name !== 'login' && !isAuthenticate()) next({ name: 'login' });
     else next();
   });

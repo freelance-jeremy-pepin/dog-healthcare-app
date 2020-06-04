@@ -22,8 +22,19 @@ export const logout = () => {
     token: '',
     expiry: 0,
   };
+
+  // to support logging out from all windows
+  window.localStorage.setItem('logout', String(Date.now()));
+  window.location.reload();
 };
 
 export const getJwtToken = (): Token => jwtToken;
 
 export const isAuthenticate = (): boolean => jwtToken.token !== '';
+
+export const syncLogout = (event: any) => {
+  if (event.key === 'logout') {
+    console.log('logged out from storage!');
+    window.location.reload();
+  }
+};

@@ -43,9 +43,15 @@
 
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator';
+import { syncLogout } from 'src/api/auth';
 
 @Component
 export default class MainLayout extends Vue {
   private leftDrawerOpen = false;
+
+  // eslint-disable-next-line class-methods-use-this
+  public mounted() {
+    window.addEventListener('storage', syncLogout);
+  }
 }
 </script>

@@ -20,7 +20,14 @@
             </q-form>
           </q-card-section>
           <q-card-actions class="q-px-md">
-            <q-btn class="full-width" color="light-green-7" label="Login" size="lg" unelevated />
+            <q-btn
+              @click="handleSubmit"
+              class="full-width"
+              color="light-green-7"
+              label="Login"
+              size="lg"
+              unelevated
+            />
           </q-card-actions>
           <q-card-section class="text-center q-pa-none">
             <p class="text-grey-6">Not registered? Created an Account</p>
@@ -33,12 +40,31 @@
 
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator';
+import { login } from 'src/api/auth';
+import { api } from 'src/api/appApi';
 
 @Component
 export default class LoginForm extends Vue {
   private email = '';
 
   private password = '';
+
+  public handleSubmit() {
+    api.post('authentication_token', {
+      email: this.email,
+      password: this.password,
+    }).then((response) => {
+      this.login(response.data.token, false);
+    });
+  }
+
+  public login(tokenPlainText: string, noRedirect: boolean) {
+    login(tokenPlainText);
+
+    if (!noRedirect) {
+      this.$router.push('/');
+    }
+  }
 }
 </script>
 

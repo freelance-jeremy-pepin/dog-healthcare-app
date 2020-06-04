@@ -1,5 +1,6 @@
 import { route } from 'quasar/wrappers';
 import VueRouter from 'vue-router';
+import { isAuthenticate } from 'src/api/auth';
 import { StoreInterface } from '../store';
 import routes from './routes';
 
@@ -20,6 +21,12 @@ export default route<StoreInterface>(({ Vue }) => {
     // quasar.conf.js -> build -> publicPath
     mode: process.env.VUE_ROUTER_MODE,
     base: process.env.VUE_ROUTER_BASE,
+  });
+
+  Router.beforeEach((to, from, next) => {
+    console.log('isAuthenticate', isAuthenticate());
+    if (to.name !== 'login' && !isAuthenticate()) next({ name: 'login' });
+    else next();
   });
 
   return Router;

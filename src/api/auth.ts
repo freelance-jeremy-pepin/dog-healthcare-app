@@ -13,18 +13,23 @@ let jwtToken: Token = {
   expiry: 0,
 };
 
-export const refreshTokenRequest = () => {
+export const refreshTokenRequest = (): Promise<boolean> => new Promise((resolve) => {
   const refreshToken = localStorage.getItem('refreshToken');
 
   if (refreshToken) {
     api.post('refresh_token', {
       // eslint-disable-next-line @typescript-eslint/camelcase
-      refresh_token: jwtToken.refreshToken,
+      refresh_token: refreshToken,
     }).then((response) => {
       login(response.data.token, response.data.refresh_token); // TODO: Améliorer
+      resolve(true);
+    }).catch(() => {
+      resolve(false);
     });
+  } else {
+    resolve(false);
   }
-}
+});
 
 export const login = (token: string, refreshToken: string) => {
   const tokenParsed = parseJwt(token);
@@ -42,7 +47,7 @@ export const login = (token: string, refreshToken: string) => {
   }, refreshTokenIn * 1000);
 };
 
-export const logout = () => {
+export const logout = (reload = true) => {
   jwtToken = {
     token: '',
     refreshToken: '',
@@ -50,13 +55,17 @@ export const logout = () => {
   };
 
   // to support logging out from all windows
-  window.localStorage.setItem('logout', String(Date.now()));
-  window.location.reload();
+  localStorage.setItem('logout', String(Date.now()));
+  localStorage.removeItem('refreshToken');
+
+  if (reload) {
+    window.location.reload();
+  }
 };
 
 export const getJwtToken = (): Token => jwtToken;
 
-export const isAuthenticate = (): boolean => jwtToken.token !== '';
+export const isAuthenticate = (): boolean => jwtToken.token !== ''; // TODO: Vérifier expiration
 
 export const syncLogout = (event: any) => {
   if (event.key === 'logout') {

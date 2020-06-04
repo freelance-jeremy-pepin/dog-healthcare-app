@@ -40,7 +40,7 @@
 
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator';
-import { login } from 'src/api/auth';
+import { login, logout } from 'src/api/auth';
 import { api } from 'src/api/appApi';
 
 @Component
@@ -48,6 +48,10 @@ export default class LoginForm extends Vue {
   private email = '';
 
   private password = '';
+
+  public mounted() {
+    logout(false);
+  }
 
   public handleSubmit() {
     api.post('authentication_token', {

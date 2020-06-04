@@ -1,6 +1,6 @@
 import { route } from 'quasar/wrappers';
 import VueRouter from 'vue-router';
-import { isAuthenticate } from 'src/api/auth';
+import { isAuthenticate, refreshTokenRequest } from 'src/api/auth';
 import { StoreInterface } from '../store';
 import routes from './routes';
 
@@ -23,8 +23,17 @@ export default route<StoreInterface>(({ Vue }) => {
   });
 
   Router.beforeEach((to, from, next) => {
-    if (to.name !== 'login' && !isAuthenticate()) next({ name: 'login' });
-    else next();
+    if (to.name !== 'login' && !isAuthenticate()) {
+      refreshTokenRequest().then((response: boolean) => {
+        if (response) {
+          next();
+        } else {
+          next({ name: 'login' });
+        }
+      });
+    } else {
+      next();
+    }
   });
 
   return Router;

@@ -86,6 +86,36 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
 
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+
+    'class-methods-use-this': ['error', {
+      exceptMethods: [
+        // react lifecycle methods, from the airbnb rule
+        'render',
+        'getInitialState',
+        'getDefaultProps',
+        'getChildContext',
+        'componentWillMount',
+        'componentDidMount',
+        'componentWillReceiveProps',
+        'shouldComponentUpdate',
+        'componentWillUpdate',
+        'componentDidUpdate',
+        'componentWillUnmount',
+
+        // vue lifecycle methods
+        'beforeCreate',
+        'created',
+        'beforeMount',
+        'mounted',
+        'beforeUpdate',
+        'updated',
+        'activated',
+        'deactivated',
+        'beforeDestroy',
+        'destroyed',
+        'errorCaptured',
+      ],
+    }],
   }
-}
+};

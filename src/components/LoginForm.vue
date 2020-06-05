@@ -29,9 +29,6 @@
               unelevated
             />
           </q-card-actions>
-          <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">Not registered? Created an Account</p>
-          </q-card-section>
         </q-card>
       </div>
     </div>
@@ -40,8 +37,8 @@
 
 <script lang='ts'>
 import { Component, Vue } from 'vue-property-decorator';
-import { login, logout } from 'src/api/auth';
 import { api } from 'src/api/appApi';
+import Auth from 'src/api/auth';
 
 @Component
 export default class LoginForm extends Vue {
@@ -50,7 +47,7 @@ export default class LoginForm extends Vue {
   private password = '';
 
   public mounted() {
-    logout(false);
+    Auth.logout(false);
   }
 
   public handleSubmit() {
@@ -63,7 +60,7 @@ export default class LoginForm extends Vue {
   }
 
   public login(tokenPlainText: string, refreshToken: string, noRedirect: boolean) {
-    login(tokenPlainText, refreshToken);
+    Auth.login(tokenPlainText, refreshToken);
 
     if (!noRedirect) {
       this.$router.push('/');

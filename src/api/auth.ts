@@ -7,69 +7,72 @@ interface Token {
   expiry: number;
 }
 
-let jwtToken: Token = {
-  token: '',
-  refreshToken: '',
-  expiry: 0,
-};
-
-export const refreshTokenRequest = (): Promise<boolean> => new Promise((resolve) => {
-  const refreshToken = localStorage.getItem('refreshToken');
-
-  if (refreshToken) {
-    api.post('refresh_token', {
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      refresh_token: refreshToken,
-    }).then((response) => {
-      login(response.data.token, response.data.refresh_token); // TODO: Améliorer
-      resolve(true);
-    }).catch(() => {
-      resolve(false);
-    });
-  } else {
-    resolve(false);
-  }
-});
-
-export const login = (token: string, refreshToken: string) => {
-  const tokenParsed = parseJwt(token);
-  jwtToken = {
-    token,
-    refreshToken,
-    expiry: tokenParsed.exp,
-  };
-
-  localStorage.setItem('refreshToken', jwtToken.refreshToken);
-
-  const refreshTokenIn = jwtToken.expiry - (Math.floor(Date.now() / 1000));
-  setTimeout(() => {
-    refreshTokenRequest();
-  }, refreshTokenIn * 1000);
-};
-
-export const logout = (reload = true) => {
-  jwtToken = {
+export default class Auth {
+  private static jwtToken: Token = {
     token: '',
     refreshToken: '',
     expiry: 0,
   };
 
-  // to support logging out from all windows
-  localStorage.setItem('logout', String(Date.now()));
-  localStorage.removeItem('refreshToken');
-
-  if (reload) {
-    window.location.reload();
+  static get JwtToken(): Token {
+    return Auth.jwtToken;
   }
-};
 
-export const getJwtToken = (): Token => jwtToken;
+  public static refreshTokenRequest = (): Promise<boolean> => new Promise((resolve) => {
+    const refreshToken = localStorage.getItem('refreshToken');
 
-export const isAuthenticate = (): boolean => jwtToken.token !== ''; // TODO: Vérifier expiration
+    if (refreshToken) {
+      api.post('refresh_token', {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        refresh_token: refreshToken,
+      }).then((response) => {
+        Auth.login(response.data.token, response.data.refresh_token);
+        resolve(true);
+      }).catch(() => {
+        resolve(false);
+      });
+    } else {
+      resolve(false);
+    }
+  });
 
-export const syncLogout = (event: any) => {
-  if (event.key === 'logout') {
-    console.log('logged out from storage!');
-    window.location.reload();
+  public static login = (token: string, refreshToken: string) => {
+    const tokenParsed = parseJwt(token);
+    Auth.jwtToken = {
+      token,
+      refreshToken,
+      expiry: tokenParsed.exp,
+    };
+
+    localStorage.setItem('refreshToken', Auth.jwtToken.refreshToken);
+
+    const refreshTokenIn = Auth.jwtToken.expiry - (Math.floor(Date.now() / 1000));
+    setTimeout(() => {
+      Auth.refreshTokenRequest();
+    }, refreshTokenIn * 1000);
+  };
+
+  public static logout = (reload = true) => {
+    Auth.jwtToken = {
+      token: '',
+      refreshToken: '',
+      expiry: 0,
+    };
+
+    // to support logging out from all windows
+    localStorage.setItem('logout', String(Date.now()));
+    localStorage.removeItem('refreshToken');
+
+    if (reload) {
+      window.location.reload();
+    }
   }
-};
+
+  public static isAuthenticate = (): boolean => Auth.jwtToken.token !== ''; // TODO: Vérifier expiration
+
+  public static syncLogout = (event: any) => {
+    if (event.key === 'logout') {
+      window.location.reload();
+    }
+  }
+}

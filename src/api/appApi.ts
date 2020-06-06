@@ -1,12 +1,21 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios';
 import Auth from 'src/api/auth';
 
-export const api = axios.create();
+export const api = axios.create({
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json; charset=utf-8',
+  },
+});
 
 api.interceptors.request.use((config: AxiosRequestConfig) => {
   if (Auth.JwtToken.token) {
     config.headers.authorization = `Bearer ${Auth.JwtToken.token}`;
   }
+
   config.baseURL = 'http://api.dog-healthcare.com';
   return config;
 });

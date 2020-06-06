@@ -3,36 +3,47 @@
     <q-header elevated>
       <q-toolbar>
         <q-btn
-          flat
+          @click="drawerLeft = !drawerLeft"
           dense
-          round
+          flat
           icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
+          round
+          v-if="$q.screen.lt.sm"
         />
-
         <q-toolbar-title>
-          Dog healthcare
+          Carnet de santé pour chien
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn @click="logout" flat label="Se déconnecter" v-if="!$q.screen.lt.sm"></q-btn>
+
+        <q-btn flat round>
+          <q-avatar color="orange" size="md">J</q-avatar>
+        </q-btn>
       </q-toolbar>
     </q-header>
 
     <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
+      :breakpoint="500"
+      :width="200"
+      behavior="mobile"
       bordered
-      content-class="bg-grey-1"
+      content-class="bg-grey-3"
+      show-if-above
+      v-if="$q.screen.lt.sm"
+      v-model="drawerLeft"
     >
-      <q-list>
-        <q-item-label
-          header
-          class="text-grey-8"
-        >
-          Essential Links
-        </q-item-label>
-      </q-list>
+      <q-scroll-area class="fit">
+        <q-list>
+          <q-item @click="logout" clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="power_settings_new" />
+            </q-item-section>
+            <q-item-section>
+              Se déconnecter
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
     </q-drawer>
 
     <q-page-container>
@@ -47,10 +58,15 @@ import Auth from 'src/api/auth';
 
 @Component
 export default class MainLayout extends Vue {
-  private leftDrawerOpen = false;
+  private drawerLeft = false;
 
   public mounted() {
     window.addEventListener('storage', Auth.syncLogout);
+    document.title = 'Carnet de santé pour chiens';
+  }
+
+  logout = () => {
+    Auth.logout();
   }
 }
 </script>

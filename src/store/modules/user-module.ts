@@ -6,6 +6,8 @@ import {
   VuexModule,
 } from 'vuex-module-decorators';
 import UserRepository from 'src/repositories/UserRepository';
+import { User } from 'src/models/user';
+import { Dog } from 'src/models/dog';
 import store from '../index';
 
 @Module({
@@ -24,6 +26,14 @@ class UserModule extends VuexModule {
   @Mutation
   public setUser(user: User) {
     this.user = user;
+  }
+
+  @Mutation
+  public setActiveDog(dog: Dog | undefined) {
+    if (this.user) {
+      this.user = { ...this.user, activeDog: dog };
+      UserRepository.updateActiveDog(dog);
+    }
   }
 
   @Action

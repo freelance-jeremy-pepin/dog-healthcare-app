@@ -6,8 +6,7 @@ import Auth from 'src/api/auth';
 
 export const api = axios.create({
   headers: {
-    Accept: 'application/json',
-    'Content-Type': 'application/json; charset=utf-8',
+    Accept: 'application/json,application/merge-patch+json',
   },
 });
 

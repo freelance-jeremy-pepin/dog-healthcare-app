@@ -13,3 +13,5 @@ export const stringToBoolean = (booleanString: string) => {
       return Boolean(booleanString);
   }
 };
+
+export const getIdFromIRI = (iri: string): number => parseInt(iri.substring(iri.lastIndexOf('/') + 1), 10);

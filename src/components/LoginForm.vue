@@ -44,7 +44,7 @@
 <script lang='ts'>
 import {
   Component,
-  Vue
+  Vue,
 } from 'vue-property-decorator';
 import { api } from 'src/api/appApi';
 import Auth from 'src/api/auth';

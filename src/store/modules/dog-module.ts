@@ -6,6 +6,7 @@ import {
   VuexModule,
 } from 'vuex-module-decorators';
 import DogRepository from 'src/repositories/DogRepository';
+import { Dog } from 'src/models/dog';
 import store from '../index';
 
 @Module({

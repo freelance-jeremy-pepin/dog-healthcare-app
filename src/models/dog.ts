@@ -4,5 +4,5 @@ interface Dog {
   breed: string;
   birthday: Date;
   comments: string;
-  owner: string;
+  user: string;
 }

@@ -2,6 +2,7 @@ import { parseJwt } from 'src/utils/jwt';
 import { api } from 'src/api/appApi';
 import { stringToBoolean } from 'src/utils/stringFormat';
 import UserModule from '../store/modules/user-module';
+import DogModule from '../store/modules/dog-module';
 
 interface Token {
   token: string;
@@ -49,7 +50,10 @@ export default class Auth {
 
   public static login = (token: string, refreshToken: string) => {
     const tokenParsed = parseJwt(token);
+
     UserModule.fetch(tokenParsed.username);
+    DogModule.fetchAll();
+
     Auth.jwtToken = {
       token,
       refreshToken,

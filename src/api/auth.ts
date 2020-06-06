@@ -1,5 +1,6 @@
 import { parseJwt } from 'src/utils/jwt';
 import { api } from 'src/api/appApi';
+import { stringToBoolean } from 'src/utils/stringFormat';
 
 interface Token {
   token: string;
@@ -16,6 +17,15 @@ export default class Auth {
 
   static get JwtToken(): Token {
     return Auth.jwtToken;
+  }
+
+  static get rememberMe(): boolean {
+    const rememberMeLocalStorage = localStorage.getItem('rememberMe');
+    if (rememberMeLocalStorage === null) {
+      return false;
+    }
+
+    return stringToBoolean(rememberMeLocalStorage);
   }
 
   public static refreshTokenRequest = (): Promise<boolean> => new Promise((resolve) => {
@@ -44,7 +54,11 @@ export default class Auth {
       expiry: tokenParsed.exp,
     };
 
-    localStorage.setItem('refreshToken', Auth.jwtToken.refreshToken);
+    if (Auth.rememberMe) {
+      localStorage.setItem('refreshToken', Auth.jwtToken.refreshToken);
+    } else {
+      localStorage.removeItem('refreshToken');
+    }
 
     const refreshTokenIn = Auth.jwtToken.expiry - (Math.floor(Date.now() / 1000));
     setTimeout(() => {

@@ -2,7 +2,7 @@ export interface Dog {
   id: number;
   name: string;
   breed: string;
-  birthday: Date;
+  birthday: string;
   comments: string;
   user: string;
 }

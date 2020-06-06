@@ -1,6 +1,8 @@
 <template>
-  <q-page class="row items-center justify-evenly">
-    <q-btn @click="request">Request</q-btn>
+  <q-page class="column items-center" padding>
+    <div class="q-gutter-md" style="max-width: 500px; width: 100%">
+      <dog-identity :dog="activeDog"></dog-identity>
+    </div>
   </q-page>
 </template>
 
@@ -9,12 +11,19 @@ import {
   Component,
   Vue,
 } from 'vue-property-decorator';
-import { api } from 'src/api/appApi';
+import DogIdentity from 'components/DogIdentity.vue';
+import { Dog } from 'src/models/dog';
+import UserModule from '../store/modules/user-module';
 
-@Component
+@Component({
+  components: {
+    DogIdentity,
+  },
+})
 export default class Index extends Vue {
-  request = () => {
-    api.get('api/dogs');
+  // eslint-disable-next-line class-methods-use-this
+  public get activeDog(): Dog | undefined {
+    return UserModule.User?.activeDog;
   }
 }
 </script>

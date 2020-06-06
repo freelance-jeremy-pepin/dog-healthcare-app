@@ -11,6 +11,7 @@ import routes from './routes';
 export default route<StoreInterface>(({ Vue }) => {
   Vue.use(VueRouter);
 
+  // noinspection JSUnusedGlobalSymbols
   const Router = new VueRouter({
     scrollBehavior: () => ({ x: 0, y: 0 }),
     routes,

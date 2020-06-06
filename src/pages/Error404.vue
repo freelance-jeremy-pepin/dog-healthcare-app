@@ -2,8 +2,9 @@
   <div class="fixed-center text-center">
     <p>
       <img
-        src="~assets/sad.svg"
+        alt="error"
         style="width:30vw;max-width:150px;"
+        src="../assets/sad.svg"
       >
     </p>
     <p class="text-faded">
@@ -19,7 +20,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import {
+  Component,
+  Vue,
+} from 'vue-property-decorator';
 
 @Component
 export default class Error404 extends Vue {

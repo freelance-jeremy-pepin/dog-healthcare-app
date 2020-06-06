@@ -1,9 +1,10 @@
+<!--suppress ALL -->
 <template>
   <div>
     <div class='bg-image window-height window-width'></div>
 
     <q-page class="page window-height window-width row justify-center items-center">
-      <q-card bordered class='text-primary'>
+      <q-card bordered class='card text-primary'>
         <q-card-section class='q-pa-lg'>
           <div class='text-accent text-h6'>Carnet de santé pour chiens</div>
         </q-card-section>
@@ -41,7 +42,10 @@
 </template>
 
 <script lang='ts'>
-import { Component, Vue } from 'vue-property-decorator';
+import {
+  Component,
+  Vue
+} from 'vue-property-decorator';
 import { api } from 'src/api/appApi';
 import Auth from 'src/api/auth';
 
@@ -86,10 +90,9 @@ export default class LoginForm extends Vue {
 </script>
 
 <style scoped>
-  .q-card {
+  .card {
     width: 100%;
     max-width: 396px;
-    /*max-width: 500px;*/
   }
 
   .bg-image {

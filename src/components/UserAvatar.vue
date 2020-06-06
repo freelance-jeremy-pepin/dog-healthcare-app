@@ -43,14 +43,6 @@ export default class UserAvatar extends Vue {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public get email(): string {
-    if (UserModule.User) {
-      return UserModule.User.email;
-    }
-    return '';
-  }
-
-  // eslint-disable-next-line class-methods-use-this
   public get firstname(): string {
     if (UserModule.User) {
       return UserModule.User.firstname;

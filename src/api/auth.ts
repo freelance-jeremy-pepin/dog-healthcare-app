@@ -64,7 +64,7 @@ export default class Auth {
 
     const refreshTokenIn = Auth.jwtToken.expiry - (Math.floor(Date.now() / 1000));
     setTimeout(() => {
-      Auth.refreshTokenRequest();
+      Auth.refreshTokenRequest().then();
     }, refreshTokenIn * 1000);
   };
 
@@ -86,7 +86,7 @@ export default class Auth {
 
   public static isAuthenticate = (): boolean => Auth.jwtToken.token !== ''; // TODO: Vérifier expiration
 
-  public static syncLogout = (event: any) => {
+  public static syncLogout = (event: StorageEvent) => {
     if (event.key === 'logout') {
       window.location.reload();
     }

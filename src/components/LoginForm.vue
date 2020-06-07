@@ -1,4 +1,3 @@
-<!--suppress ALL -->
 <template>
   <div>
     <div class='bg-image window-height window-width'></div>
@@ -46,8 +45,8 @@ import {
   Component,
   Vue,
 } from 'vue-property-decorator';
-import { api } from 'src/api/appApi';
 import Auth from 'src/api/auth';
+import axios from 'axios';
 
 @Component
 export default class LoginForm extends Vue {
@@ -59,6 +58,7 @@ export default class LoginForm extends Vue {
 
   private loading = false;
 
+  // noinspection JSUnusedGlobalSymbols
   public mounted() {
     Auth.logout(false);
 
@@ -68,7 +68,7 @@ export default class LoginForm extends Vue {
   public handleSubmit() {
     this.loading = true;
 
-    api.post('authentication_token', {
+    axios.post('authentication_token', {
       email: this.email,
       password: this.password,
     }).then((response) => {

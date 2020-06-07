@@ -1,5 +1,5 @@
-import { api } from 'src/api/appApi';
 import { Dog } from 'src/models/dog';
+import axios from 'axios';
 
 export default class DogRepository {
   private static baseIri = 'api/dogs';
@@ -9,7 +9,7 @@ export default class DogRepository {
   }
 
   static getAll = (): Promise<Dog[]> => new Promise((resolve, reject) => {
-    api.get(DogRepository.baseIri).then(({ data }) => {
+    axios.get(DogRepository.baseIri).then(({ data }) => {
       resolve(data);
     }).catch(() => {
       reject();

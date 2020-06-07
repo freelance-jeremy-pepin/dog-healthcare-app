@@ -1,14 +1,14 @@
-import { api } from 'src/api/appApi';
 import { User } from 'src/models/user';
 import { Dog } from 'src/models/dog';
 import DogRepository from 'src/repositories/DogRepository';
+import axios from 'axios';
 import UserModule from '../store/modules/user-module';
 
 export default class UserRepository {
   private static baseIri = 'api/users';
 
   static getByEmail = (email: string): Promise<User> => new Promise((resolve, reject) => {
-    api.get(UserRepository.baseIri, {
+    axios.get(UserRepository.baseIri, {
       params: {
         email,
       },
@@ -20,7 +20,7 @@ export default class UserRepository {
 
         // Récupération du chien actif
         if (data[0].activeDog) {
-          api.get(data[0].activeDog).then((responseDog) => {
+          axios.get(data[0].activeDog).then((responseDog) => {
             user.activeDog = responseDog.data;
             resolve(user);
           });
@@ -35,7 +35,7 @@ export default class UserRepository {
 
   static updateActiveDog = (dog: Dog | undefined) => {
     if (UserModule.User) {
-      api.put(`${UserRepository.baseIri}/${UserModule.User.id}`, {
+      axios.put(`${UserRepository.baseIri}/${UserModule.User.id}`, {
         activeDog: dog ? `${DogRepository.BaseIri}/${dog.id}` : null,
       });
     }

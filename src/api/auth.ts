@@ -1,6 +1,6 @@
 import { parseJwt } from 'src/utils/jwt';
-import { api } from 'src/api/appApi';
 import { stringToBoolean } from 'src/utils/stringFormat';
+import axios from 'axios';
 import UserModule from '../store/modules/user-module';
 import DogModule from '../store/modules/dog-module';
 
@@ -34,7 +34,7 @@ export default class Auth {
     const refreshToken = localStorage.getItem('refreshToken');
 
     if (refreshToken) {
-      api.post('refresh_token', {
+      axios.post('refresh_token', {
         // eslint-disable-next-line @typescript-eslint/camelcase
         refresh_token: refreshToken,
       }).then((response) => {

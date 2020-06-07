@@ -1,10 +1,18 @@
 <template>
-  <q-page class="column items-center" padding>
-    <div class="q-gutter-md" style="max-width: 500px; width: 100%">
-      <dog-identity :dog="activeDog"></dog-identity>
-      <dog-weight :weights="weights"></dog-weight>
-    </div>
-  </q-page>
+  <div>
+    <q-page class="column items-center" padding>
+      <div class="q-gutter-md" style="max-width: 500px; width: 100%">
+        <dog-identity :dog="activeDog"></dog-identity>
+        <dog-weight :weights="weights"></dog-weight>
+      </div>
+    </q-page>
+
+    <q-page-sticky :offset="[18, 18]" position="bottom-right">
+      <q-fab color="green" direction="up" icon="add">
+        <q-fab-action color="primary" label="Poids" />
+      </q-fab>
+    </q-page-sticky>
+  </div>
 </template>
 
 <script lang="ts">

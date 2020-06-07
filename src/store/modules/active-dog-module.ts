@@ -40,13 +40,15 @@ class ActiveDogModule extends VuexModule {
   }
 
   @Action
-  public refreshDog(dog: Dog) {
+  public refreshDog(dog: Dog | undefined) {
     this.setDog(dog);
     this.setWeights(undefined);
 
-    WeightRepository.getByDog(dog).then((weights) => {
-      this.setWeights(weights);
-    });
+    if (dog) {
+      WeightRepository.getByDog(dog).then((weights) => {
+        this.setWeights(weights);
+      });
+    }
   }
 }
 

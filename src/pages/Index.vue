@@ -17,8 +17,10 @@ import DogIdentity from 'components/DogIdentity.vue';
 import { Dog } from 'src/models/dog';
 import DogWeight from 'components/DogWeight.vue';
 import { Weight } from 'src/models/weight';
+import { User } from 'src/models/user';
 import ActiveDogModule from '../store/modules/active-dog-module';
 import UserModule from '../store/modules/user-module';
+import DogModule from '../store/modules/dog-module';
 
 @Component({
   components: {
@@ -27,6 +29,11 @@ import UserModule from '../store/modules/user-module';
   },
 })
 export default class Index extends Vue {
+  // eslint-disable-next-line class-methods-use-this
+  public get user(): User | undefined {
+    return UserModule.User;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   public get activeDog(): Dog | undefined {
     return UserModule.User?.activeDog;
@@ -37,9 +44,17 @@ export default class Index extends Vue {
     return ActiveDogModule.Weights;
   }
 
+  @Watch('user', { deep: true })
+  // eslint-disable-next-line class-methods-use-this
+  public onUserChanged(user: User | undefined) {
+    if (user && !user.activeDog && DogModule.Dogs && DogModule.Dogs.length > 0) {
+      UserModule.setActiveDog(DogModule.Dogs[0]);
+    }
+  }
+
   @Watch('activeDog')
   // eslint-disable-next-line class-methods-use-this
-  public onActiveDogChanged(newDog: Dog) {
+  public onActiveDogChanged(newDog: Dog | undefined) {
     ActiveDogModule.refreshDog(newDog);
   }
 }

@@ -5,11 +5,28 @@
         {{ dog.name[0] }}
       </q-avatar>
 
+
       <span class="q-ml-md">
-        <span class="text-h4">
+        <span class="text-h4 row items-center">
           {{ dog.name }}
+          <q-btn flat icon="unfold_more" round v-if="dogs.length > 1">
+            <q-menu>
+              <q-list style="min-width: 100px">
+                <q-item
+                  :active="dog.id === activeDog.id"
+                  :key="dog.id"
+                  @click="setActiveDog(dog)"
+                  clickable
+                  v-close-popup
+                  v-for="dog in dogs"
+                >
+                  <q-item-section>{{ dog.name }}</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
+          </q-btn>
         </span>
-        <br>
+
         <span class="text-subtitle1 text-grey">
           {{ dog.breed }}
         </span>
@@ -34,6 +51,8 @@ import {
 import DateMixin from 'src/mixins/dateMixin';
 import moment from 'moment';
 import TextFormatMixin from 'src/mixins/textFormat';
+import DogModule from 'src/store/modules/dog-module';
+import UserModule from 'src/store/modules/user-module';
 import { Dog } from '../models/dog';
 
 @Component
@@ -64,6 +83,26 @@ export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin) {
     }
 
     return '';
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  public get dogs(): Dog[] {
+    if (DogModule.Dogs) {
+      return DogModule.Dogs;
+    }
+    return [];
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  public get activeDog(): Dog | undefined {
+    if (UserModule.User?.activeDog) {
+      return UserModule.User.activeDog;
+    }
+    return undefined;
+  }
+
+  setActiveDog = (dog: Dog | undefined) => {
+    UserModule.setActiveDog(dog);
   }
 }
 </script>

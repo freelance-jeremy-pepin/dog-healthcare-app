@@ -7,6 +7,7 @@
   ></apex-chart>
 </template>
 
+<!--suppress SpellCheckingInspection -->
 <script lang="ts">
 import {
   Component,

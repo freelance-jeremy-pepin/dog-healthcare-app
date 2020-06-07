@@ -39,6 +39,15 @@ class ActiveDogModule extends VuexModule {
     this.weights = weights;
   }
 
+  @Mutation
+  public setWeight(weight: Weight) {
+    if (this.weights) {
+      this.weights = this.weights.map((w: Weight) => (w.id === weight.id ? weight : w));
+    } else {
+      this.weights = [weight];
+    }
+  }
+
   @Action
   public refreshDog(dog: Dog | undefined) {
     this.setDog(dog);
@@ -49,6 +58,13 @@ class ActiveDogModule extends VuexModule {
         this.setWeights(weights);
       });
     }
+  }
+
+  @Action
+  public updateWeight(weight: Weight) {
+    WeightRepository.update(weight).then((weightResponse: Weight) => {
+      this.setWeight(weightResponse);
+    });
   }
 }
 

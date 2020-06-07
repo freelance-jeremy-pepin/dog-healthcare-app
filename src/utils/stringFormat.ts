@@ -14,4 +14,5 @@ export const stringToBoolean = (booleanString: string) => {
   }
 };
 
+// noinspection JSUnusedGlobalSymbols
 export const getIdFromIRI = (iri: string): number => parseInt(iri.substring(iri.lastIndexOf('/') + 1), 10);

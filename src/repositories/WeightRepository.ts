@@ -5,10 +5,6 @@ import { Weight } from 'src/models/weight';
 export default class WeightRepository {
   private static baseIri = 'api/weights';
 
-  static get BaseIri(): string {
-    return WeightRepository.baseIri;
-  }
-
   static getByDog = (dog: Dog): Promise<Weight[]> => new Promise((resolve, reject) => {
     api.get(WeightRepository.baseIri, {
       params: {
@@ -20,4 +16,12 @@ export default class WeightRepository {
       reject();
     });
   });
+
+  static update = (weight: Weight): Promise<Weight> => new Promise((resolve, reject) => {
+    api.put(`${WeightRepository.baseIri}/${weight.id}`, weight).then(({ data }) => {
+      resolve(data);
+    }).catch(() => {
+      reject();
+    });
+  })
 }

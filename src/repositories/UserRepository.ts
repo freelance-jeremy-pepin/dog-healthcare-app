@@ -7,10 +7,6 @@ import UserModule from '../store/modules/user-module';
 export default class UserRepository {
   private static baseIri = 'api/users';
 
-  static get BaseIri(): string {
-    return UserRepository.baseIri;
-  }
-
   static getByEmail = (email: string): Promise<User> => new Promise((resolve, reject) => {
     api.get(UserRepository.baseIri, {
       params: {

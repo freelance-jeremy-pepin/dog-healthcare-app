@@ -53,26 +53,24 @@ class ActiveDogModule extends VuexModule {
     this.setDog(dog);
     this.setWeights(undefined);
 
-    if (dog) {
-      this.fetchWeights(dog);
-    }
+    this.fetchWeights();
   }
 
   @Action
-  public fetchWeights(dog: Dog) {
-    const weightRepository = new WeightRepository();
-    weightRepository.getByDog(dog).then((weights) => {
-      this.setWeights(weights);
-    });
+  public fetchWeights() {
+    if (this.Dog) {
+      const weightRepository = new WeightRepository();
+      weightRepository.getByDog(this.Dog).then((weights) => {
+        this.setWeights(weights);
+      });
+    }
   }
 
   @Action
   public updateWeight(weight: Weight) {
     const weightRepository = new WeightRepository();
     weightRepository.update(weight).then(() => {
-      if (this.Dog) {
-        this.fetchWeights(this.Dog);
-      }
+      this.fetchWeights();
     });
   }
 }

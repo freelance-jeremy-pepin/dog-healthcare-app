@@ -46,6 +46,10 @@
             />
           </q-popup-edit>
         </q-td>
+
+        <q-td :props="props" key="weight">
+          <q-btn @click="deleteWeight(props.row)" label="DEL"></q-btn>
+        </q-td>
       </q-tr>
     </template>
 
@@ -64,6 +68,7 @@ import DogWeightChart from 'components/DogWeightChart.vue';
 import DateMixin from 'src/mixins/dateMixin';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
 import moment from 'moment';
+import WeightRepository from 'src/repositories/WeightRepository';
 
 @Component({
   components: {
@@ -85,17 +90,28 @@ export default class DogWeightTable extends Mixins(DateMixin) {
       name: 'weight',
       label: 'Poids',
     },
+    {
+      name: 'action',
+      label: '',
+    },
   ];
 
   public setWeightEditing(weight: Weight) {
     this.weightEditing = { ...weight };
   }
 
-  saveWeight = (weight: Weight) => {
+  public saveWeight = (weight: Weight) => {
     ActiveDogModule.updateWeight(weight);
   };
 
-  limitDates = (date: string) => date <= moment().format('YYYY/MM/DD');
+  public limitDates = (date: string) => date <= moment().format('YYYY/MM/DD');
+
+  public deleteWeight = (weight: Weight) => {
+    const weightRepository = new WeightRepository();
+    weightRepository.delete(weight).then(() => {
+      ActiveDogModule.fetchWeights();
+    });
+  };
 }
 </script>
 

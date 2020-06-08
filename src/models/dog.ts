@@ -1,5 +1,6 @@
-export interface Dog {
-  id: number;
+import { BaseModel } from 'src/models/baseModel';
+
+export interface Dog extends BaseModel {
   name: string;
   breed: string;
   birthday: string;

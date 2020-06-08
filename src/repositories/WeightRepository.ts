@@ -1,12 +1,15 @@
 import { Dog } from 'src/models/dog';
 import { Weight } from 'src/models/weight';
 import axios from 'axios';
+import BaseRepository from 'src/repositories/BaseRepository';
 
-export default class WeightRepository {
-  private static baseIri = 'api/weights';
+export default class WeightRepository extends BaseRepository<Weight> {
+  constructor() {
+    super('weights');
+  }
 
-  static getByDog = (dog: Dog): Promise<Weight[]> => new Promise((resolve, reject) => {
-    axios.get(WeightRepository.baseIri, {
+  getByDog = (dog: Dog): Promise<Weight[]> => new Promise((resolve, reject) => {
+    axios.get(this.baseIri, {
       params: {
         dog: dog.id,
       },
@@ -16,12 +19,4 @@ export default class WeightRepository {
       reject();
     });
   });
-
-  static update = (weight: Weight): Promise<Weight> => new Promise((resolve, reject) => {
-    axios.put(`${WeightRepository.baseIri}/${weight.id}`, weight).then(({ data }) => {
-      resolve(data);
-    }).catch(() => {
-      reject();
-    });
-  })
 }

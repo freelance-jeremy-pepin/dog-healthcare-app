@@ -2,13 +2,16 @@ import { User } from 'src/models/user';
 import { Dog } from 'src/models/dog';
 import DogRepository from 'src/repositories/DogRepository';
 import axios from 'axios';
+import BaseRepository from 'src/repositories/BaseRepository';
 import UserModule from '../store/modules/user-module';
 
-export default class UserRepository {
-  private static baseIri = 'api/users';
+export default class UserRepository extends BaseRepository<User> {
+  constructor() {
+    super('users');
+  }
 
-  static getByEmail = (email: string): Promise<User> => new Promise((resolve, reject) => {
-    axios.get(UserRepository.baseIri, {
+  getByEmail = (email: string): Promise<User> => new Promise((resolve, reject) => {
+    axios.get(this.baseIri, {
       params: {
         email,
       },
@@ -33,10 +36,11 @@ export default class UserRepository {
     });
   });
 
-  static updateActiveDog = (dog: Dog | undefined) => {
+  updateActiveDog = (dog: Dog | undefined) => {
     if (UserModule.User) {
-      axios.put(`${UserRepository.baseIri}/${UserModule.User.id}`, {
-        activeDog: dog ? `${DogRepository.BaseIri}/${dog.id}` : null,
+      const dogRepository = new DogRepository();
+      axios.put(`${this.baseIri}/${UserModule.User.id}`, {
+        activeDog: dog ? `${dogRepository.BaseIri}/${dog.id}` : null,
       });
     }
   }

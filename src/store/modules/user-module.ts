@@ -32,13 +32,16 @@ class UserModule extends VuexModule {
   public setActiveDog(dog: Dog | undefined) {
     if (this.user) {
       this.user = { ...this.user, activeDog: dog };
-      UserRepository.updateActiveDog(dog);
+
+      const userRepository = new UserRepository();
+      userRepository.updateActiveDog(dog);
     }
   }
 
   @Action
   public fetch(email: string) {
-    UserRepository.getByEmail(email).then((user: User) => {
+    const userRepository = new UserRepository();
+    userRepository.getByEmail(email).then((user: User) => {
       this.setUser(user);
     });
   }

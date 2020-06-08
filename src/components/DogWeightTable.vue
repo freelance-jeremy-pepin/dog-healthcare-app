@@ -24,6 +24,8 @@
               v-if="weightEditing"
               v-model="weightEditing.date"
               @close="saveWeight(weightEditing)"
+              :options="limitDates"
+              today-btn
             />
           </q-popup-proxy>
         </q-td>
@@ -61,6 +63,7 @@ import { Weight } from 'src/models/weight';
 import DogWeightChart from 'components/DogWeightChart.vue';
 import DateMixin from 'src/mixins/dateMixin';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
+import moment from 'moment';
 
 @Component({
   components: {
@@ -91,6 +94,8 @@ export default class DogWeightTable extends Mixins(DateMixin) {
   saveWeight = (weight: Weight) => {
     ActiveDogModule.updateWeight(weight);
   };
+
+  limitDates = (date: string) => date <= moment().format('YYYY/MM/DD');
 }
 </script>
 

@@ -29,7 +29,8 @@ class DogModule extends VuexModule {
 
   @Action
   public fetchAll() {
-    DogRepository.getAll().then((dogs: Dog[]) => {
+    const dogRepository = new DogRepository();
+    dogRepository.getAll().then((dogs: Dog[]) => {
       this.setDogs(dogs);
     });
   }

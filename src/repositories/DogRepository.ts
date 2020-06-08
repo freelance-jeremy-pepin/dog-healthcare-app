@@ -1,18 +1,8 @@
 import { Dog } from 'src/models/dog';
-import axios from 'axios';
+import BaseRepository from 'src/repositories/BaseRepository';
 
-export default class DogRepository {
-  private static baseIri = 'api/dogs';
-
-  static get BaseIri(): string {
-    return DogRepository.baseIri;
+export default class DogRepository extends BaseRepository<Dog> {
+  constructor() {
+    super('dogs');
   }
-
-  static getAll = (): Promise<Dog[]> => new Promise((resolve, reject) => {
-    axios.get(DogRepository.baseIri).then(({ data }) => {
-      resolve(data);
-    }).catch(() => {
-      reject();
-    });
-  });
 }

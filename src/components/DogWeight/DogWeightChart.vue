@@ -16,7 +16,7 @@ import {
 } from 'vue-property-decorator';
 import DateMixin from 'src/mixins/dateMixin';
 import VueApexCharts from 'vue-apexcharts';
-import { Weight } from '../models/weight';
+import { Weight } from 'src/models/weight';
 
 @Component({
   components: {

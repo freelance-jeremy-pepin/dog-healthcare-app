@@ -64,7 +64,7 @@ import {
   Prop,
 } from 'vue-property-decorator';
 import { Weight } from 'src/models/weight';
-import DogWeightChart from 'components/DogWeightChart.vue';
+import DogWeightChart from 'components/DogWeight/DogWeightChart.vue';
 import DateMixin from 'src/mixins/dateMixin';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
 import moment from 'moment';

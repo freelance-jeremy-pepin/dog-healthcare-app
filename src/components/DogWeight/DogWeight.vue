@@ -32,8 +32,8 @@ import {
   Vue,
 } from 'vue-property-decorator';
 import { Weight } from 'src/models/weight';
-import DogWeightChart from 'components/DogWeightChart.vue';
-import DogWeightTable from 'components/DogWeightTable.vue';
+import DogWeightChart from 'components/DogWeight/DogWeightChart.vue';
+import DogWeightTable from 'components/DogWeight/DogWeightTable.vue';
 
 interface DisplayMode {
   key: 'chart' | 'table';

@@ -23,7 +23,7 @@ import {
 } from 'vue-property-decorator';
 import DogIdentity from 'components/DogIdentity.vue';
 import { Dog } from 'src/models/dog';
-import DogWeight from 'components/DogWeight.vue';
+import DogWeight from 'components/DogWeight/DogWeight.vue';
 import { Weight } from 'src/models/weight';
 import { User } from 'src/models/user';
 import ActiveDogModule from '../store/modules/active-dog-module';

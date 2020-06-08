@@ -36,8 +36,14 @@
     <q-separator></q-separator>
 
     <q-card-section>
-      Né le : {{ dog.birthday | formatDate }}
-      <span class="text-grey text-italic">({{ age }})</span>
+      <div>
+        Né le : {{ dog.birthday | formatDate }}
+        <span class="text-grey text-italic">({{ age }})</span>
+      </div>
+      <div v-if="lastWeight">
+        Poids : {{ lastWeight.weight }} kg
+        <span class="text-grey text-italic" v-if="weightDateAgo">({{ weightDateAgo }})</span>
+      </div>
     </q-card-section>
   </q-card>
 </template>
@@ -47,22 +53,32 @@ import {
   Component,
   Mixins,
   Prop,
+  Watch,
 } from 'vue-property-decorator';
 import DateMixin from 'src/mixins/dateMixin';
 import moment from 'moment';
 import TextFormatMixin from 'src/mixins/textFormat';
 import DogModule from 'src/store/modules/dog-module';
+import ActiveDogModule from 'src/store/modules/active-dog-module';
 import UserModule from 'src/store/modules/user-module';
+import DateTime from 'src/utils/dateTime';
+import { Weight } from 'src/models/weight';
+import Date from 'src/utils/date';
 import { Dog } from '../models/dog';
 
 @Component
 export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin) {
+  // *** Props ***
   @Prop({ required: true }) dog: Dog | undefined;
 
+  // *** Data ***
+  private weightDateAgo: string | null = null;
+
+  // *** Computed properties ***
   public get age(): string {
     if (this.dog && this.$options && this.$options.filters) {
       const a = moment();
-      const b = moment(this.dog.birthday);
+      const b = moment(this.dog.birthday, Date.appFormat);
       const age = moment.duration(a.diff(b));
       const years = age.years();
       const months = age.months();
@@ -101,8 +117,48 @@ export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin) {
     return undefined;
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  public get lastWeight(): Weight | null {
+    if (ActiveDogModule.Weights && ActiveDogModule.Weights.length > 0) {
+      return ActiveDogModule.Weights[ActiveDogModule.Weights.length - 1];
+    }
+
+    return null;
+  }
+
+  // *** Hooks ***
+  public mounted() {
+    setInterval(() => {
+      this.refreshWeightDateAgo();
+    }, 5000);
+  }
+
+  // *** Methods ***
   setActiveDog = (dog: Dog | undefined) => {
     UserModule.setActiveDog(dog);
+  }
+
+  public refreshWeightDateAgo() {
+    if (this.lastWeight) {
+      this.weightDateAgo = moment(this.lastWeight.date, DateTime.appFormat).fromNow();
+    } else {
+      this.weightDateAgo = null;
+    }
+  }
+
+  // *** Watchers ***
+  @Watch('dog', { immediate: true, deep: true })
+  public onDogChanged(dog: Dog) {
+    if (dog) {
+      this.refreshWeightDateAgo();
+    }
+  }
+
+  @Watch('lastWeight', { immediate: true, deep: true })
+  public onLastWeightChanged(lastWeight: Weight) {
+    if (lastWeight) {
+      this.refreshWeightDateAgo();
+    }
   }
 }
 </script>

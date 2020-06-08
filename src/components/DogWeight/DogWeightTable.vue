@@ -41,7 +41,7 @@
             <q-date
               bordered
               flat
-              mask="YYYY-MM-DD"
+              mask="DD/MM/YYYY"
               v-if="weightEditing"
               v-model="weightEditing.date"
               @close="saveWeight(weightEditing)"
@@ -92,17 +92,17 @@ import {
 } from 'vue-property-decorator';
 import { Weight } from 'src/models/weight';
 import DogWeightChart from 'components/DogWeight/DogWeightChart.vue';
-import DateMixin from 'src/mixins/dateMixin';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
 import moment from 'moment';
 import WeightRepository from 'src/repositories/WeightRepository';
+import DateTimeMixin from 'src/mixins/dateTimeMixin';
 
 @Component({
   components: {
     DogWeightChart,
   },
 })
-export default class DogWeightTable extends Mixins(DateMixin) {
+export default class DogWeightTable extends Mixins(DateTimeMixin) {
   // *** Props ***
   @Prop({ required: true }) weights: Weight[] | undefined;
 
@@ -133,6 +133,7 @@ export default class DogWeightTable extends Mixins(DateMixin) {
   }
 
   public saveWeight = (weight: Weight) => {
+    weight.date += ` ${moment().format('HH:mm:ss')}`;
     ActiveDogModule.updateWeight(weight);
   };
 

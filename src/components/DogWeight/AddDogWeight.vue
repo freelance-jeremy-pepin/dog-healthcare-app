@@ -52,6 +52,7 @@ import DogRepository from 'src/repositories/DogRepository';
 import { Dog } from 'src/models/dog';
 import moment from 'moment';
 import WeightRepository from 'src/repositories/WeightRepository';
+import Date from 'src/utils/date';
 
 @Component
 export default class AddDogWeight extends Vue {
@@ -74,7 +75,7 @@ export default class AddDogWeight extends Vue {
     return {
       dog: `${(new DogRepository().BaseIri)}/${this.activeDog?.id}`,
       weight: '',
-      date: moment().format('DD/MM/YYYY'),
+      date: moment().format(Date.appFormat),
     };
   }
 
@@ -86,10 +87,11 @@ export default class AddDogWeight extends Vue {
 
   // *** Events handlers ***
   public onSubmit() {
-    const weight = {
+    const weight: Weight = {
       ...this.newWeight,
-      date: moment(this.newWeight.date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+      date: `${this.newWeight.date} ${moment().format('HH:mm:ss')}`,
     };
+
     const weightRepository = new WeightRepository();
     weightRepository.add(weight).then(() => {
       ActiveDogModule.fetchWeights();

@@ -2,6 +2,8 @@
 <template>
   <q-card v-if="weights">
     <q-card-section class="row items-center">
+      <div class="text-subtitle2">Poids</div>
+
       <dog-weight-table
         :weights="weights"
         v-show="currentDisplayMode.key === 'table'"

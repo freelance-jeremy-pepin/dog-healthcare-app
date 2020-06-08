@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-page class="column items-center" padding>
-      <div class="q-gutter-md" style="max-width: 500px; width: 100%">
+      <div class="q-gutter-md" style="max-width: 500px; width: 100%; margin-bottom: 70px">
         <dog-identity :dog="activeDog"></dog-identity>
         <dog-weight :weights="weights"></dog-weight>
       </div>
@@ -39,6 +39,7 @@ import DogWeight from 'components/DogWeight/DogWeight.vue';
 import { Weight } from 'src/models/weight';
 import { User } from 'src/models/user';
 import AddDogWeight from 'components/DogWeight/AddDogWeight.vue';
+import moment from 'moment';
 import ActiveDogModule from '../store/modules/active-dog-module';
 import UserModule from '../store/modules/user-module';
 import DogModule from '../store/modules/dog-module';
@@ -73,6 +74,11 @@ export default class Index extends Vue {
   // eslint-disable-next-line class-methods-use-this
   public get isActiveDogEditing(): boolean {
     return ActiveDogModule.IsEditing;
+  }
+
+  // *** Hooks ***
+  public mounted() {
+    moment.locale('fr');
   }
 
   // *** Methods ***

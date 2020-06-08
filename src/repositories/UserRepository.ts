@@ -3,6 +3,7 @@ import { Dog } from 'src/models/dog';
 import DogRepository from 'src/repositories/DogRepository';
 import axios from 'axios';
 import BaseRepository from 'src/repositories/BaseRepository';
+import { getIdFromIRI } from 'src/utils/stringFormat';
 import UserModule from '../store/modules/user-module';
 
 export default class UserRepository extends BaseRepository<User> {
@@ -23,8 +24,9 @@ export default class UserRepository extends BaseRepository<User> {
 
         // Récupération du chien actif
         if (data[0].activeDog) {
-          axios.get(data[0].activeDog).then((responseDog) => {
-            user.activeDog = responseDog.data;
+          const dogRepository = new DogRepository();
+          dogRepository.getById(getIdFromIRI(data[0].activeDog)).then((responseDog: Dog) => {
+            user.activeDog = responseDog;
             resolve(user);
           });
         } else {

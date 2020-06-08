@@ -11,11 +11,32 @@
   >
     <template v-slot:body="props">
       <q-tr :props="props">
+
+        <q-menu context-menu touch-position v-if="isEditing">
+          <q-item
+            @click="deleteWeight(props.row)"
+            class="bg-negative text-white"
+            clickable
+            v-close-popup
+          >
+            <q-item-section side>
+              <q-icon color="white" name="delete" />
+            </q-item-section>
+
+            <q-item-section>
+              <q-item-label class="text-white">Supprimer</q-item-label>
+            </q-item-section>
+
+
+          </q-item>
+        </q-menu>
+
         <q-td :props="props" @click="setWeightEditing(props.row)" key="date">
           {{ props.row.date | formatDate }}
           <q-popup-proxy
             @before-show="setWeightEditing(props.row)"
             @before-hide="saveWeight(weightEditing)"
+            v-if="isEditing"
           >
             <q-date
               bordered
@@ -35,7 +56,7 @@
           <q-popup-edit
             @save="saveWeight(weightEditing)"
             buttons
-            v-if="weightEditing"
+            v-if="weightEditing && isEditing"
             v-model="weightEditing.weight"
           >
             <q-input
@@ -47,8 +68,14 @@
           </q-popup-edit>
         </q-td>
 
-        <q-td :props="props" key="weight">
-          <q-btn @click="deleteWeight(props.row)" label="DEL"></q-btn>
+        <q-td :props="props" key="actions">
+          <q-btn
+            @click="deleteWeight(props.row)"
+            color="negative"
+            flat
+            icon="delete"
+            size="sm"
+          ></q-btn>
         </q-td>
       </q-tr>
     </template>
@@ -76,8 +103,10 @@ import WeightRepository from 'src/repositories/WeightRepository';
   },
 })
 export default class DogWeightTable extends Mixins(DateMixin) {
+  // *** Props ***
   @Prop({ required: true }) weights: Weight[] | undefined;
 
+  // *** Data ***
   private weightEditing: Weight | null = this.weights ? this.weights[0] : null;
 
   private columns = [
@@ -88,14 +117,17 @@ export default class DogWeightTable extends Mixins(DateMixin) {
     },
     {
       name: 'weight',
-      label: 'Poids',
-    },
-    {
-      name: 'action',
-      label: '',
+      label: 'Poids (kg)',
     },
   ];
 
+  // *** Computed properties ***
+  // eslint-disable-next-line class-methods-use-this
+  public get isEditing(): boolean {
+    return ActiveDogModule.IsEditing;
+  }
+
+  // *** Methods ***
   public setWeightEditing(weight: Weight) {
     this.weightEditing = { ...weight };
   }

@@ -21,12 +21,18 @@ class ActiveDogModule extends VuexModule {
 
   public weights?: Weight[] = undefined;
 
+  public isEditing = false;
+
   public get Dog(): Dog | undefined {
     return this.dog;
   }
 
   public get Weights(): Weight[] | undefined {
     return this.weights;
+  }
+
+  public get IsEditing(): boolean {
+    return this.isEditing;
   }
 
   @Mutation
@@ -46,6 +52,11 @@ class ActiveDogModule extends VuexModule {
     } else {
       this.weights = [weight];
     }
+  }
+
+  @Mutation
+  public setEditing(editing: boolean) {
+    this.isEditing = editing;
   }
 
   @Action

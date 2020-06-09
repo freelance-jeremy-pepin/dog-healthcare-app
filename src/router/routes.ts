@@ -8,12 +8,19 @@ const routes: RouteConfig[] = [
   },
   {
     path: '/professionals',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [{
-      name: 'professionals',
-      path: '',
-      component: () => import('pages/Professionals.vue'),
-    }],
+    component: () => import('layouts/ProfessionalLayout.vue'),
+    children: [
+      {
+        name: 'professionals',
+        path: '',
+        component: () => import('pages/Professionals/Professionals.vue'),
+      },
+      {
+        name: 'professionals.add',
+        path: 'add',
+        component: () => import('pages/Professionals/ProfessionalsAdd.vue'),
+      },
+    ],
   },
   {
     path: '/',

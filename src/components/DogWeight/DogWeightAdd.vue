@@ -55,7 +55,7 @@ import WeightRepository from 'src/repositories/WeightRepository';
 import Date from 'src/utils/date';
 
 @Component
-export default class AddDogWeight extends Vue {
+export default class DogWeightAdd extends Vue {
   public $refs!: {
     modal: any;
   };

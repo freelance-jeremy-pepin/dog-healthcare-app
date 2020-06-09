@@ -23,7 +23,7 @@
       />
     </q-page-sticky>
 
-    <add-dog-weight v-model="addWeightDisplay"></add-dog-weight>
+    <dog-weight-add v-model="addWeightDisplay"></dog-weight-add>
   </div>
 </template>
 
@@ -38,7 +38,7 @@ import { Dog } from 'src/models/dog';
 import DogWeight from 'components/DogWeight/DogWeight.vue';
 import { Weight } from 'src/models/weight';
 import { User } from 'src/models/user';
-import AddDogWeight from 'components/DogWeight/AddDogWeight.vue';
+import DogWeightAdd from 'components/DogWeight/DogWeightAdd.vue';
 import moment from 'moment';
 import store from 'src/store';
 import ActiveDogModule from '../store/modules/active-dog-module';
@@ -47,7 +47,7 @@ import DogModule from '../store/modules/dog-module';
 
 @Component({
   components: {
-    AddDogWeight,
+    DogWeightAdd,
     DogIdentity,
     DogWeight,
   },

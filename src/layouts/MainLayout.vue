@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-  <q-layout class="shadow-2 rounded-borders" view="hHh lpR fFf">
+  <q-layout class="shadow-2 rounded-borders" style="background-color: #EEEEEE" view="hHh lpR fFf">
     <q-header>
       <q-toolbar>
         <q-btn @click="drawerLeft = !drawerLeft" dense flat icon="menu" round />
@@ -81,7 +81,7 @@ export default class MainLayout extends Vue {
     },
     {
       icon: 'supervisor_account',
-      label: 'Professionels',
+      label: 'Professionnels',
       routeName: 'professionals',
       exact: false,
     },

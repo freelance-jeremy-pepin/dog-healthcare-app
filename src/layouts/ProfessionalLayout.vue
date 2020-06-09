@@ -17,9 +17,13 @@
           />
 
           <q-breadcrumbs-el
-            :to="{ name: 'professionals.add' }"
             label="Ajout d'un professionnel"
             v-if="currentRouteName === 'professionals.add'"
+          />
+
+          <q-breadcrumbs-el
+            label="Edition d'un professionnel"
+            v-if="currentRouteName === 'professionals.edit'"
           />
         </q-breadcrumbs>
       </q-toolbar>

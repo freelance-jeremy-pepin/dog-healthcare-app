@@ -56,10 +56,6 @@ import Date from 'src/utils/date';
 
 @Component
 export default class DogWeightAdd extends Vue {
-  public $refs!: {
-    modal: any;
-  };
-
   // *** Data ***
   private newWeight: Weight = this.emptyWeight();
 
@@ -95,6 +91,9 @@ export default class DogWeightAdd extends Vue {
     const weightRepository = new WeightRepository();
     weightRepository.add(weight).then(() => {
       ActiveDogModule.fetchWeights();
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
       this.$refs.modal.hide();
     });
   }

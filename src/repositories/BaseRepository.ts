@@ -72,8 +72,8 @@ export default abstract class BaseRepository<T extends BaseModel> {
       axios.get(url, config).then(({ data }: { data: T[] }) => {
         data = data.map((d: T) => this.formatDateDatabaseToApp(d));
         resolve(data);
-      }).catch(() => {
-        reject();
+      }).catch((error) => {
+        reject(error);
       });
     });
   }
@@ -83,8 +83,8 @@ export default abstract class BaseRepository<T extends BaseModel> {
       axios.get(url).then(({ data }: { data: T }) => {
         data = this.formatDateDatabaseToApp(data);
         resolve(data);
-      }).catch(() => {
-        reject();
+      }).catch((error) => {
+        reject(error);
       });
     });
   }

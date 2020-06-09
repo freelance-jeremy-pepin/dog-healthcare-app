@@ -20,6 +20,11 @@ const routes: RouteConfig[] = [
         path: 'add',
         component: () => import('pages/Professionals/ProfessionalsAdd.vue'),
       },
+      {
+        name: 'professionals.edit',
+        path: 'edit/:professional_id',
+        component: () => import('pages/Professionals/ProfessionalsEdit.vue'),
+      },
     ],
   },
   {

@@ -49,6 +49,8 @@ export default boot(({ Vue }) => {
         ],
       });
     }
+
+    return error;
   });
 
   Vue.prototype.$axios = axios;

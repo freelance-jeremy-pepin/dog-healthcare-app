@@ -1,5 +1,5 @@
 <template>
-  <professional-form></professional-form>
+  <professional-form :professional-id="$route.params.professional_id"></professional-form>
 </template>
 
 <script lang="ts">
@@ -12,7 +12,7 @@ import ProfessionalForm from 'components/Professional/ProfessionalForm.vue';
 @Component({
   components: { ProfessionalForm },
 })
-export default class ProfessionalAdd extends Vue {
+export default class ProfessionalsEdit extends Vue {
 
 }
 </script>

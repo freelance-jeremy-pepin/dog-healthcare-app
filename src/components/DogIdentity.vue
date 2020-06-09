@@ -57,7 +57,7 @@ import {
 } from 'vue-property-decorator';
 import DateMixin from 'src/mixins/dateMixin';
 import moment from 'moment';
-import TextFormatMixin from 'src/mixins/textFormat';
+import TextFormatMixin from 'src/mixins/textFormatMixin';
 import DogModule from 'src/store/modules/dog-module';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
 import UserModule from 'src/store/modules/user-module';

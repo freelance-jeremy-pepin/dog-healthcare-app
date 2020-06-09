@@ -2,8 +2,7 @@
   <div class="column items-center q-pa-md">
     <q-card style="max-width: 500px; width: 100%;">
       <q-card-section>
-        <q-form class="q-gutter-md">
-
+        <q-form @submit="onSubmit" class="q-gutter-md">
           <input-icon
             icon="business"
             label="Nom"
@@ -20,7 +19,7 @@
             option-label="displayLabel"
             option-value="internalLabel"
             outlined
-            v-model="newProfessional.professionalType"
+            v-model="professionalTypeSelected"
           />
 
           <input-icon
@@ -71,13 +70,11 @@
           <q-input label="Notes" outlined type="textarea" v-model="newProfessional.notes" />
         </q-form>
       </q-card-section>
-
-      <q-separator></q-separator>
-
-      <q-card-actions class="row justify-center">
-        <q-btn class="full-width" color="green" flat label="Ajouter"></q-btn>
-      </q-card-actions>
     </q-card>
+
+    <q-page-sticky :offset="[18, 18]" position="bottom-right">
+      <q-btn @click="onSubmit" color="green" fab icon="done" />
+    </q-page-sticky>
   </div>
 </template>
 
@@ -90,6 +87,7 @@ import { Professional } from 'src/models/professional';
 import InputIcon from 'components/common/InputIcon.vue';
 import { ProfessionalType } from 'src/models/professionalType';
 import ProfessionalTypeRepository from 'src/repositories/ProfessionalTypeRepository';
+import ProfessionalRepository from 'src/repositories/ProfessionalRepository';
 
 @Component({
   components: { InputIcon },
@@ -99,6 +97,8 @@ export default class ProfessionalAdd extends Vue {
   private newProfessional: Professional = this.emptyProfessional();
 
   private professionalTypes: ProfessionalType[] | null = null;
+
+  private professionalTypeSelected: ProfessionalType | null = null;
 
   // *** Hooks ***
   public mounted() {
@@ -112,19 +112,39 @@ export default class ProfessionalAdd extends Vue {
     });
   }
 
+  // *** Events handlers ***
+  public onSubmit() {
+    if (this.professionalTypeSelected && this.professionalTypeSelected.id) {
+      const professionalTypeRepository = new ProfessionalTypeRepository();
+      this.newProfessional.professionalType = professionalTypeRepository.buildIri(
+        this.professionalTypeSelected.id,
+      );
+
+      const professionalRepository = new ProfessionalRepository();
+      professionalRepository.add(this.newProfessional).then((data) => {
+        this.$q.notify({
+          message: `Nouveau professionnel : ${data.name} ajouté.`,
+          type: 'positive',
+        });
+
+        this.$router.push({ name: 'professionals' });
+      });
+    }
+  }
+
   // *** Methods ***
   // eslint-disable-next-line class-methods-use-this
   public emptyProfessional(): Professional {
     return {
-      address: '',
-      city: '',
-      email: '',
-      mobileNumber: '',
+      address: undefined,
+      city: undefined,
+      email: undefined,
+      mobileNumber: undefined,
       name: '',
-      notes: '',
-      phoneNumber: '',
+      notes: undefined,
+      phoneNumber: undefined,
       professionalType: '',
-      zipCode: '',
+      zipCode: undefined,
     };
   }
 }

@@ -18,6 +18,10 @@ export default abstract class BaseRepository<T extends BaseModel> {
     return this.baseIri;
   }
 
+  public buildIri(id: number): string {
+    return `${this.baseIri}/${id.toString()}`;
+  }
+
   // *** CREATE ***
   public add(model: T): Promise<T> {
     model = this.formatDateAppToDatabase(model);

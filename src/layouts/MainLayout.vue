@@ -25,7 +25,6 @@
             :to="{ name: route.routeName }"
             class="q-mb-sm"
             clickable
-            exact
             v-for="route in routes"
             v-ripple
             :exact="route.exact"
@@ -84,7 +83,7 @@ export default class MainLayout extends Vue {
       icon: 'supervisor_account',
       label: 'Professionels',
       routeName: 'professionals',
-      exact: false
+      exact: false,
     },
   ];
 

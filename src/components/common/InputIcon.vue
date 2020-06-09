@@ -15,7 +15,7 @@ import {
 
 @Component
 export default class InputIcon extends Vue {
-  @Prop({ required: true }) icon;
+  @Prop({ required: true }) icon: string | undefined;
 }
 </script>
 

@@ -40,6 +40,7 @@ import { Weight } from 'src/models/weight';
 import { User } from 'src/models/user';
 import AddDogWeight from 'components/DogWeight/AddDogWeight.vue';
 import moment from 'moment';
+import store from 'src/store';
 import ActiveDogModule from '../store/modules/active-dog-module';
 import UserModule from '../store/modules/user-module';
 import DogModule from '../store/modules/dog-module';
@@ -79,6 +80,7 @@ export default class Index extends Vue {
   // *** Hooks ***
   public mounted() {
     moment.locale('fr');
+    store.registerModule('active-dog', {});
   }
 
   // *** Methods ***

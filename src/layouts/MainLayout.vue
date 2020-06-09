@@ -28,6 +28,7 @@
             exact
             v-for="route in routes"
             v-ripple
+            :exact="route.exact"
           >
             <q-item-section avatar>
               <q-icon :name="route.icon" />
@@ -60,6 +61,7 @@ interface Route {
   icon: string;
   label: string;
   routeName: string;
+  exact: boolean;
 }
 
 @Component({
@@ -76,11 +78,13 @@ export default class MainLayout extends Vue {
       icon: 'pets',
       label: 'Carnet de santé',
       routeName: 'home',
+      exact: true,
     },
     {
       icon: 'supervisor_account',
       label: 'Professionels',
       routeName: 'professionals',
+      exact: false
     },
   ];
 

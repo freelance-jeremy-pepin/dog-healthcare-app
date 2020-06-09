@@ -63,7 +63,7 @@ export default abstract class BaseRepository<T extends BaseModel> {
   }
 
   // *** Protected methods ***
-  public fetchMany(url: string, config?: AxiosRequestConfig): Promise<T[]> {
+  protected fetchMany(url: string, config?: AxiosRequestConfig): Promise<T[]> {
     return new Promise((resolve, reject) => {
       axios.get(url, config).then(({ data }: { data: T[] }) => {
         data = data.map((d: T) => this.formatDateDatabaseToApp(d));
@@ -74,7 +74,7 @@ export default abstract class BaseRepository<T extends BaseModel> {
     });
   }
 
-  public fetchOne(url: string): Promise<T> {
+  protected fetchOne(url: string): Promise<T> {
     return new Promise((resolve, reject) => {
       axios.get(url).then(({ data }: { data: T }) => {
         data = this.formatDateDatabaseToApp(data);

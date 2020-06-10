@@ -26,8 +26,6 @@
             <q-item-section>
               <q-item-label class="text-white">Supprimer</q-item-label>
             </q-item-section>
-
-
           </q-item>
         </q-menu>
 

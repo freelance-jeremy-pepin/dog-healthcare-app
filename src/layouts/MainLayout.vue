@@ -1,6 +1,6 @@
 <!--suppress ALL -->
 <template>
-  <q-layout class="shadow-2 rounded-borders" style="background-color: #EEEEEE" view="hHh lpR fFf">
+  <q-layout class="shadow-2 rounded-borders" style="background-color: #EEEEEE" view="hHh Lpr lff">
     <q-header>
       <q-toolbar>
         <q-btn @click="drawerLeft = !drawerLeft" dense flat icon="menu" round />

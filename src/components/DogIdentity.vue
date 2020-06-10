@@ -5,7 +5,6 @@
         {{ dog.name[0] }}
       </q-avatar>
 
-
       <span class="q-ml-md">
         <span class="text-h4 row items-center">
           {{ dog.name }}

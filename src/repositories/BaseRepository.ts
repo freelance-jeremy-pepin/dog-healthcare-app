@@ -18,8 +18,11 @@ export default abstract class BaseRepository<T extends BaseModel> {
     return this.baseIri;
   }
 
-  public buildIri(id: number): string {
-    return `${this.baseIri}/${id.toString()}`;
+  public buildIri(model: T): string {
+    if (model.id) {
+      return `${this.baseIri}/${model.id.toString()}`;
+    }
+    return '';
   }
 
   // *** CREATE ***
@@ -28,8 +31,8 @@ export default abstract class BaseRepository<T extends BaseModel> {
     return new Promise((resolve, reject) => {
       axios.post(this.baseIri, model).then(({ data }: { data: T }) => {
         resolve(data);
-      }).catch(() => {
-        reject();
+      }).catch((error) => {
+        reject(error);
       });
     });
   }

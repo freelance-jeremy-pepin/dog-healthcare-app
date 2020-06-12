@@ -197,7 +197,7 @@ export default class ProfessionalForm extends Mixins(ValidationMixin, NotifyMixi
         && this.professionalTypeSelected.id) {
         const professionalTypeRepository = new ProfessionalTypeRepository();
         this.professional.professionalType = professionalTypeRepository.buildIri(
-          this.professionalTypeSelected.id,
+          this.professionalTypeSelected,
         );
 
         const professionalRepository = new ProfessionalRepository();

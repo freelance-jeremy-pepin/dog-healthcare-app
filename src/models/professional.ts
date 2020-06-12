@@ -1,4 +1,5 @@
 import { BaseModel } from 'src/models/baseModel';
+import { ProfessionalType } from 'src/models/professionalType';
 
 export interface Professional extends BaseModel {
   professionalType: string;
@@ -10,4 +11,5 @@ export interface Professional extends BaseModel {
   zipCode?: string;
   email?: string;
   notes?: string;
+  professionalTypeDetails?: ProfessionalType;
 }

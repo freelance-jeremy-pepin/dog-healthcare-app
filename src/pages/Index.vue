@@ -10,6 +10,7 @@
     <q-page-sticky :offset="[18, 18]" position="bottom-right">
       <q-fab color="green" direction="up" icon="add">
         <q-fab-action @click="addWeightDisplay = true" color="primary" label="Poids" />
+        <q-fab-action @click="addDewormingDisplay = true" color="primary" label="Vermifuge" />
       </q-fab>
     </q-page-sticky>
 
@@ -24,6 +25,7 @@
     </q-page-sticky>
 
     <dog-weight-add v-model="addWeightDisplay"></dog-weight-add>
+    <dog-deworming-add v-model="addDewormingDisplay"></dog-deworming-add>
   </div>
 </template>
 
@@ -41,12 +43,14 @@ import { User } from 'src/models/user';
 import DogWeightAdd from 'components/DogWeight/DogWeightAdd.vue';
 import moment from 'moment';
 import store from 'src/store';
+import DogDewormingAdd from 'components/DogDeworming/DogDewormingAdd.vue';
 import ActiveDogModule from '../store/modules/active-dog-module';
 import UserModule from '../store/modules/user-module';
 import DogModule from '../store/modules/dog-module';
 
 @Component({
   components: {
+    DogDewormingAdd,
     DogWeightAdd,
     DogIdentity,
     DogWeight,
@@ -55,6 +59,8 @@ import DogModule from '../store/modules/dog-module';
 export default class Index extends Vue {
   // *** Data ***
   private addWeightDisplay = false;
+
+  private addDewormingDisplay = false;
 
   // *** Computed properties ***
   // eslint-disable-next-line class-methods-use-this

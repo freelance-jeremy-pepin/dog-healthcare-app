@@ -12,7 +12,7 @@
       <q-card-section>
         <div class="text-subtitle2 q-mb-sm">Ajouter un poids pour {{ activeDog.name }}</div>
         <q-form @submit="onSubmit" class="column q-gutter-md">
-          <q-input label="Date" outlined v-model="newWeight.date">
+          <q-input :rules="[required]" label="Date" outlined v-model="newWeight.date">
             <template v-slot:append>
               <q-icon class="cursor-pointer" name="event">
                 <q-popup-proxy ref="qDateProxy" transition-hide="scale" transition-show="scale">
@@ -28,7 +28,13 @@
             </template>
           </q-input>
 
-          <q-input autofocus label="Poids" outlined v-model="newWeight.weight">
+          <q-input
+            :rules="[required,floatValidation]"
+            autofocus
+            label="Poids"
+            outlined
+            v-model="newWeight.weight"
+          >
             <template v-slot:append>
               kg
             </template>
@@ -44,7 +50,7 @@
 <script lang="ts">
 import {
   Component,
-  Vue,
+  Mixins,
 } from 'vue-property-decorator';
 import { Weight } from 'src/models/weight';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
@@ -53,9 +59,10 @@ import { Dog } from 'src/models/dog';
 import moment from 'moment';
 import WeightRepository from 'src/repositories/WeightRepository';
 import Date from 'src/utils/date';
+import ValidationMixin from 'src/mixins/validationMixin';
 
 @Component
-export default class DogWeightAdd extends Vue {
+export default class DogWeightAdd extends Mixins(ValidationMixin) {
   // *** Data ***
   private newWeight: Weight = this.emptyWeight();
 

@@ -8,6 +8,8 @@ import {
 import { Dog } from 'src/models/dog';
 import { Weight } from 'src/models/weight';
 import WeightRepository from 'src/repositories/WeightRepository';
+import { Deworming } from 'src/models/deworming';
+import DewormingRepository from 'src/repositories/DewormingRepository';
 import store from '../index';
 
 @Module({
@@ -21,6 +23,8 @@ class ActiveDogModule extends VuexModule {
 
   public weights?: Weight[] = undefined;
 
+  public dewormings?: Deworming[] = undefined;
+
   public isEditing = false;
 
   public get Dog(): Dog | undefined {
@@ -29,6 +33,10 @@ class ActiveDogModule extends VuexModule {
 
   public get Weights(): Weight[] | undefined {
     return this.weights;
+  }
+
+  public get Dewormings(): Deworming[] | undefined {
+    return this.dewormings;
   }
 
   public get IsEditing(): boolean {
@@ -51,6 +59,21 @@ class ActiveDogModule extends VuexModule {
       this.weights = this.weights.map((w: Weight) => (w.id === weight.id ? weight : w));
     } else {
       this.weights = [weight];
+    }
+  }
+
+  @Mutation
+  public setDewormings(dewormings: Deworming[] | undefined) {
+    this.dewormings = dewormings;
+  }
+
+  @Mutation
+  public setDeworming(dewormings: Deworming) {
+    if (this.dewormings) {
+      // eslint-disable-next-line max-len
+      this.dewormings = this.dewormings.map((d: Deworming) => (d.id === dewormings.id ? dewormings : d));
+    } else {
+      this.dewormings = [dewormings];
     }
   }
 
@@ -82,6 +105,24 @@ class ActiveDogModule extends VuexModule {
     const weightRepository = new WeightRepository();
     weightRepository.update(weight).then(() => {
       this.fetchWeights();
+    });
+  }
+
+  @Action
+  public fetchDewormings() {
+    if (this.Dog) {
+      const dewormingRepository = new DewormingRepository();
+      dewormingRepository.getByDog(this.Dog).then((dewormings) => {
+        this.setDewormings(dewormings);
+      });
+    }
+  }
+
+  @Action
+  public updateDeworming(deworming: Deworming) {
+    const dewormingRepository = new DewormingRepository();
+    dewormingRepository.update(deworming).then(() => {
+      this.fetchDewormings();
     });
   }
 }

@@ -12,5 +12,5 @@ export default class WeightRepository extends BaseRepository<Weight> {
     params: {
       dog: dog.id,
     },
-  })
+  });
 }

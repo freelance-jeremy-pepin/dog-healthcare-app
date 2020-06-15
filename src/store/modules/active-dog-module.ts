@@ -50,11 +50,13 @@ class ActiveDogModule extends VuexModule {
     return this.reminders;
   }
 
-  public getReminder(tableName: ReminderTableName): Reminder | undefined {
-    if (this.reminders) {
-      return this.reminders.find((r: Reminder) => r.tableName === tableName);
-    }
-    return undefined;
+  public get Reminder(): (tableName: ReminderTableName) => Reminder | undefined {
+    return (tableName: ReminderTableName) => {
+      if (this.reminders) {
+        return this.reminders.find((r: Reminder) => r.tableName === tableName);
+      }
+      return undefined;
+    };
   }
 
   public get IsEditing(): boolean {

@@ -1,11 +1,12 @@
 <template>
   <q-item @click="copyValue" clickable v-ripple>
     <q-item-section avatar>
-      <q-icon :name="icon" />
+      <q-icon :color="color" :name="icon" />
     </q-item-section>
     <q-item-section class="q-py-sm">
-      <q-item-label class="text-weight-medium">{{ title }}</q-item-label>
-      <q-item-label>{{ value }}</q-item-label>
+      <q-item-label :class="getTextColor('text-weight-medium')">{{ title }}
+      </q-item-label>
+      <q-item-label :class="getTextColor()" v-if="value">{{ value }}</q-item-label>
     </q-item-section>
   </q-item>
 </template>
@@ -27,7 +28,9 @@ export default class ItemIcon extends Mixins(NotifyMixin) {
 
   @Prop({ required: true }) title: string | undefined;
 
-  @Prop({ required: true }) value: string | undefined;
+  @Prop({ required: false }) value: string | undefined;
+
+  @Prop({ required: false }) color: string | undefined;
 
   public mounted() {
     Vue.use(VueClipboard);
@@ -39,6 +42,13 @@ export default class ItemIcon extends Mixins(NotifyMixin) {
       this.$copyText(this.value);
       this.notifySuccess('Copié dans le presse-papier');
     }
+  }
+
+  public getTextColor(classToAdd = '') {
+    if (this.color) {
+      return `text-${this.color} ${classToAdd}`;
+    }
+    return classToAdd;
   }
 }
 </script>

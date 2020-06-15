@@ -5,18 +5,18 @@ import {
 
 @Component({
   filters: {
-    pluralize(count: number, singular: string, plural: string) {
+    pluralize(count: number, singular: string, plural: string): string {
       if (count === 0 || count === 1) {
         return singular;
       }
       return plural;
     },
 
-    phoneNumber(phoneNumber: string) {
+    phoneNumber(phoneNumber: string): string {
       return phoneNumber.toString().replace(/\B(?=(\d{2})+(?!\d))/g, ' ');
     },
 
-    address(address: string, city: string, zipCode: string) {
+    address(address: string, city: string, zipCode: string): string {
       const zipCodeFormatted = [zipCode, city].join(' ');
       if (!city && !zipCode) {
         return address;
@@ -30,4 +30,5 @@ import {
   },
 })
 export default class TextFormatMixin extends Vue {
+
 }

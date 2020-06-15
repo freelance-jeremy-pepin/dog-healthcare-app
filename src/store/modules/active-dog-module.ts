@@ -10,6 +10,11 @@ import { Weight } from 'src/models/weight';
 import WeightRepository from 'src/repositories/WeightRepository';
 import { Deworming } from 'src/models/deworming';
 import DewormingRepository from 'src/repositories/DewormingRepository';
+import {
+  Reminder,
+  ReminderTableName,
+} from 'src/models/reminder';
+import ReminderRepository from 'src/repositories/ReminderRepository';
 import store from '../index';
 
 @Module({
@@ -25,6 +30,8 @@ class ActiveDogModule extends VuexModule {
 
   public dewormings?: Deworming[] = undefined;
 
+  public reminders?: Reminder[] = undefined;
+
   public isEditing = false;
 
   public get Dog(): Dog | undefined {
@@ -37,6 +44,17 @@ class ActiveDogModule extends VuexModule {
 
   public get Dewormings(): Deworming[] | undefined {
     return this.dewormings;
+  }
+
+  public get Reminders(): Reminder[] | undefined {
+    return this.reminders;
+  }
+
+  public getReminder(tableName: ReminderTableName): Reminder | undefined {
+    if (this.reminders) {
+      return this.reminders.find((r: Reminder) => r.tableName === tableName);
+    }
+    return undefined;
   }
 
   public get IsEditing(): boolean {
@@ -78,6 +96,11 @@ class ActiveDogModule extends VuexModule {
   }
 
   @Mutation
+  public setReminders(reminders: Reminder[] | undefined) {
+    this.reminders = reminders;
+  }
+
+  @Mutation
   public setEditing(editing: boolean) {
     this.isEditing = editing;
   }
@@ -87,9 +110,11 @@ class ActiveDogModule extends VuexModule {
     this.setDog(dog);
     this.setWeights(undefined);
     this.setDewormings(undefined);
+    this.setReminders(undefined);
 
     this.fetchWeights();
     this.fetchDewormings();
+    this.fetchReminders();
   }
 
   @Action
@@ -125,6 +150,24 @@ class ActiveDogModule extends VuexModule {
     const dewormingRepository = new DewormingRepository();
     dewormingRepository.update(deworming).then(() => {
       this.fetchDewormings();
+    });
+  }
+
+  @Action
+  public fetchReminders() {
+    if (this.Dog) {
+      const reminderRepository = new ReminderRepository();
+      reminderRepository.getByDog(this.Dog).then((reminders) => {
+        this.setReminders(reminders);
+      });
+    }
+  }
+
+  @Action
+  public updateReminder(reminder: Reminder) {
+    const reminderRepository = new ReminderRepository();
+    reminderRepository.update(reminder).then(() => {
+      this.fetchReminders();
     });
   }
 }

@@ -30,7 +30,7 @@
         </q-menu>
 
         <q-td :props="props" key="date">
-          {{ props.row.date | formatDate }}
+          {{ props.row.date | toDate }}
         </q-td>
 
         <q-td :props="props" key="dewormingName">

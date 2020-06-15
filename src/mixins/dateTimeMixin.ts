@@ -4,11 +4,12 @@ import {
 } from 'vue-property-decorator';
 import moment from 'moment';
 import DateTime from 'src/utils/dateTime';
+import Date from 'src/utils/date';
 
 @Component({
   filters: {
-    formatDate(value: string) {
-      return moment(String(value), DateTime.appFormat).format('DD/MM/YYYY');
+    toDate(value: string) {
+      return moment(String(value), DateTime.appFormat).format(Date.appFormat);
     },
   },
 })

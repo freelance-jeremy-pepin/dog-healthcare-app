@@ -30,7 +30,7 @@
         </q-menu>
 
         <q-td :props="props" @click="setWeightEditing(props.row)" key="date">
-          {{ props.row.date | formatDate }}
+          {{ props.row.date | toDate }}
           <q-popup-proxy
             @before-show="setWeightEditing(props.row)"
             @before-hide="saveWeight(weightEditing)"

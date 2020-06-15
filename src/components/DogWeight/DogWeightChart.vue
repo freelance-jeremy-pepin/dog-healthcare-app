@@ -14,16 +14,16 @@ import {
   Mixins,
   Prop,
 } from 'vue-property-decorator';
-import DateMixin from 'src/mixins/dateMixin';
 import VueApexCharts from 'vue-apexcharts';
 import { Weight } from 'src/models/weight';
+import DateTimeMixin from 'src/mixins/dateTimeMixin';
 
 @Component({
   components: {
     ApexChart: VueApexCharts,
   },
 })
-export default class DogWeightChart extends Mixins(DateMixin) {
+export default class DogWeightChart extends Mixins(DateTimeMixin) {
   @Prop({ required: true }) weights: Weight[] | undefined;
 
   public get options() {
@@ -32,7 +32,7 @@ export default class DogWeightChart extends Mixins(DateMixin) {
     if (this.weights) {
       categories = this.weights.map((w) => {
         if (this.$options.filters) {
-          return this.$options.filters.formatDate(w.date);
+          return this.$options.filters.toDate(w.date);
         }
         return '';
       });

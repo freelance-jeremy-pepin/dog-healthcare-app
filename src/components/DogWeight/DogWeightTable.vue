@@ -65,16 +65,6 @@
             />
           </q-popup-edit>
         </q-td>
-
-        <q-td :props="props" key="actions">
-          <q-btn
-            @click="deleteWeight(props.row)"
-            color="negative"
-            flat
-            icon="delete"
-            size="sm"
-          ></q-btn>
-        </q-td>
       </q-tr>
     </template>
 

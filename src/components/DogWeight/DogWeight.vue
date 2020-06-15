@@ -50,8 +50,10 @@ interface DisplayMode {
   },
 })
 export default class DogWeight extends Vue {
+  // *** Props ***
   @Prop({ required: true }) weights: Weight[] | undefined;
 
+  // *** Data ***
   private displayModes: DisplayMode[] = [
     { key: 'chart', icon: 'show_chart', label: 'Graphique' },
     { key: 'table', icon: 'list', label: 'Tableau' },
@@ -59,6 +61,7 @@ export default class DogWeight extends Vue {
 
   private currentDisplayMode: DisplayMode = this.displayModes[0];
 
+  // *** Computed properties ***
   public get nextDisplayMode(): DisplayMode {
     const indexCurrentDisplayMode = this.displayModes.findIndex(
       (value) => value.key === this.currentDisplayMode.key,
@@ -71,6 +74,7 @@ export default class DogWeight extends Vue {
     return this.displayModes[indexCurrentDisplayMode + 1];
   }
 
+  // *** Hooks ***
   public mounted() {
     const displayModeLocalStorage: string | null = window.localStorage.getItem('DogWeight.displayMode');
     if (displayModeLocalStorage) {
@@ -78,6 +82,7 @@ export default class DogWeight extends Vue {
     }
   }
 
+  // *** Methods ***
   public changeDisplayMode() {
     this.currentDisplayMode = this.nextDisplayMode;
     window.localStorage.setItem('DogWeight.displayMode', JSON.stringify(this.currentDisplayMode));

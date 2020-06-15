@@ -86,8 +86,10 @@ class ActiveDogModule extends VuexModule {
   public refreshDog(dog: Dog | undefined) {
     this.setDog(dog);
     this.setWeights(undefined);
+    this.setDewormings(undefined);
 
     this.fetchWeights();
+    this.fetchDewormings();
   }
 
   @Action

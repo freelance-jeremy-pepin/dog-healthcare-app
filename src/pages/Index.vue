@@ -4,6 +4,7 @@
       <div class="q-gutter-md" style="max-width: 500px; width: 100%; margin-bottom: 70px">
         <dog-identity :dog="activeDog"></dog-identity>
         <dog-weight :weights="weights"></dog-weight>
+        <dog-deworming :dewormings="dewormings"></dog-deworming>
       </div>
     </q-page>
 
@@ -44,12 +45,15 @@ import DogWeightAdd from 'components/DogWeight/DogWeightAdd.vue';
 import moment from 'moment';
 import store from 'src/store';
 import DogDewormingAdd from 'components/DogDeworming/DogDewormingAdd.vue';
+import DogDeworming from 'components/DogDeworming/DogDeworming.vue';
+import { Deworming } from 'src/models/deworming';
 import ActiveDogModule from '../store/modules/active-dog-module';
 import UserModule from '../store/modules/user-module';
 import DogModule from '../store/modules/dog-module';
 
 @Component({
   components: {
+    DogDeworming,
     DogDewormingAdd,
     DogWeightAdd,
     DogIdentity,
@@ -76,6 +80,11 @@ export default class Index extends Vue {
   // eslint-disable-next-line class-methods-use-this
   public get weights(): Weight[] | undefined {
     return ActiveDogModule.Weights;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  public get dewormings(): Deworming[] | undefined {
+    return ActiveDogModule.Dewormings;
   }
 
   // eslint-disable-next-line class-methods-use-this

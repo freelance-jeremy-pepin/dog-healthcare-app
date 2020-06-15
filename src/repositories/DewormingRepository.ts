@@ -13,4 +13,21 @@ export default class DewormingRepository extends BaseRepository<Deworming> {
       dog: dog.id,
     },
   });
+
+  public getLast = (): Promise<Deworming | null> => new Promise((resolve, reject) => {
+    this.fetchMany(this.baseIri, {
+      params: {
+        'order[date]': 'desc',
+        page: 1,
+      },
+    }).then((dewormings: Deworming[]) => {
+      if (dewormings.length > 0) {
+        resolve(dewormings[0]);
+      } else {
+        resolve(null);
+      }
+    }).catch((error) => {
+      reject(error);
+    });
+  });
 }

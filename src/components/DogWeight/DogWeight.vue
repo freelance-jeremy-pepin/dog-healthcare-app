@@ -1,26 +1,28 @@
 <!--suppress ALL -->
 <template>
   <q-card v-if="weights">
-    <q-card-section class="row items-center">
+    <q-card-section class="row items-center q-pb-xs">
       <div class="text-subtitle2">Poids</div>
+    </q-card-section>
 
+    <q-card-section class="q-pt-xs">
       <dog-weight-table
         :weights="weights"
-        v-show="currentDisplayMode.key === 'table'"
+        v-show="displayMode.CurrentDisplayMode.key === 'table'"
       />
       <dog-weight-chart
         :weights="weights"
-        v-show="currentDisplayMode.key === 'chart'"
+        v-show="displayMode.CurrentDisplayMode.key === 'chart'"
       />
     </q-card-section>
 
     <q-separator />
 
-    <q-card-actions vertical>
+    <q-card-actions v-if="displayMode" vertical>
       <q-btn
-        :icon-right="nextDisplayMode.icon"
-        :label="nextDisplayMode.label"
-        @click="changeDisplayMode"
+        :icon-right="displayMode.NextDisplayMode.icon"
+        :label="displayMode.NextDisplayMode.label"
+        @click="displayMode.next()"
         flat
       />
     </q-card-actions>
@@ -36,12 +38,7 @@ import {
 import { Weight } from 'src/models/weight';
 import DogWeightChart from 'components/DogWeight/DogWeightChart.vue';
 import DogWeightTable from 'components/DogWeight/DogWeightTable.vue';
-
-interface DisplayMode {
-  key: 'chart' | 'table';
-  icon: string;
-  label: string;
-}
+import DisplayMode, { DisplayModeInterface } from 'src/utils/displayMode';
 
 @Component({
   components: {
@@ -54,38 +51,23 @@ export default class DogWeight extends Vue {
   @Prop({ required: true }) weights: Weight[] | undefined;
 
   // *** Data ***
-  private displayModes: DisplayMode[] = [
-    { key: 'chart', icon: 'show_chart', label: 'Graphique' },
-    { key: 'table', icon: 'list', label: 'Tableau' },
-  ];
-
-  private currentDisplayMode: DisplayMode = this.displayModes[0];
-
-  // *** Computed properties ***
-  public get nextDisplayMode(): DisplayMode {
-    const indexCurrentDisplayMode = this.displayModes.findIndex(
-      (value) => value.key === this.currentDisplayMode.key,
-    );
-
-    if (indexCurrentDisplayMode >= this.displayModes.length - 1) {
-      return this.displayModes[0];
-    }
-
-    return this.displayModes[indexCurrentDisplayMode + 1];
-  }
+  private displayMode: DisplayMode | null = null;
 
   // *** Hooks ***
   public mounted() {
-    const displayModeLocalStorage: string | null = window.localStorage.getItem('DogWeight.displayMode');
-    if (displayModeLocalStorage) {
-      this.currentDisplayMode = JSON.parse(displayModeLocalStorage);
-    }
+    const displayModes: DisplayModeInterface[] = [
+      { key: 'chart', icon: 'show_chart', label: 'Graphique' },
+      { key: 'table', icon: 'list', label: 'Tableau' },
+    ];
+    this.displayMode = new DisplayMode(displayModes, 'DogWeight.displayMode');
+    this.displayMode.restore();
   }
 
   // *** Methods ***
-  public changeDisplayMode() {
-    this.currentDisplayMode = this.nextDisplayMode;
-    window.localStorage.setItem('DogWeight.displayMode', JSON.stringify(this.currentDisplayMode));
+  public nextDisplayMode() {
+    if (this.displayMode) {
+      this.displayMode.next();
+    }
   }
 }
 </script>

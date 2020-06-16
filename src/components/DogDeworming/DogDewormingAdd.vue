@@ -38,7 +38,6 @@
 
           <q-input
             :rules="[required]"
-            autofocus
             hide-bottom-space
             label="Nom du vermifuge"
             outlined
@@ -60,7 +59,7 @@
             :rules="[required]"
             v-if="caredBy === 'professional'"
             v-model="professionalSelected"
-          ></professional-select>
+          />
 
           <q-input
             autogrow
@@ -68,7 +67,7 @@
             outlined
             type="textarea"
             v-model="newDeworming.notes"
-          ></q-input>
+          />
 
           <q-btn color="positive" label="Ajouter" type="submit" />
         </q-form>
@@ -94,6 +93,10 @@ import ProfessionalSelect from 'components/Professional/ProfessionalSelect.vue';
 import { Professional } from 'src/models/professional';
 import ValidationMixin from 'src/mixins/validationMixin';
 import ProfessionalRepository from 'src/repositories/ProfessionalRepository';
+import {
+  Reminder,
+  ReminderTableName,
+} from 'src/models/reminder';
 
 enum CaredBy {
   owner = 'owner',
@@ -160,6 +163,13 @@ export default class DogDewormingAdd extends Mixins(ValidationMixin) {
     const dewormingRepository = new DewormingRepository();
     dewormingRepository.add(deworming).then(() => {
       ActiveDogModule.fetchDewormings();
+
+      const reminder: Reminder | undefined = ActiveDogModule.Reminder(ReminderTableName.deworming);
+      if (reminder) {
+        dewormingRepository.updateNextReminder({ ...reminder }).then(() => {
+          ActiveDogModule.fetchReminders();
+        });
+      }
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore

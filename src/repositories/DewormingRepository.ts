@@ -1,6 +1,9 @@
 import BaseRepository from 'src/repositories/BaseRepository';
 import { Deworming } from 'src/models/deworming';
 import { Dog } from 'src/models/dog';
+import { Reminder } from 'src/models/reminder';
+import DateInterval from 'src/utils/dateInterval';
+import ReminderRepository from 'src/repositories/ReminderRepository';
 
 export default class DewormingRepository extends BaseRepository<Deworming> {
   constructor() {
@@ -30,4 +33,34 @@ export default class DewormingRepository extends BaseRepository<Deworming> {
       reject(error);
     });
   });
+
+  public updateNextReminder(reminder: Reminder): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.getLast().then((lastDeworming: Deworming | null) => {
+        if (lastDeworming && reminder.timeIntervalDetails) {
+          const newDate: string = DateInterval.add(
+            lastDeworming.date,
+            reminder.numberTimeInterval,
+            reminder.timeIntervalDetails,
+          );
+
+          if (newDate !== reminder.nextReminder) {
+            reminder.nextReminder = newDate;
+            const reminderRepository = new ReminderRepository();
+            reminderRepository.update(reminder).then(() => {
+              resolve(true);
+            }).catch((error) => {
+              reject(error);
+            });
+          } else {
+            resolve(true);
+          }
+        } else {
+          resolve(true);
+        }
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  }
 }

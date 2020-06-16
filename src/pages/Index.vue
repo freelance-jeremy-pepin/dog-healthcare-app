@@ -26,7 +26,7 @@
     </q-page-sticky>
 
     <dog-weight-add v-model="addWeightDisplay"></dog-weight-add>
-    <dog-deworming-add v-model="addDewormingDisplay"></dog-deworming-add>
+    <dog-deworming-form v-model="addDewormingDisplay"></dog-deworming-form>
   </div>
 </template>
 
@@ -44,7 +44,7 @@ import { User } from 'src/models/user';
 import DogWeightAdd from 'components/DogWeight/DogWeightAdd.vue';
 import moment from 'moment';
 import store from 'src/store';
-import DogDewormingAdd from 'components/DogDeworming/DogDewormingAdd.vue';
+import DogDewormingForm from 'components/DogDeworming/DogDewormingForm.vue';
 import DogDeworming from 'components/DogDeworming/DogDeworming.vue';
 import { Deworming } from 'src/models/deworming';
 import ActiveDogModule from '../store/modules/active-dog-module';
@@ -54,7 +54,7 @@ import DogModule from '../store/modules/dog-module';
 @Component({
   components: {
     DogDeworming,
-    DogDewormingAdd,
+    DogDewormingForm,
     DogWeightAdd,
     DogIdentity,
     DogWeight,

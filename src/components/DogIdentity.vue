@@ -36,7 +36,7 @@
 
     <q-card-section>
       <div>
-        Né le : {{ dog.birthday | toDateTime }}
+        Né le : {{ dog.birthday }}
         <span class="text-grey text-italic">({{ age }})</span>
       </div>
       <div v-if="lastWeight">

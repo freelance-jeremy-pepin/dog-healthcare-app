@@ -54,6 +54,7 @@ export default class ProfessionalSelect extends Vue {
     const professionalRepository = new ProfessionalRepository();
     professionalRepository.getAll(true).then((data) => {
       this.allProfessionals = data;
+      this.$emit('get-all-success', this.allProfessionals);
     }).finally(() => {
       if (!this.allProfessionals) {
         this.allProfessionals = [];

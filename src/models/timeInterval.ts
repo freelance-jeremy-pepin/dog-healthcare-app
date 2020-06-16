@@ -1,4 +1,5 @@
 import { BaseModel } from 'src/models/baseModel';
+import { unitOfTime } from 'moment';
 
 export enum TimeIntervalInternaLabel {
   year = 'year',
@@ -9,5 +10,5 @@ export enum TimeIntervalInternaLabel {
 export interface TimeInterval extends BaseModel {
   internalLabel: string;
   displayLabel: string;
-  format: string;
+  format: unitOfTime.Base;
 }

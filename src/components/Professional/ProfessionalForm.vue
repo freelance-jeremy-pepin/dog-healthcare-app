@@ -19,7 +19,7 @@
             label="Nom"
             outlined
             v-model="professional.name"
-          ></input-icon>
+          />
 
           <q-select
             :error="professionalTypes && professionalTypes.length === 0"
@@ -44,7 +44,7 @@
             type="tel"
             unmasked-value
             v-model="professional.phoneNumber"
-          ></input-icon>
+          />
 
           <input-icon
             :rules="[phoneNumberValidation]"
@@ -56,14 +56,14 @@
             type="tel"
             unmasked-value
             v-model="professional.mobileNumber"
-          ></input-icon>
+          />
 
           <input-icon
             icon="home"
             label="Adresse"
             outlined
             v-model="professional.address"
-          ></input-icon>
+          />
 
           <div class="row">
             <q-input
@@ -71,7 +71,7 @@
               label="Code postal"
               outlined
               v-model="professional.zipCode"
-            ></q-input>
+            />
 
             <input-icon
               class="col-8"
@@ -79,7 +79,7 @@
               label="Ville"
               outlined
               v-model="professional.city"
-            ></input-icon>
+            />
           </div>
 
           <input-icon
@@ -90,7 +90,7 @@
             outlined
             type="email"
             v-model="professional.email"
-          ></input-icon>
+          />
 
           <q-input label="Notes" outlined type="textarea" v-model="professional.notes" />
         </q-form>

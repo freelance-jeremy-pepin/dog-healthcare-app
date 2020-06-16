@@ -1,5 +1,10 @@
 <template>
-  <q-item @click="copyValue" clickable v-ripple>
+  <q-item
+    :clickable="copyValue !== false || clickable !== false"
+    :v-ripple="copyValue !== false || clickable !== false"
+    @click="copy"
+  >
+    <slot></slot>
     <q-item-section avatar>
       <q-icon :color="color" :name="icon" />
     </q-item-section>
@@ -32,13 +37,17 @@ export default class ItemIcon extends Mixins(NotifyMixin) {
 
   @Prop({ required: false }) color: string | undefined;
 
+  @Prop({ required: false, default: false }) copyValue: boolean | undefined;
+
+  @Prop({ required: false, default: false }) clickable: boolean | undefined;
+
   public mounted() {
     Vue.use(VueClipboard);
   }
 
   // *** Methods ***
-  public copyValue() {
-    if (this.value) {
+  public copy() {
+    if (this.value && this.copyValue !== false) {
       this.$copyText(this.value);
       this.notifySuccess('Copié dans le presse-papier');
     }

@@ -8,11 +8,11 @@
     <q-card-section class="q-pt-xs">
       <dog-weight-table
         :weights="weights"
-        v-show="displayMode.CurrentDisplayMode.key === 'table'"
+        v-show="displayMode && displayMode.CurrentDisplayMode.key === 'table'"
       />
       <dog-weight-chart
         :weights="weights"
-        v-show="displayMode.CurrentDisplayMode.key === 'chart'"
+        v-show="displayMode && displayMode.CurrentDisplayMode.key === 'chart'"
       />
     </q-card-section>
 

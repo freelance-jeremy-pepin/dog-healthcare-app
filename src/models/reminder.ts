@@ -7,8 +7,9 @@ export enum ReminderTableName {
 
 export interface Reminder extends BaseModel {
   dog: string;
-  timeInterval: TimeInterval;
+  timeInterval: string;
   numberTimeInterval: number;
   tableName: ReminderTableName;
   nextReminder: string;
+  timeIntervalDetails?: TimeInterval;
 }

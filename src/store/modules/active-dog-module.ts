@@ -159,7 +159,7 @@ class ActiveDogModule extends VuexModule {
   public fetchReminders() {
     if (this.Dog) {
       const reminderRepository = new ReminderRepository();
-      reminderRepository.getByDog(this.Dog).then((reminders) => {
+      reminderRepository.getByDog(this.Dog, true).then((reminders) => {
         this.setReminders(reminders);
       });
     }

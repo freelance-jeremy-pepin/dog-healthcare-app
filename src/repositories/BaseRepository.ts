@@ -98,7 +98,7 @@ export default abstract class BaseRepository<T extends BaseModel> {
       this.date.forEach((d: string) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
-        model[d] = Date.appToDatabase(model[d]);
+        model[d] = model[d] ? Date.appToDatabase(model[d]) : null;
       });
     }
 
@@ -106,7 +106,7 @@ export default abstract class BaseRepository<T extends BaseModel> {
       this.dateTime.forEach((d: string) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
-        model[d] = DateTime.appToDatabase(model[d]);
+        model[d] = model[d] ? DateTime.appToDatabase(model[d]) : null;
       });
     }
 
@@ -118,7 +118,7 @@ export default abstract class BaseRepository<T extends BaseModel> {
       this.date.forEach((d: string) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
-        model[d] = Date.databaseToApp(model[d]);
+        model[d] = model[d] ? Date.databaseToApp(model[d]) : null;
       });
     }
 
@@ -126,7 +126,7 @@ export default abstract class BaseRepository<T extends BaseModel> {
       this.dateTime.forEach((d: string) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
-        model[d] = DateTime.databaseToApp(model[d]);
+        model[d] = model[d] ? DateTime.databaseToApp(model[d]) : null;
       });
     }
 

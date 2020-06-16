@@ -7,12 +7,12 @@
     <q-card-section class="q-pt-xs">
       <dog-deworming-summary
         :dewormings="dewormings"
-        v-if="displayMode.CurrentDisplayMode.key === 'summary'"
+        v-if="displayMode && displayMode.CurrentDisplayMode.key === 'summary'"
       ></dog-deworming-summary>
 
       <dog-deworming-table
         :dewormings="dewormings"
-        v-if="displayMode.CurrentDisplayMode.key === 'history'"
+        v-if="displayMode && displayMode.CurrentDisplayMode.key === 'history'"
       ></dog-deworming-table>
     </q-card-section>
 

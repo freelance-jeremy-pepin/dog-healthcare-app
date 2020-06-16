@@ -5,11 +5,11 @@ export default class Date {
 
   static appFormat = 'DD/MM/YYYY';
 
-  public static databaseToApp(date: string) {
+  public static databaseToApp(date: string): string {
     return moment(date, 'YYYY-MM-DD').format('DD/MM/YYYY');
   }
 
-  public static appToDatabase(date: string) {
+  public static appToDatabase(date: string): string {
     return moment(date, 'DD/MM/YYYY').format('YYYY-MM-DD');
   }
 }

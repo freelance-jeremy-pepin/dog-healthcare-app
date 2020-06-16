@@ -25,7 +25,7 @@
               <q-icon class="cursor-pointer" name="event">
                 <q-popup-proxy ref="qDateProxy" transition-hide="scale" transition-show="scale">
                   <q-date
-                    :options="limitDates"
+                    :options="limitDatesNoFutur"
                     @input="() => $refs.qDateProxy.hide()"
                     mask="DD/MM/YYYY"
                     today-btn
@@ -99,6 +99,7 @@ import {
   Reminder,
   ReminderTableName,
 } from 'src/models/reminder';
+import DateMixin from 'src/mixins/dateMixin';
 
 enum CaredBy {
   owner = 'owner',
@@ -108,7 +109,7 @@ enum CaredBy {
 @Component({
   components: { ProfessionalSelect },
 })
-export default class DogDewormingAdd extends Mixins(ValidationMixin) {
+export default class DogDewormingAdd extends Mixins(ValidationMixin, DateMixin) {
   // *** Data ***
   private newDeworming: Deworming = this.emptyDeworming();
 
@@ -143,8 +144,6 @@ export default class DogDewormingAdd extends Mixins(ValidationMixin) {
 
     this.newDeworming = this.emptyDeworming();
   }
-
-  public limitDates = (date: string) => date <= moment().format('YYYY/MM/DD');
 
   public setCaredByProfessional(professional: Professional | null) {
     if (professional) {

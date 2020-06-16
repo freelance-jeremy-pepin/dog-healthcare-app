@@ -14,5 +14,5 @@ import DateTime from 'src/utils/dateTime';
   },
 })
 export default class DateMixin extends Vue {
-
+  public limitDatesNoFutur = (date: string) => date <= moment().format('YYYY/MM/DD');
 }

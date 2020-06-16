@@ -43,7 +43,7 @@
               v-if="weightEditing"
               v-model="weightEditing.date"
               @close="saveWeight(weightEditing)"
-              :options="limitDates"
+              :options="limitDatesNoFutur"
               today-btn
             />
           </q-popup-proxy>
@@ -84,13 +84,14 @@ import ActiveDogModule from 'src/store/modules/active-dog-module';
 import moment from 'moment';
 import WeightRepository from 'src/repositories/WeightRepository';
 import DateTimeMixin from 'src/mixins/dateTimeMixin';
+import DateMixin from 'src/mixins/dateMixin';
 
 @Component({
   components: {
     DogWeightChart,
   },
 })
-export default class DogWeightTable extends Mixins(DateTimeMixin) {
+export default class DogWeightTable extends Mixins(DateTimeMixin, DateMixin) {
   // *** Props ***
   @Prop({ required: true }) weights: Weight[] | undefined;
 
@@ -124,8 +125,6 @@ export default class DogWeightTable extends Mixins(DateTimeMixin) {
     weight.date += ` ${moment().format('HH:mm:ss')}`;
     ActiveDogModule.updateWeight(weight);
   };
-
-  public limitDates = (date: string) => date <= moment().format('YYYY/MM/DD');
 
   public deleteWeight = (weight: Weight) => {
     const weightRepository = new WeightRepository();

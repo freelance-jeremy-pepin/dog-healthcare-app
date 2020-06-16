@@ -115,8 +115,6 @@ export default class DogDewormingTable extends Mixins(DateTimeMixin) {
     ActiveDogModule.updateDeworming(deworming);
   };
 
-  public limitDates = (date: string) => date <= moment().format('YYYY/MM/DD');
-
   public deleteDeworming = (deworming: Deworming) => {
     const dewormingRepository = new DewormingRepository();
     dewormingRepository.delete(deworming).then(() => {

@@ -17,7 +17,7 @@
               <q-icon class="cursor-pointer" name="event">
                 <q-popup-proxy ref="qDateProxy" transition-hide="scale" transition-show="scale">
                   <q-date
-                    :options="limitDates"
+                    :options="limitDatesNoFutur"
                     @input="() => $refs.qDateProxy.hide()"
                     mask="DD/MM/YYYY"
                     today-btn
@@ -60,9 +60,10 @@ import moment from 'moment';
 import WeightRepository from 'src/repositories/WeightRepository';
 import Date from 'src/utils/date';
 import ValidationMixin from 'src/mixins/validationMixin';
+import DateMixin from 'src/mixins/dateMixin';
 
 @Component
-export default class DogWeightAdd extends Mixins(ValidationMixin) {
+export default class DogWeightAdd extends Mixins(ValidationMixin, DateMixin) {
   // *** Data ***
   private newWeight: Weight = this.emptyWeight();
 
@@ -85,8 +86,6 @@ export default class DogWeightAdd extends Mixins(ValidationMixin) {
   public reset() {
     this.newWeight = this.emptyWeight();
   }
-
-  public limitDates = (date: string) => date <= moment().format('YYYY/MM/DD');
 
   // *** Events handlers ***
   public onSubmit() {

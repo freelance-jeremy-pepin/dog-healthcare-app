@@ -69,6 +69,8 @@
             v-model="newDeworming.notes"
           />
 
+          <q-toggle label="Mettre à jour la date de prochaine prise" v-model="updateReminder" />
+
           <q-btn color="positive" label="Ajouter" type="submit" />
         </q-form>
       </q-card-section>
@@ -114,6 +116,8 @@ export default class DogDewormingAdd extends Mixins(ValidationMixin) {
 
   private caredBy: CaredBy | null = null;
 
+  private updateReminder = true;
+
   // *** Computed properties ***
   // eslint-disable-next-line class-methods-use-this
   public get activeDog(): Dog | undefined {
@@ -122,9 +126,6 @@ export default class DogDewormingAdd extends Mixins(ValidationMixin) {
 
   // *** Methods ***
   public emptyDeworming(): Deworming {
-    this.caredBy = CaredBy.owner;
-    this.professionalSelected = null;
-
     return {
       dog: `${(new DogRepository().BaseIri)}/${this.activeDog?.id}`,
       date: moment().format(Date.appFormat),
@@ -136,6 +137,10 @@ export default class DogDewormingAdd extends Mixins(ValidationMixin) {
   }
 
   public reset() {
+    this.updateReminder = true;
+    this.caredBy = CaredBy.owner;
+    this.professionalSelected = null;
+
     this.newDeworming = this.emptyDeworming();
   }
 
@@ -164,11 +169,14 @@ export default class DogDewormingAdd extends Mixins(ValidationMixin) {
     dewormingRepository.add(deworming).then(() => {
       ActiveDogModule.fetchDewormings();
 
-      const reminder: Reminder | undefined = ActiveDogModule.Reminder(ReminderTableName.deworming);
-      if (reminder) {
-        dewormingRepository.updateNextReminder({ ...reminder }).then(() => {
-          ActiveDogModule.fetchReminders();
-        });
+      if (this.updateReminder) {
+        // eslint-disable-next-line max-len
+        const reminder: Reminder | undefined = ActiveDogModule.Reminder(ReminderTableName.deworming);
+        if (reminder) {
+          dewormingRepository.updateNextReminder({ ...reminder }).then(() => {
+            ActiveDogModule.fetchReminders();
+          });
+        }
       }
 
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore

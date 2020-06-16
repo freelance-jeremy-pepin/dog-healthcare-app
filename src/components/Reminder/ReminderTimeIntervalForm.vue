@@ -1,30 +1,36 @@
 <template>
-  <q-popup-proxy ref="popup">
+  <q-popup-proxy @before-show="reset" ref="popup">
     <q-banner>
-      <q-form @submit="onSubmit" class="row" v-if="reminderEditing">
-        <q-input
-          class="col-4 q-pr-md"
-          dense
-          outlined
-          type="number"
-          v-model.number="reminderEditing.numberTimeInterval"
-        />
+      <q-form @submit="onSubmit" v-if="reminderEditing">
+        <div class="row">
+          <q-input
+            class="col-4 q-pr-md"
+            dense
+            outlined
+            type="number"
+            v-model.number="reminderEditing.numberTimeInterval"
+          />
 
-        <q-select
-          :error="timeIntervals && timeIntervals.length === 0"
-          :loading="timeIntervals === null"
-          :options="timeIntervals"
-          :rules="[required]"
-          class="col-7 q-pr-md"
-          dense
-          hide-bottom-space
-          option-label="displayLabel"
-          option-value="internalLabel"
-          outlined
-          v-model="timeIntervalSelected"
-        />
+          <q-select
+            :error="timeIntervals && timeIntervals.length === 0"
+            :loading="timeIntervals === null"
+            :options="timeIntervals"
+            :rules="[required]"
+            class="col-7 q-pr-md"
+            dense
+            hide-bottom-space
+            option-label="displayLabel"
+            option-value="internalLabel"
+            outlined
+            v-model="timeIntervalSelected"
+          />
 
-        <q-btn class="col-1" color="primary" dense flat icon="edit" type="submit" />
+          <q-btn class="col-1" color="primary" dense flat icon="edit" type="submit" />
+        </div>
+
+        <div class="row">
+          <q-toggle label="Mettre à jour la date de prochaine prise" v-model="updateReminder" />
+        </div>
       </q-form>
     </q-banner>
   </q-popup-proxy>
@@ -60,6 +66,8 @@ export default class ReminderTimeIntervalForm extends Mixins(ValidationMixin) {
 
   private timeIntervalSelected: TimeInterval | null = null;
 
+  private updateReminder = true;
+
   // *** Hooks ***
   public mounted() {
     const timeIntervalRepository = new TimeIntervalRepository();
@@ -86,6 +94,14 @@ export default class ReminderTimeIntervalForm extends Mixins(ValidationMixin) {
     }
   }
 
+  public reset() {
+    this.updateReminder = true;
+    if (this.reminder) {
+      this.reminderEditing = { ...this.reminder };
+    }
+    this.setTimeIntervalSelected();
+  }
+
   // *** Events handlers ***
   public onSubmit() {
     if (this.reminderEditing && this.timeIntervalSelected) {
@@ -95,7 +111,7 @@ export default class ReminderTimeIntervalForm extends Mixins(ValidationMixin) {
       reminder.timeInterval = timeIntervalRepository
         .buildIri(this.timeIntervalSelected);
 
-      if (this.lastDate) {
+      if (this.updateReminder && this.lastDate) {
         reminder.nextReminder = DateInterval.add(
           this.lastDate,
           this.reminderEditing.numberTimeInterval,
@@ -117,10 +133,7 @@ export default class ReminderTimeIntervalForm extends Mixins(ValidationMixin) {
   // *** Watchers ***
   @Watch('reminder', { immediate: true, deep: true })
   public onReminderChanged() {
-    if (this.reminder) {
-      this.reminderEditing = { ...this.reminder };
-      this.setTimeIntervalSelected();
-    }
+    this.reset();
   }
 }
 </script>

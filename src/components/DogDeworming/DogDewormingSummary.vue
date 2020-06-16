@@ -13,7 +13,10 @@
        : 'Non planifié'"
       icon="schedule"
       title="Prochaine prise"
-    />
+      clickable
+    >
+      <reminder-next-reminder :reminder="reminder"></reminder-next-reminder>
+    </item-icon>
 
     <item-icon
       v-if="reminder"
@@ -48,9 +51,10 @@ import {
 import ActiveDogModule from 'src/store/modules/active-dog-module';
 import DateIntervalMixin from 'src/mixins/dateIntervalMixin';
 import ReminderTimeIntervalForm from 'components/Reminder/ReminderTimeIntervalForm.vue';
+import ReminderNextReminder from 'components/Reminder/ReminderNextReminder.vue';
 
 @Component({
-  components: { ReminderTimeIntervalForm, ItemIcon },
+  components: { ReminderNextReminder, ReminderTimeIntervalForm, ItemIcon },
 })
 export default class DogDewormingSummary extends Mixins(DateTimeMixin, DateIntervalMixin) {
   // *** Props ***

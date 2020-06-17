@@ -141,7 +141,7 @@ class ActiveDogModule extends VuexModule {
   public fetchDewormings() {
     if (this.Dog) {
       const dewormingRepository = new DewormingRepository();
-      dewormingRepository.getByDog(this.Dog).then((dewormings) => {
+      dewormingRepository.getByDog(this.Dog, true).then((dewormings) => {
         this.setDewormings(dewormings);
       });
     }

@@ -3,7 +3,6 @@
     <q-table
       :columns="columns"
       :data="dewormings"
-      bordered
       dense
       flat
       row-key="id"

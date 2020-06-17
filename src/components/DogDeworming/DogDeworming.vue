@@ -5,27 +5,29 @@
     </q-card-section>
 
     <q-card-section class="q-pt-xs">
-      <dog-deworming-summary
-        :dewormings="dewormings"
-        v-if="displayMode && displayMode.CurrentDisplayMode.key === 'summary'"
-      ></dog-deworming-summary>
-
-      <dog-deworming-table
-        :dewormings="dewormings"
-        v-if="displayMode && displayMode.CurrentDisplayMode.key === 'history'"
-      ></dog-deworming-table>
+      <dog-deworming-summary :dewormings="dewormings" />
     </q-card-section>
 
-    <q-separator />
-
-    <q-card-actions v-if="displayMode" vertical>
+    <q-card-actions class="row justify-center">
       <q-btn
-        :icon-right="displayMode.NextDisplayMode.icon"
-        :label="displayMode.NextDisplayMode.label"
-        @click="displayMode.next()"
+        :icon="expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
         flat
+        @click="expanded = !expanded"
+        class="full-width"
+        color="grey"
+        dense
+        label="Historique"
       />
     </q-card-actions>
+
+    <q-slide-transition>
+      <div v-show="expanded">
+        <q-separator />
+        <q-card-section class="q-pa-none">
+          <dog-deworming-table :dewormings="dewormings" />
+        </q-card-section>
+      </div>
+    </q-slide-transition>
   </q-card>
 </template>
 
@@ -34,10 +36,10 @@ import {
   Component,
   Prop,
   Vue,
+  Watch,
 } from 'vue-property-decorator';
 import { Deworming } from 'src/models/deworming';
 import DogDewormingTable from 'components/DogDeworming/DogDewormingTable.vue';
-import DisplayMode, { DisplayModeInterface } from 'src/utils/displayMode';
 import DogDewormingSummary from 'components/DogDeworming/DogDewormingSummary.vue';
 
 @Component({
@@ -51,23 +53,21 @@ export default class DogDeworming extends Vue {
   @Prop({ required: true }) dewormings: Deworming[] | undefined;
 
   // *** Data ***
-  private displayMode: DisplayMode | null = null;
+  private expanded = false;
 
   // *** Hooks ***
   public mounted() {
-    const displayModes: DisplayModeInterface[] = [
-      { key: 'summary', icon: 'dehaze', label: 'Vue d\'ensemble' },
-      { key: 'history', icon: 'history', label: 'Historique' },
-    ];
-    this.displayMode = new DisplayMode(displayModes, 'DogDeworming.displayMode');
-    this.displayMode.restore();
+    const expandedLocalStorage = localStorage.getItem('DogDeworming.expanded');
+    if (expandedLocalStorage) {
+      this.expanded = expandedLocalStorage === 'true';
+    }
   }
 
-  // *** Methods ***
-  public nextDisplayMode() {
-    if (this.displayMode) {
-      this.displayMode.next();
-    }
+  // *** Watchers ***
+  @Watch('expanded')
+  // eslint-disable-next-line class-methods-use-this
+  public onExpandedChanged(value: boolean) {
+    localStorage.setItem('DogDeworming.expanded', value.toString());
   }
 }
 </script>

@@ -32,8 +32,6 @@ class ActiveDogModule extends VuexModule {
 
   public reminders?: Reminder[] = undefined;
 
-  public isEditing = false;
-
   public get Dog(): Dog | undefined {
     return this.dog;
   }
@@ -65,10 +63,6 @@ class ActiveDogModule extends VuexModule {
       }
       return undefined;
     };
-  }
-
-  public get IsEditing(): boolean {
-    return this.isEditing;
   }
 
   @Mutation
@@ -108,11 +102,6 @@ class ActiveDogModule extends VuexModule {
   @Mutation
   public setReminders(reminders: Reminder[] | undefined) {
     this.reminders = reminders;
-  }
-
-  @Mutation
-  public setEditing(editing: boolean) {
-    this.isEditing = editing;
   }
 
   @Action

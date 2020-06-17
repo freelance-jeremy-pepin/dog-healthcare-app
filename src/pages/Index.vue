@@ -7,26 +7,6 @@
         <dog-deworming :dewormings="dewormings"></dog-deworming>
       </div>
     </q-page>
-
-    <q-page-sticky :offset="[18, 18]" position="bottom-right">
-      <q-fab color="green" direction="up" icon="add">
-        <q-fab-action @click="addWeightDisplay = true" color="primary" label="Poids" />
-        <q-fab-action @click="addDewormingDisplay = true" color="primary" label="Vermifuge" />
-      </q-fab>
-    </q-page-sticky>
-
-    <q-page-sticky :offset="[80, 18]" position="bottom-right">
-      <q-btn
-        :color="isActiveDogEditing ? 'green' : 'orange'"
-        :icon="isActiveDogEditing ? 'done' : 'edit'"
-        @click="toggleActiveDogEditing"
-        round
-        size="sm"
-      />
-    </q-page-sticky>
-
-    <dog-weight-add v-model="addWeightDisplay"></dog-weight-add>
-    <dog-deworming-form v-model="addDewormingDisplay"></dog-deworming-form>
   </div>
 </template>
 
@@ -61,11 +41,6 @@ import DogModule from '../store/modules/dog-module';
   },
 })
 export default class Index extends Vue {
-  // *** Data ***
-  private addWeightDisplay = false;
-
-  private addDewormingDisplay = false;
-
   // *** Computed properties ***
   // eslint-disable-next-line class-methods-use-this
   public get user(): User | undefined {
@@ -87,21 +62,11 @@ export default class Index extends Vue {
     return ActiveDogModule.Dewormings;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  public get isActiveDogEditing(): boolean {
-    return ActiveDogModule.IsEditing;
-  }
-
   // *** Hooks ***
   public mounted() {
     moment.locale('fr');
     store.registerModule('active-dog', {});
   }
-
-  // *** Methods ***
-  public toggleActiveDogEditing = () => {
-    ActiveDogModule.setEditing(!ActiveDogModule.IsEditing);
-  };
 
   // *** Watcher ***
   @Watch('user', { deep: true })

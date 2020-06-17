@@ -1,34 +1,52 @@
 <template>
-  <q-card v-if="dewormings">
-    <q-card-section class="row items-center q-pb-xs">
-      <div class="text-subtitle2">Vermifuges</div>
-    </q-card-section>
+  <div>
+    <q-card v-if="dewormings">
+      <q-card-section>
+        <q-btn
+          @click="addDewormingDisplay = true"
+          class="absolute"
+          color="positive"
+          icon="add"
+          outline
+          round
+          size="sm"
+          style="top: 35px; right: 17px; transform: translateY(-50%);"
+        />
 
-    <q-card-section class="q-pt-xs">
-      <dog-deworming-summary :dewormings="dewormings" />
-    </q-card-section>
+        <div class="row no-wrap items-center">
+          <div class="col text-h6 ellipsis">
+            Vermifuges
+          </div>
+        </div>
+      </q-card-section>
 
-    <q-card-actions class="row justify-center">
-      <q-btn
-        :icon="expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
-        flat
-        @click="expanded = !expanded"
-        class="full-width"
-        color="grey"
-        dense
-        label="Historique"
-      />
-    </q-card-actions>
+      <q-card-section class="q-pt-xs">
+        <dog-deworming-summary :dewormings="dewormings" />
+      </q-card-section>
 
-    <q-slide-transition>
-      <div v-show="expanded">
-        <q-separator />
-        <q-card-section class="q-pa-none">
-          <dog-deworming-table :dewormings="dewormings" />
-        </q-card-section>
-      </div>
-    </q-slide-transition>
-  </q-card>
+      <q-card-actions class="row justify-center">
+        <q-btn
+          :icon="expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+          @click="expanded = !expanded"
+          color="grey"
+          dense
+          flat
+          round
+        />
+      </q-card-actions>
+
+      <q-slide-transition>
+        <div v-show="expanded">
+          <q-separator />
+          <q-card-section class="q-pa-none">
+            <dog-deworming-table :dewormings="dewormings" />
+          </q-card-section>
+        </div>
+      </q-slide-transition>
+    </q-card>
+
+    <dog-deworming-form v-model="addDewormingDisplay"></dog-deworming-form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -41,9 +59,11 @@ import {
 import { Deworming } from 'src/models/deworming';
 import DogDewormingTable from 'components/DogDeworming/DogDewormingTable.vue';
 import DogDewormingSummary from 'components/DogDeworming/DogDewormingSummary.vue';
+import DogDewormingForm from 'components/DogDeworming/DogDewormingForm.vue';
 
 @Component({
   components: {
+    DogDewormingForm,
     DogDewormingSummary,
     DogDewormingTable,
   },
@@ -54,6 +74,8 @@ export default class DogDeworming extends Vue {
 
   // *** Data ***
   private expanded = false;
+
+  private addDewormingDisplay = false;
 
   // *** Hooks ***
   public mounted() {

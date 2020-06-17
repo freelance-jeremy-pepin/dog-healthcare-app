@@ -11,7 +11,7 @@
     >
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-menu context-menu touch-position v-if="isEditing">
+          <q-menu context-menu touch-position>
             <q-item
               @click="editDeworming(props.row)"
               clickable
@@ -132,12 +132,6 @@ export default class DogDewormingTable extends Mixins(DateTimeMixin) {
   private dogDewormingForm = {
     display: false,
     deworming: {} as Deworming,
-  }
-
-  // *** Computed properties ***
-  // eslint-disable-next-line class-methods-use-this
-  public get isEditing(): boolean {
-    return ActiveDogModule.IsEditing;
   }
 
   // *** Methods ***

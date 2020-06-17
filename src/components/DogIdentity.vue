@@ -60,13 +60,13 @@ import TextFormatMixin from 'src/mixins/textFormatMixin';
 import DogModule from 'src/store/modules/dog-module';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
 import UserModule from 'src/store/modules/user-module';
-import DateTime from 'src/utils/dateTime';
 import { Weight } from 'src/models/weight';
 import Date from 'src/utils/date';
+import DateIntervalMixin from 'src/mixins/dateIntervalMixin';
 import { Dog } from '../models/dog';
 
 @Component
-export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin) {
+export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin, DateIntervalMixin) {
   // *** Props ***
   @Prop({ required: true }) dog: Dog | undefined;
 
@@ -127,9 +127,7 @@ export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin) {
 
   // *** Hooks ***
   public mounted() {
-    setInterval(() => {
-      this.refreshWeightDateAgo();
-    }, 5000);
+    this.refreshWeightDateAgo();
   }
 
   // *** Methods ***
@@ -138,10 +136,8 @@ export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin) {
   }
 
   public refreshWeightDateAgo() {
-    if (this.lastWeight) {
-      this.weightDateAgo = moment(this.lastWeight.date, DateTime.appFormat).fromNow();
-    } else {
-      this.weightDateAgo = null;
+    if (this.$options.filters) {
+      this.weightDateAgo = this.$options.filters.ago(this.lastWeight?.date);
     }
   }
 

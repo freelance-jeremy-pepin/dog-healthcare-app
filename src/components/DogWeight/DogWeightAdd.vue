@@ -89,10 +89,7 @@ export default class DogWeightAdd extends Mixins(ValidationMixin, DateMixin) {
 
   // *** Events handlers ***
   public onSubmit() {
-    const weight: Weight = {
-      ...this.newWeight,
-      date: `${this.newWeight.date} ${moment().format('HH:mm:ss')}`,
-    };
+    const weight: Weight = { ...this.newWeight };
 
     const weightRepository = new WeightRepository();
     weightRepository.add(weight).then(() => {

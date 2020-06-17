@@ -5,7 +5,7 @@ import BaseRepository from 'src/repositories/BaseRepository';
 export default class WeightRepository extends BaseRepository<Weight> {
   constructor() {
     super('weights');
-    this.dateTime = ['date'];
+    this.date = ['date'];
   }
 
   public getByDog = (dog: Dog): Promise<Weight[]> => this.fetchMany(this.baseIri, {

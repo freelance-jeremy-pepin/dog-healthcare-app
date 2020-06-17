@@ -11,7 +11,7 @@ import { Professional } from 'src/models/professional';
 export default class DewormingRepository extends BaseRepository<Deworming> {
   constructor() {
     super('dewormings');
-    this.dateTime = ['date'];
+    this.date = ['date'];
   }
 
   public getByDog = (dog: Dog, withCaredByProfessionalDetails = false): Promise<Deworming[]> => {

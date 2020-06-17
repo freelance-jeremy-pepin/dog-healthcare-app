@@ -194,10 +194,7 @@ export default class DogDewormingForm extends Mixins(ValidationMixin, DateMixin)
   // *** Events handlers ***
   public onSubmit() {
     if (this.dewormingEditing) {
-      const deworming: Deworming = {
-        ...this.dewormingEditing,
-        date: `${this.dewormingEditing.date} ${moment().format('HH:mm:ss')}`,
-      };
+      const deworming: Deworming = { ...this.dewormingEditing };
 
       const dewormingRepository = new DewormingRepository();
       if (this.deworming) {

@@ -12,13 +12,13 @@
             {{ professionalType.displayLabel }}s
           </div>
           <q-list class="full-width">
-            <professional-identity
+            <professional-identity-expandable
               :key="professional.id"
               :professional="professional"
               @deleted="refreshList"
               class="full-width"
               v-for="professional in professionalType.professionals"
-            ></professional-identity>
+            />
           </q-list>
         </q-card-section>
       </q-card>
@@ -35,14 +35,15 @@ import {
   Component,
   Vue,
 } from 'vue-property-decorator';
-import ProfessionalIdentity from 'components/Professional/ProfessionalIdentity.vue';
+import ProfessionalIdentityExpandable
+  from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityExpandable.vue';
 import { Professional } from 'src/models/professional';
 import { ProfessionalType } from 'src/models/professionalType';
 import ProfessionalTypeRepository from 'src/repositories/ProfessionalTypeRepository';
 import orderBy from 'lodash/orderBy';
 
 @Component({
-  components: { ProfessionalIdentity },
+  components: { ProfessionalIdentityExpandable },
 })
 export default class Professionals extends Vue {
   // *** Data ***

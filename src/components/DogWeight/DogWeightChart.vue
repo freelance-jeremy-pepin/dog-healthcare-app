@@ -1,13 +1,20 @@
 <template>
-  <apex-chart
-    :options="options"
-    :series="series"
-    style="width: 100%"
-    type="line"
-  ></apex-chart>
+  <q-dialog
+    style="width: 50%"
+    v-bind="$attrs"
+    v-model="$attrs.value"
+    v-on="$listeners"
+  >
+    <q-card class="q-pa-md full-width">
+      <apex-chart
+        :options="options"
+        :series="series"
+        type="line"
+      />
+    </q-card>
+  </q-dialog>
 </template>
 
-<!--suppress SpellCheckingInspection -->
 <script lang="ts">
 import {
   Component,

@@ -42,6 +42,14 @@ class ActiveDogModule extends VuexModule {
     return this.weights;
   }
 
+  public get LastWeight(): Weight | null {
+    if (this.Weights && this.Weights.length > 0) {
+      return this.Weights[this.Weights.length - 1];
+    }
+
+    return null;
+  }
+
   public get Dewormings(): Deworming[] | undefined {
     return this.dewormings;
   }

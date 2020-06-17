@@ -1,32 +1,64 @@
-<!--suppress ALL -->
 <template>
-  <q-card v-if="weights">
-    <q-card-section class="row items-center q-pb-xs">
-      <div class="text-subtitle2">Poids</div>
-    </q-card-section>
+  <div>
+    <q-card v-if="weights">
+      <q-card-section>
+        <q-btn
+          @click="formDisplay = true"
+          class="absolute"
+          color="positive"
+          icon="add"
+          outline
+          round
+          size="sm"
+          style="top: 35px; right: 17px; transform: translateY(-50%);"
+        />
 
-    <q-card-section class="q-pt-xs">
-      <dog-weight-table
-        :weights="weights"
-        v-show="displayMode && displayMode.CurrentDisplayMode.key === 'table'"
-      />
-      <dog-weight-chart
-        :weights="weights"
-        v-show="displayMode && displayMode.CurrentDisplayMode.key === 'chart'"
-      />
-    </q-card-section>
+        <q-btn
+          @click="chartDisplay = true"
+          class="absolute"
+          color="primary"
+          icon="show_chart"
+          outline
+          round
+          size="sm"
+          style="top: 35px; right: 52px; transform: translateY(-50%);"
+        />
 
-    <q-separator />
+        <div class="row no-wrap items-center">
+          <div class="col text-h6 ellipsis">
+            Poids
+          </div>
+        </div>
+      </q-card-section>
 
-    <q-card-actions v-if="displayMode" vertical>
-      <q-btn
-        :icon-right="displayMode.NextDisplayMode.icon"
-        :label="displayMode.NextDisplayMode.label"
-        @click="displayMode.next()"
-        flat
-      />
-    </q-card-actions>
-  </q-card>
+      <q-card-section class="q-pt-xs">
+        <dog-weight-summary />
+      </q-card-section>
+
+      <q-card-actions class="row justify-center">
+        <q-btn
+          :icon="expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+          @click="expanded = !expanded"
+          color="grey"
+          dense
+          flat
+          round
+        />
+      </q-card-actions>
+
+      <q-slide-transition>
+        <div v-show="expanded">
+          <q-separator />
+          <q-card-section class="q-pa-none">
+            <dog-weight-table :weights="weights"></dog-weight-table>
+          </q-card-section>
+        </div>
+      </q-slide-transition>
+    </q-card>
+
+    <dog-weight-add v-model="formDisplay"></dog-weight-add>
+    <dog-weight-chart :weights="weights" v-model="chartDisplay"></dog-weight-chart>
+  </div>
 </template>
 
 <script lang="ts">
@@ -34,14 +66,18 @@ import {
   Component,
   Prop,
   Vue,
+  Watch,
 } from 'vue-property-decorator';
 import { Weight } from 'src/models/weight';
 import DogWeightChart from 'components/DogWeight/DogWeightChart.vue';
 import DogWeightTable from 'components/DogWeight/DogWeightTable.vue';
-import DisplayMode, { DisplayModeInterface } from 'src/utils/displayMode';
+import DogWeightAdd from 'components/DogWeight/DogWeightAdd.vue';
+import DogWeightSummary from 'components/DogWeight/DogWeightSummary.vue';
 
 @Component({
   components: {
+    DogWeightSummary,
+    DogWeightAdd,
     DogWeightChart,
     DogWeightTable,
   },
@@ -51,23 +87,25 @@ export default class DogWeight extends Vue {
   @Prop({ required: true }) weights: Weight[] | undefined;
 
   // *** Data ***
-  private displayMode: DisplayMode | null = null;
+  private expanded = false;
+
+  private formDisplay = false;
+
+  private chartDisplay = false;
 
   // *** Hooks ***
   public mounted() {
-    const displayModes: DisplayModeInterface[] = [
-      { key: 'chart', icon: 'show_chart', label: 'Graphique' },
-      { key: 'table', icon: 'list', label: 'Tableau' },
-    ];
-    this.displayMode = new DisplayMode(displayModes, 'DogWeight.displayMode');
-    this.displayMode.restore();
+    const expandedLocalStorage = localStorage.getItem('DogWeight.expanded');
+    if (expandedLocalStorage) {
+      this.expanded = expandedLocalStorage === 'true';
+    }
   }
 
-  // *** Methods ***
-  public nextDisplayMode() {
-    if (this.displayMode) {
-      this.displayMode.next();
-    }
+  // *** Watchers ***
+  @Watch('expanded')
+  // eslint-disable-next-line class-methods-use-this
+  public onExpandedChanged(value: boolean) {
+    localStorage.setItem('DogWeight.expanded', value.toString());
   }
 }
 </script>

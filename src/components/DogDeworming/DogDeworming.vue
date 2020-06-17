@@ -3,7 +3,7 @@
     <q-card v-if="dewormings">
       <q-card-section>
         <q-btn
-          @click="addDewormingDisplay = true"
+          @click="formDisplay = true"
           class="absolute"
           color="positive"
           icon="add"
@@ -45,7 +45,7 @@
       </q-slide-transition>
     </q-card>
 
-    <dog-deworming-form v-model="addDewormingDisplay"></dog-deworming-form>
+    <dog-deworming-form v-model="formDisplay"></dog-deworming-form>
   </div>
 </template>
 
@@ -75,7 +75,7 @@ export default class DogDeworming extends Vue {
   // *** Data ***
   private expanded = false;
 
-  private addDewormingDisplay = false;
+  private formDisplay = false;
 
   // *** Hooks ***
   public mounted() {

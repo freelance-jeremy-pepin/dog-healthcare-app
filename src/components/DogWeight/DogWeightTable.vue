@@ -2,7 +2,6 @@
   <q-table
     :columns="columns"
     :data="weights"
-    bordered
     dense
     flat
     row-key="id"
@@ -11,8 +10,7 @@
   >
     <template v-slot:body="props">
       <q-tr :props="props">
-
-        <q-menu context-menu touch-position v-if="isEditing">
+        <q-menu context-menu touch-position>
           <q-item
             @click="deleteWeight(props.row)"
             class="bg-negative text-white"
@@ -34,7 +32,6 @@
           <q-popup-proxy
             @before-show="setWeightEditing(props.row)"
             @before-hide="saveWeight(weightEditing)"
-            v-if="isEditing"
           >
             <q-date
               bordered
@@ -54,7 +51,7 @@
           <q-popup-edit
             @save="saveWeight(weightEditing)"
             buttons
-            v-if="weightEditing && isEditing"
+            v-if="weightEditing"
             v-model="weightEditing.weight"
           >
             <q-input
@@ -109,12 +106,6 @@ export default class DogWeightTable extends Mixins(DateTimeMixin, DateMixin) {
       label: 'Poids (kg)',
     },
   ];
-
-  // *** Computed properties ***
-  // eslint-disable-next-line class-methods-use-this
-  public get isEditing(): boolean {
-    return ActiveDogModule.IsEditing;
-  }
 
   // *** Methods ***
   public setWeightEditing(weight: Weight) {

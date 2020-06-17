@@ -41,7 +41,7 @@
       </div>
       <div v-if="lastWeight">
         Poids : {{ lastWeight.weight }} kg
-        <span class="text-grey text-italic" v-if="weightDateAgo">({{ weightDateAgo }})</span>
+        <span class="text-grey text-italic">({{ lastWeight.date | ago }})</span>
       </div>
     </q-card-section>
   </q-card>
@@ -52,7 +52,6 @@ import {
   Component,
   Mixins,
   Prop,
-  Watch,
 } from 'vue-property-decorator';
 import DateMixin from 'src/mixins/dateMixin';
 import moment from 'moment';
@@ -69,9 +68,6 @@ import { Dog } from '../models/dog';
 export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin, DateIntervalMixin) {
   // *** Props ***
   @Prop({ required: true }) dog: Dog | undefined;
-
-  // *** Data ***
-  private weightDateAgo: string | null = null;
 
   // *** Computed properties ***
   public get age(): string {
@@ -118,42 +114,12 @@ export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin, Date
 
   // eslint-disable-next-line class-methods-use-this
   public get lastWeight(): Weight | null {
-    if (ActiveDogModule.Weights && ActiveDogModule.Weights.length > 0) {
-      return ActiveDogModule.Weights[ActiveDogModule.Weights.length - 1];
-    }
-
-    return null;
-  }
-
-  // *** Hooks ***
-  public mounted() {
-    this.refreshWeightDateAgo();
+    return ActiveDogModule.LastWeight;
   }
 
   // *** Methods ***
   setActiveDog = (dog: Dog | undefined) => {
     UserModule.setActiveDog(dog);
-  }
-
-  public refreshWeightDateAgo() {
-    if (this.$options.filters) {
-      this.weightDateAgo = this.$options.filters.ago(this.lastWeight?.date);
-    }
-  }
-
-  // *** Watchers ***
-  @Watch('dog', { immediate: true, deep: true })
-  public onDogChanged(dog: Dog) {
-    if (dog) {
-      this.refreshWeightDateAgo();
-    }
-  }
-
-  @Watch('lastWeight', { immediate: true, deep: true })
-  public onLastWeightChanged(lastWeight: Weight) {
-    if (lastWeight) {
-      this.refreshWeightDateAgo();
-    }
   }
 }
 </script>

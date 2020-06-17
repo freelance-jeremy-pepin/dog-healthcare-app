@@ -30,7 +30,6 @@
 
           <q-input
             :rules="[required,floatValidation]"
-            autofocus
             label="Poids"
             outlined
             v-model="newWeight.weight"

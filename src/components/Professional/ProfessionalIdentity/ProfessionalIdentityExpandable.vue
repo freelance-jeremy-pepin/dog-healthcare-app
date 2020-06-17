@@ -1,6 +1,5 @@
 <template>
   <q-expansion-item
-    :label="localProfessional.name"
     group="group"
     popup
     v-if="localProfessional"
@@ -33,7 +32,7 @@
     </template>
 
     <q-card>
-      <q-separator></q-separator>
+      <q-separator />
       <q-card-section>
         <professional-identity-details :professional="localProfessional" />
       </q-card-section>

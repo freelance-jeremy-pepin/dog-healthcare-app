@@ -52,6 +52,14 @@ class ActiveDogModule extends VuexModule {
     return this.dewormings;
   }
 
+  public get LastDeworming(): Deworming | null {
+    if (this.Dewormings && this.Dewormings.length > 0) {
+      return this.Dewormings[this.Dewormings.length - 1];
+    }
+
+    return null;
+  }
+
   public get Reminders(): Reminder[] | undefined {
     return this.reminders;
   }

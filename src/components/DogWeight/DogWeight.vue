@@ -1,63 +1,36 @@
 <template>
   <div>
-    <q-card v-if="weights">
-      <q-card-section>
-        <q-btn
-          @click="formDisplay = true"
-          class="absolute"
-          color="positive"
-          icon="add"
-          outline
-          round
-          size="sm"
-          style="top: 35px; right: 17px; transform: translateY(-50%);"
-        />
+    <expandable-card v-model="expanded">
+      <template v-slot:header-label>
+        Poids
+        <span class="text-subtitle2 text-grey" v-if="!expanded">•
+          <span v-if="lastWeight">{{ lastWeight.weight }} kg</span>
+          <span v-else>Aucun poids</span>
+        </span>
+      </template>
 
-        <q-btn
-          @click="chartDisplay = true"
-          class="absolute"
-          color="primary"
-          icon="show_chart"
-          outline
-          round
-          size="sm"
-          style="top: 35px; right: 52px; transform: translateY(-50%);"
-        />
+      <template v-slot:header-buttons>
+        <expandable-card-button @click.stop="chartDisplay = true" color="blue" icon="show_chart" />
+        <expandable-card-button @click.stop="historyDisplay = true" color="grey" icon="history" />
+        <expandable-card-button @click.stop="formDisplay = true" color="green" icon="add" />
+      </template>
 
-        <div class="row no-wrap items-center">
-          <div class="col text-h6 ellipsis">
-            Poids
-          </div>
-        </div>
-      </q-card-section>
-
-      <q-card-section class="q-pt-xs">
+      <template v-slot:content>
         <dog-weight-summary />
-      </q-card-section>
-
-      <q-card-actions class="row justify-center">
-        <q-btn
-          :icon="expanded ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
-          @click="expanded = !expanded"
-          color="grey"
-          dense
-          flat
-          round
-        />
-      </q-card-actions>
-
-      <q-slide-transition>
-        <div v-show="expanded">
-          <q-separator />
-          <q-card-section class="q-pa-none">
-            <dog-weight-table :weights="weights"></dog-weight-table>
-          </q-card-section>
-        </div>
-      </q-slide-transition>
-    </q-card>
+      </template>
+    </expandable-card>
 
     <dog-weight-add v-model="formDisplay"></dog-weight-add>
-    <dog-weight-chart :weights="weights" v-model="chartDisplay"></dog-weight-chart>
+
+    <q-dialog v-model="historyDisplay">
+      <dog-weight-table :weights="weights"></dog-weight-table>
+    </q-dialog>
+
+    <q-dialog style="width: 50%" v-model="chartDisplay">
+      <q-card class="q-pa-md full-width">
+        <dog-weight-chart :weights="weights"></dog-weight-chart>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -73,9 +46,14 @@ import DogWeightChart from 'components/DogWeight/DogWeightChart.vue';
 import DogWeightTable from 'components/DogWeight/DogWeightTable.vue';
 import DogWeightAdd from 'components/DogWeight/DogWeightAdd.vue';
 import DogWeightSummary from 'components/DogWeight/DogWeightSummary.vue';
+import ActiveModule from 'src/store/modules/active-dog-module';
+import ExpandableCard from 'components/common/ExpandableCard/ExpandableCard.vue';
+import ExpandableCardButton from 'components/common/ExpandableCard/ExpandableCardButton.vue';
 
 @Component({
   components: {
+    ExpandableCardButton,
+    ExpandableCard,
     DogWeightSummary,
     DogWeightAdd,
     DogWeightChart,
@@ -91,7 +69,15 @@ export default class DogWeight extends Vue {
 
   private formDisplay = false;
 
+  private historyDisplay = false;
+
   private chartDisplay = false;
+
+  // *** Computed properties ***
+  // eslint-disable-next-line class-methods-use-this
+  public get lastWeight(): Weight | null {
+    return ActiveModule.LastWeight;
+  }
 
   // *** Hooks ***
   public mounted() {

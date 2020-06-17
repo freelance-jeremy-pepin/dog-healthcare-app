@@ -3,7 +3,6 @@
     :columns="columns"
     :data="weights"
     dense
-    flat
     row-key="id"
     style="width: 100%"
     v-if="weights"

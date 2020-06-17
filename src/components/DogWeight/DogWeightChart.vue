@@ -1,18 +1,9 @@
 <template>
-  <q-dialog
-    style="width: 50%"
-    v-bind="$attrs"
-    v-model="$attrs.value"
-    v-on="$listeners"
-  >
-    <q-card class="q-pa-md full-width">
-      <apex-chart
-        :options="options"
-        :series="series"
-        type="line"
-      />
-    </q-card>
-  </q-dialog>
+  <apex-chart
+    :options="options"
+    :series="series"
+    type="line"
+  />
 </template>
 
 <script lang="ts">

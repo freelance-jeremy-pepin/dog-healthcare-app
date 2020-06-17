@@ -39,7 +39,6 @@ import {
   Component,
   Mixins,
   Prop,
-  Watch,
 } from 'vue-property-decorator';
 import DateTimeMixin from 'src/mixins/dateTimeMixin';
 import { Deworming } from 'src/models/deworming';
@@ -60,22 +59,15 @@ export default class DogDewormingSummary extends Mixins(DateTimeMixin, DateInter
   // *** Props ***
   @Prop({ required: true }) dewormings: Deworming[] | undefined;
 
-  // *** Data ***
-  private lastDeworming: Deworming | null = null;
-
   // *** Computed properties ***
   // eslint-disable-next-line class-methods-use-this
   public get reminder(): Reminder | undefined {
     return ActiveDogModule.Reminder(ReminderTableName.deworming);
   }
 
-  // *** Watchers ***
-  @Watch('dewormings', { deep: true, immediate: true })
-  public onDewormingsChanged() {
-    if (this.dewormings && this.dewormings?.length > 0) {
-      // eslint-disable-next-line prefer-destructuring
-      this.lastDeworming = this.dewormings[0];
-    }
+  // eslint-disable-next-line class-methods-use-this
+  public get lastDeworming(): Deworming | null {
+    return ActiveDogModule.LastDeworming;
   }
 }
 </script>

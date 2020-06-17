@@ -187,7 +187,7 @@ export default class DogDewormingForm extends Mixins(ValidationMixin, DateMixin)
         : undefined;
     } else if (this.dewormingEditing) {
       this.professionalSelected = null;
-      this.dewormingEditing.caredByProfessional = undefined;
+      this.dewormingEditing.caredByProfessional = null;
     }
   }
 

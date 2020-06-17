@@ -46,7 +46,16 @@
 
           <q-td :props="props" key="caredBy">
             <span v-if="props.row.caredByOwner">Moi</span>
-            <span v-else>Un professionnel</span>
+            <span class="cursor-pointer link" v-else>
+              {{ props.row.caredByProfessionalDetails.name }}
+
+              <q-popup-proxy :breakpoint="100000" class="bg-white">
+                  <professional-identity-card
+                    :professional-id="getIdFromIRI(props.row.caredByProfessional)"
+                  />
+              </q-popup-proxy>
+
+            </span>
           </q-td>
 
           <q-td :props="props" key="notes">
@@ -86,9 +95,12 @@ import DateTimeMixin from 'src/mixins/dateTimeMixin';
 import { Deworming } from 'src/models/deworming';
 import DewormingRepository from 'src/repositories/DewormingRepository';
 import DogDewormingForm from 'components/DogDeworming/DogDewormingForm.vue';
+import { getIdFromIRI } from 'src/utils/stringFormat';
+import ProfessionalIdentityCard
+  from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityCard.vue';
 
 @Component({
-  components: { DogDewormingForm },
+  components: { ProfessionalIdentityCard, DogDewormingForm },
 })
 export default class DogDewormingTable extends Mixins(DateTimeMixin) {
   // *** Props ***
@@ -146,6 +158,8 @@ export default class DogDewormingTable extends Mixins(DateTimeMixin) {
     this.dogDewormingForm.deworming = deworming;
     this.dogDewormingForm.display = true;
   };
+
+  public getIdFromIRI = (iri: string): number => getIdFromIRI(iri);
 }
 </script>
 

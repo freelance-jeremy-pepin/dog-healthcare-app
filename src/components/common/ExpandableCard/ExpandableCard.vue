@@ -1,12 +1,10 @@
 <template>
   <q-card bordered>
     <q-expansion-item
+      v-model="expanded"
       expand-separator
       class="bg-white"
       expand-icon-class="q-pa-none"
-      v-bind="$attrs"
-      v-model="$attrs.value"
-      v-on="$listeners"
       icon="signal_wifi_off"
       switch-toggle-side
     >
@@ -25,7 +23,7 @@
               >
                 <span
                   class="text-subtitle2 text-grey"
-                  v-if="$slots['header-sub-label'] && !$attrs.value"
+                  v-if="$slots['header-sub-label'] && !expanded"
                 >
                   •
                   <slot name="header-sub-label" />
@@ -55,11 +53,33 @@
 <script lang="ts">
 import {
   Component,
+  Prop,
   Vue,
+  Watch,
 } from 'vue-property-decorator';
 
 @Component
 export default class ExpandableCard extends Vue {
+  // *** Props ***
+  @Prop({ required: true }) keyLocalStorage: string | undefined;
+
+  // *** Data ***
+  private expanded = false;
+
+  // *** Hooks ***
+  public mounted() {
+    const expandedLocalStorage = localStorage.getItem(`${this.keyLocalStorage}.expanded`);
+    if (expandedLocalStorage) {
+      this.expanded = expandedLocalStorage === 'true';
+    }
+  }
+
+  // *** Watchers ***
+  @Watch('expanded')
+  // eslint-disable-next-line class-methods-use-this
+  public onExpandedChanged(value: boolean) {
+    localStorage.setItem(`${this.keyLocalStorage}.expanded`, value.toString());
+  }
 }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <expandable-card v-model="expanded">
+    <expandable-card key-local-storage="DogWeight" v-if="weights">
       <template v-slot:header-label>
         Poids
       </template>
@@ -40,7 +40,6 @@ import {
   Component,
   Prop,
   Vue,
-  Watch,
 } from 'vue-property-decorator';
 import { Weight } from 'src/models/weight';
 import DogWeightChart from 'components/DogWeight/DogWeightChart.vue';
@@ -66,8 +65,6 @@ export default class DogWeight extends Vue {
   @Prop({ required: true }) weights: Weight[] | undefined;
 
   // *** Data ***
-  private expanded = false;
-
   private formDisplay = false;
 
   private historyDisplay = false;
@@ -78,21 +75,6 @@ export default class DogWeight extends Vue {
   // eslint-disable-next-line class-methods-use-this
   public get lastWeight(): Weight | null {
     return ActiveModule.LastWeight;
-  }
-
-  // *** Hooks ***
-  public mounted() {
-    const expandedLocalStorage = localStorage.getItem('DogWeight.expanded');
-    if (expandedLocalStorage) {
-      this.expanded = expandedLocalStorage === 'true';
-    }
-  }
-
-  // *** Watchers ***
-  @Watch('expanded')
-  // eslint-disable-next-line class-methods-use-this
-  public onExpandedChanged(value: boolean) {
-    localStorage.setItem('DogWeight.expanded', value.toString());
   }
 }
 </script>

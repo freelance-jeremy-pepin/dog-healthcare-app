@@ -1,14 +1,14 @@
 <template>
   <div>
-    <expandable-card v-if="dewormings" v-model="expanded">
+    <expandable-card key-local-storage="DogDeworming" v-if="dewormings">
       <template v-slot:header-label>
         Vermifuges
       </template>
 
       <template v-slot:header-sub-label>
-          <span :class="`text-${$options.filters.color(reminder.nextReminder)}`" v-if="reminder">
-            {{ $options.filters.ago(reminder.nextReminder)}}
-          </span>
+        <span :class="`text-${$options.filters.color(reminder.nextReminder)}`" v-if="reminder">
+          {{ $options.filters.ago(reminder.nextReminder)}}
+        </span>
         <span v-else>Non planifié</span>
       </template>
 
@@ -35,7 +35,6 @@ import {
   Component,
   Mixins,
   Prop,
-  Watch,
 } from 'vue-property-decorator';
 import { Deworming } from 'src/models/deworming';
 import DogDewormingTable from 'components/DogDeworming/DogDewormingTable.vue';
@@ -64,31 +63,14 @@ export default class DogDeworming extends Mixins(DateIntervalMixin) {
   @Prop({ required: true }) dewormings: Deworming[] | undefined;
 
   // *** Data ***
-  private expanded = false;
-
   private formDisplay = false;
 
   private historyDisplay = false;
-
-  // *** Hooks ***
-  public mounted() {
-    const expandedLocalStorage = localStorage.getItem('DogDeworming.expanded');
-    if (expandedLocalStorage) {
-      this.expanded = expandedLocalStorage === 'true';
-    }
-  }
 
   // *** Computed properties ***
   // eslint-disable-next-line class-methods-use-this
   public get reminder(): Reminder | undefined {
     return ActiveDogModule.Reminder(ReminderTableName.deworming);
-  }
-
-  // *** Watchers ***
-  @Watch('expanded')
-  // eslint-disable-next-line class-methods-use-this
-  public onExpandedChanged(value: boolean) {
-    localStorage.setItem('DogDeworming.expanded', value.toString());
   }
 }
 </script>

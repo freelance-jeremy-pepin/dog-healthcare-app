@@ -1,82 +1,73 @@
 <template>
-  <q-dialog
-    @before-show="reset"
-    position="bottom"
+  <dialog-form
+    :is-editing="!!deworming"
+    @reset="reset"
+    @submit="onSubmit"
     ref="modal"
     v-bind="$attrs"
-    v-if="activeDog"
     v-model="$attrs.value"
     v-on="$listeners"
+    title="%labelAction% une prise de vermifuge pour %activeDog.name%"
   >
-    <q-card>
-      <q-card-section>
-        <div class="text-subtitle2 q-mb-sm">
-          {{ `${labelAction} une prise de vermifuge pour ${activeDog.name}` }}
-        </div>
-        <q-form @submit="onSubmit" class="column q-gutter-md" v-if="dewormingEditing">
-          <q-input
-            :rules="[required]"
-            hide-bottom-space
-            label="Date"
-            outlined
-            v-model="dewormingEditing.date"
-          >
-            <template v-slot:append>
-              <q-icon class="cursor-pointer" name="event">
-                <q-popup-proxy ref="qDateProxy" transition-hide="scale" transition-show="scale">
-                  <q-date
-                    :options="limitDatesNoFutur"
-                    @input="() => $refs.qDateProxy.hide()"
-                    mask="DD/MM/YYYY"
-                    today-btn
-                    v-model="dewormingEditing.date"
-                  />
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+    <template v-if="dewormingEditing" v-slot:form>
+      <q-input
+        :rules="[required]"
+        hide-bottom-space
+        label="Date"
+        outlined
+        v-model="dewormingEditing.date"
+      >
+        <template v-slot:append>
+          <q-icon class="cursor-pointer" name="event">
+            <q-popup-proxy ref="qDateProxy" transition-hide="scale" transition-show="scale">
+              <q-date
+                :options="limitDatesNoFutur"
+                @input="() => $refs.qDateProxy.hide()"
+                mask="DD/MM/YYYY"
+                today-btn
+                v-model="dewormingEditing.date"
+              />
+            </q-popup-proxy>
+          </q-icon>
+        </template>
+      </q-input>
 
-          <q-input
-            :rules="[required]"
-            hide-bottom-space
-            label="Nom du vermifuge"
-            outlined
-            v-model="dewormingEditing.dewormingName"
-          />
+      <q-input
+        :rules="[required]"
+        hide-bottom-space
+        label="Nom du vermifuge"
+        outlined
+        v-model="dewormingEditing.dewormingName"
+      />
 
-          <div class="row items-center">
-            <span>Administré par</span>
-            <q-radio label="moi" v-model="caredBy" val="owner" />
-            <q-radio
-              label="un professionnel"
-              v-model="caredBy"
-              val="professional"
-            />
-          </div>
+      <div class="row items-center">
+        <span>Administré par</span>
+        <q-radio label="moi" v-model="caredBy" val="owner" />
+        <q-radio
+          label="un professionnel"
+          v-model="caredBy"
+          val="professional"
+        />
+      </div>
 
+      <professional-select
+        :rules="[required]"
+        @get-all-success="onGetAllSuccessProfessional"
+        v-if="caredBy === 'professional'"
+        v-model="professionalSelected"
+      />
 
-          <professional-select
-            :rules="[required]"
-            v-if="caredBy === 'professional'"
-            v-model="professionalSelected"
-            @get-all-success="onGetAllSuccessProfessional"
-          />
+      <q-input
+        autogrow
+        label="Notes"
+        outlined
+        type="textarea"
+        v-model="dewormingEditing.notes"
+      />
 
-          <q-input
-            autogrow
-            label="Notes"
-            outlined
-            type="textarea"
-            v-model="dewormingEditing.notes"
-          />
-
-          <q-toggle label="Mettre à jour la date de prochaine prise" v-model="updateReminder" />
-
-          <q-btn :label="labelAction" color="positive" type="submit" />
-        </q-form>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
+      <q-toggle label="Mettre à jour la date de prochaine prise" v-model="updateReminder" />
+    </template>
+  </dialog-form>
 </template>
 
 <script lang="ts">
@@ -104,6 +95,7 @@ import {
 import DateMixin from 'src/mixins/dateMixin';
 import DateTime from 'src/utils/dateTime';
 import { getIdFromIRI } from 'src/utils/stringFormat';
+import DialogForm from 'components/common/DialogForm.vue';
 
 enum CaredBy {
   owner = 'owner',
@@ -111,7 +103,7 @@ enum CaredBy {
 }
 
 @Component({
-  components: { ProfessionalSelect },
+  components: { DialogForm, ProfessionalSelect },
 })
 export default class DogDewormingForm extends Mixins(ValidationMixin, DateMixin) {
   // *** Props ***
@@ -130,10 +122,6 @@ export default class DogDewormingForm extends Mixins(ValidationMixin, DateMixin)
   // eslint-disable-next-line class-methods-use-this
   public get activeDog(): Dog | undefined {
     return ActiveDogModule.Dog;
-  }
-
-  public get labelAction(): string {
-    return this.deworming ? 'Modifier' : 'Ajouter';
   }
 
   // *** Events handlers ***
@@ -191,24 +179,6 @@ export default class DogDewormingForm extends Mixins(ValidationMixin, DateMixin)
     }
   }
 
-  // *** Events handlers ***
-  public onSubmit() {
-    if (this.dewormingEditing) {
-      const deworming: Deworming = { ...this.dewormingEditing };
-
-      const dewormingRepository = new DewormingRepository();
-      if (this.deworming) {
-        dewormingRepository.update(deworming).then(() => {
-          this.submitSuccessCallback();
-        });
-      } else {
-        dewormingRepository.add(deworming).then(() => {
-          this.submitSuccessCallback();
-        });
-      }
-    }
-  }
-
   public submitSuccessCallback() {
     ActiveDogModule.fetchDewormings();
 
@@ -226,6 +196,24 @@ export default class DogDewormingForm extends Mixins(ValidationMixin, DateMixin)
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     this.$refs.modal.hide();
+  }
+
+  // *** Events handlers ***
+  public onSubmit() {
+    if (this.dewormingEditing) {
+      const deworming: Deworming = { ...this.dewormingEditing };
+
+      const dewormingRepository = new DewormingRepository();
+      if (this.deworming) {
+        dewormingRepository.update(deworming).then(() => {
+          this.submitSuccessCallback();
+        });
+      } else {
+        dewormingRepository.add(deworming).then(() => {
+          this.submitSuccessCallback();
+        });
+      }
+    }
   }
 
   // *** Watchers ***

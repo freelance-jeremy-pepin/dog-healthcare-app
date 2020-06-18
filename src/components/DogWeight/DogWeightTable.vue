@@ -1,35 +1,17 @@
 <template>
-  <q-table
-    :columns="columns"
-    :data="weights"
-    dense
-    row-key="id"
-    style="width: 100%"
-    v-if="weights"
-  >
-    <template v-slot:body="props">
-      <q-tr :props="props">
-        <q-menu context-menu touch-position>
-          <q-item
-            @click="deleteWeight(props.row)"
-            class="bg-negative text-white"
-            clickable
-            v-close-popup
-          >
-            <q-item-section side>
-              <q-icon color="white" name="delete" />
-            </q-item-section>
-
-            <q-item-section>
-              <q-item-label class="text-white">Supprimer</q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-menu>
-
-        <q-td :props="props" @click="setWeightEditing(props.row)" key="date">
-          {{ props.row.date | toDate }}
+  <div>
+    <table-edit
+      :columns="columns"
+      :data="weights"
+      @delete="deleteWeight"
+      @edit="editWeight"
+      title="Poids"
+    >
+      <template v-slot:rows="props">
+        <q-td :props="props.props" @click="setWeightEditing(props.props.row)" key="date">
+          {{ props.props.row.date | toDate }}
           <q-popup-proxy
-            @before-show="setWeightEditing(props.row)"
+            @before-show="setWeightEditing(props.props.row)"
             @before-hide="saveWeight(weightEditing)"
           >
             <q-date
@@ -45,8 +27,8 @@
           </q-popup-proxy>
         </q-td>
 
-        <q-td :props="props" @click="setWeightEditing(props.row)" key="weight">
-          {{ props.row.weight }}
+        <q-td :props="props.props" @click="setWeightEditing(props.props.row)" key="weight">
+          {{ props.props.row.weight }}
           <q-popup-edit
             @save="saveWeight(weightEditing)"
             buttons
@@ -61,11 +43,14 @@
             />
           </q-popup-edit>
         </q-td>
-      </q-tr>
-    </template>
+      </template>
+    </table-edit>
 
-  </q-table>
-
+    <dog-weight-form
+      :weight="dogWeightForm.weight"
+      v-model="dogWeightForm.display"
+    ></dog-weight-form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -81,9 +66,13 @@ import moment from 'moment';
 import WeightRepository from 'src/repositories/WeightRepository';
 import DateTimeMixin from 'src/mixins/dateTimeMixin';
 import DateMixin from 'src/mixins/dateMixin';
+import DogWeightForm from 'components/DogWeight/DogWeightForm.vue';
+import TableEdit from 'components/common/TableEdit.vue';
 
 @Component({
   components: {
+    TableEdit,
+    DogWeightForm,
     DogWeightChart,
   },
 })
@@ -106,6 +95,11 @@ export default class DogWeightTable extends Mixins(DateTimeMixin, DateMixin) {
     },
   ];
 
+  private dogWeightForm = {
+    display: false,
+    weight: {} as Weight,
+  }
+
   // *** Methods ***
   public setWeightEditing(weight: Weight) {
     this.weightEditing = { ...weight };
@@ -121,6 +115,11 @@ export default class DogWeightTable extends Mixins(DateTimeMixin, DateMixin) {
     weightRepository.delete(weight).then(() => {
       ActiveDogModule.fetchWeights();
     });
+  };
+
+  public editWeight = (weight: Weight) => {
+    this.dogWeightForm.weight = weight;
+    this.dogWeightForm.display = true;
   };
 }
 </script>

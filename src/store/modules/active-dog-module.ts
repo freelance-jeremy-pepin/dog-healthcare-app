@@ -54,7 +54,7 @@ class ActiveDogModule extends VuexModule {
 
   public get LastDeworming(): Deworming | null {
     if (this.Dewormings && this.Dewormings.length > 0) {
-      return this.Dewormings[this.Dewormings.length - 1];
+      return this.Dewormings[0];
     }
 
     return null;

@@ -21,7 +21,7 @@
       </template>
     </expandable-card>
 
-    <dog-weight-add v-model="formDisplay"></dog-weight-add>
+    <dog-weight-form v-model="formDisplay"></dog-weight-form>
 
     <q-dialog v-model="historyDisplay">
       <dog-weight-table :weights="weights"></dog-weight-table>
@@ -44,7 +44,7 @@ import {
 import { Weight } from 'src/models/weight';
 import DogWeightChart from 'components/DogWeight/DogWeightChart.vue';
 import DogWeightTable from 'components/DogWeight/DogWeightTable.vue';
-import DogWeightAdd from 'components/DogWeight/DogWeightAdd.vue';
+import DogWeightForm from 'components/DogWeight/DogWeightForm.vue';
 import DogWeightSummary from 'components/DogWeight/DogWeightSummary.vue';
 import ActiveModule from 'src/store/modules/active-dog-module';
 import ExpandableCard from 'components/common/ExpandableCard/ExpandableCard.vue';
@@ -55,7 +55,7 @@ import ExpandableCardButton from 'components/common/ExpandableCard/ExpandableCar
     ExpandableCardButton,
     ExpandableCard,
     DogWeightSummary,
-    DogWeightAdd,
+    DogWeightForm,
     DogWeightChart,
     DogWeightTable,
   },

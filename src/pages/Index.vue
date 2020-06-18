@@ -21,7 +21,7 @@ import { Dog } from 'src/models/dog';
 import DogWeight from 'components/DogWeight/DogWeight.vue';
 import { Weight } from 'src/models/weight';
 import { User } from 'src/models/user';
-import DogWeightAdd from 'components/DogWeight/DogWeightAdd.vue';
+import DogWeightAdd from 'components/DogWeight/DogWeightForm.vue';
 import moment from 'moment';
 import store from 'src/store';
 import DogDewormingForm from 'components/DogDeworming/DogDewormingForm.vue';

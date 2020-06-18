@@ -26,7 +26,6 @@
                     :professional-id="getIdFromIRI(props.props.row.caredByProfessional)"
                   />
               </q-popup-proxy>
-
             </span>
         </q-td>
 

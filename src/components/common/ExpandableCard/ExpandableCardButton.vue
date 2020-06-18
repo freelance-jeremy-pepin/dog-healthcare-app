@@ -1,6 +1,5 @@
 <template>
   <q-btn
-    class="gt-xs"
     dense
     flat
     round

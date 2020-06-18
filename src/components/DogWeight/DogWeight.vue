@@ -3,10 +3,11 @@
     <expandable-card v-model="expanded">
       <template v-slot:header-label>
         Poids
-        <span class="text-subtitle2 text-grey" v-if="!expanded">•
-          <span v-if="lastWeight">{{ lastWeight.weight }} kg</span>
-          <span v-else>Aucun poids</span>
-        </span>
+      </template>
+
+      <template v-slot:header-sub-label>
+        <span v-if="lastWeight">{{ lastWeight.weight }} kg</span>
+        <span v-else>Aucun poids</span>
       </template>
 
       <template v-slot:header-buttons>

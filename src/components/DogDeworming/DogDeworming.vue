@@ -3,12 +3,13 @@
     <expandable-card v-if="dewormings" v-model="expanded">
       <template v-slot:header-label>
         Vermifuges
-        <span class="text-subtitle2 text-grey" v-if="!expanded">•
+      </template>
+
+      <template v-slot:header-sub-label>
           <span :class="`text-${$options.filters.color(reminder.nextReminder)}`" v-if="reminder">
             {{ $options.filters.ago(reminder.nextReminder)}}
           </span>
-          <span v-else>Non planifié</span>
-        </span>
+        <span v-else>Non planifié</span>
       </template>
 
       <template v-slot:header-buttons>

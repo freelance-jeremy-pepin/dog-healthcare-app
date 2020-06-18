@@ -1,79 +1,51 @@
 <template>
   <div>
-    <q-table
+    <table-edit
       :columns="columns"
       :data="dewormings"
-      dense
-      flat
-      row-key="id"
-      style="width: 100%"
-      v-if="dewormings"
+      @delete="deleteDeworming"
+      @edit="editDeworming"
+      title="Vermifuges"
     >
-      <template v-slot:body="props">
-        <q-tr :props="props">
-          <q-menu context-menu touch-position>
-            <q-item
-              @click="editDeworming(props.row)"
-              clickable
-              v-close-popup
-            >
-              <q-item-section>
-                <q-item-label>Editer</q-item-label>
-              </q-item-section>
-            </q-item>
+      <template v-slot:rows="props">
+        <q-td :props="props.props" key="date">
+          {{ props.props.row.date | toDate }}
+        </q-td>
 
-            <q-separator></q-separator>
+        <q-td :props="props.props" key="dewormingName">
+          {{ props.props.row.dewormingName }}
+        </q-td>
 
-            <q-item
-              @click="deleteDeworming(props.row)"
-              clickable
-              v-close-popup
-            >
-              <q-item-section>
-                <q-item-label class="text-negative">Supprimer</q-item-label>
-              </q-item-section>
-            </q-item>
-          </q-menu>
-
-          <q-td :props="props" key="date">
-            {{ props.row.date | toDate }}
-          </q-td>
-
-          <q-td :props="props" key="dewormingName">
-            {{ props.row.dewormingName }}
-          </q-td>
-
-          <q-td :props="props" key="caredBy">
-            <span v-if="props.row.caredByOwner">Moi</span>
-            <span class="cursor-pointer link" v-else>
-              {{ props.row.caredByProfessionalDetails.name }}
+        <q-td :props="props.props" key="caredBy">
+          <span v-if="props.props.row.caredByOwner">Moi</span>
+          <span class="cursor-pointer link" v-else>
+              {{ props.props.row.caredByProfessionalDetails.name }}
 
               <q-popup-proxy :breakpoint="100000" class="bg-white">
                   <professional-identity-card
-                    :professional-id="getIdFromIRI(props.row.caredByProfessional)"
+                    :professional-id="getIdFromIRI(props.props.row.caredByProfessional)"
                   />
               </q-popup-proxy>
 
             </span>
-          </q-td>
+        </q-td>
 
-          <q-td :props="props" key="notes">
-          <span v-if="props.row.notes">
+        <q-td :props="props.props" key="notes">
+          <span v-if="props.props.row.notes">
             <q-icon color="orange" name="note">
               <q-popup-proxy>
                 <q-banner>
                   <template v-slot:avatar>
                     <q-icon color="orange" name="note" />
                   </template>
-                  {{ props.row.notes }}
+                  {{ props.props.row.notes }}
                 </q-banner>
               </q-popup-proxy>
             </q-icon>
           </span>
-          </q-td>
-        </q-tr>
+        </q-td>
       </template>
-    </q-table>
+    </table-edit>
 
     <dog-deworming-form
       :deworming="dogDewormingForm.deworming"
@@ -97,9 +69,10 @@ import DogDewormingForm from 'components/DogDeworming/DogDewormingForm.vue';
 import { getIdFromIRI } from 'src/utils/stringFormat';
 import ProfessionalIdentityCard
   from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityCard.vue';
+import TableEdit from 'components/common/TableEdit.vue';
 
 @Component({
-  components: { ProfessionalIdentityCard, DogDewormingForm },
+  components: { TableEdit, ProfessionalIdentityCard, DogDewormingForm },
 })
 export default class DogDewormingTable extends Mixins(DateTimeMixin) {
   // *** Props ***

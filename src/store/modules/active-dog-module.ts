@@ -42,7 +42,7 @@ class ActiveDogModule extends VuexModule {
 
   public get LastWeight(): Weight | null {
     if (this.Weights && this.Weights.length > 0) {
-      return this.Weights[this.Weights.length - 1];
+      return this.Weights[0];
     }
 
     return null;

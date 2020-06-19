@@ -23,9 +23,9 @@
 
     <dog-weight-form v-model="formDisplay"></dog-weight-form>
 
-    <q-dialog v-model="historyDisplay">
+    <dialog-history v-model="historyDisplay">
       <dog-weight-table :weights="weights"></dog-weight-table>
-    </q-dialog>
+    </dialog-history>
 
     <q-dialog style="width: 50%" v-model="chartDisplay">
       <q-card class="q-pa-md full-width">
@@ -49,9 +49,11 @@ import DogWeightSummary from 'components/DogWeight/DogWeightSummary.vue';
 import ActiveModule from 'src/store/modules/active-dog-module';
 import ExpandableCard from 'components/common/ExpandableCard/ExpandableCard.vue';
 import ExpandableCardButton from 'components/common/ExpandableCard/ExpandableCardButton.vue';
+import DialogHistory from 'components/common/DialogHistory.vue';
 
 @Component({
   components: {
+    DialogHistory,
     ExpandableCardButton,
     ExpandableCard,
     DogWeightSummary,

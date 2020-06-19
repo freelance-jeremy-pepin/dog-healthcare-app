@@ -22,9 +22,9 @@
       </template>
     </expandable-card>
 
-    <q-dialog v-model="historyDisplay">
+    <dialog-history v-model="historyDisplay">
       <dog-deworming-table :dewormings="dewormings" />
-    </q-dialog>
+    </dialog-history>
 
     <dog-deworming-form v-model="formDisplay"></dog-deworming-form>
   </div>
@@ -48,9 +48,11 @@ import {
 } from 'src/models/reminder';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
 import DateIntervalMixin from 'src/mixins/dateIntervalMixin';
+import DialogHistory from 'components/common/DialogHistory.vue';
 
 @Component({
   components: {
+    DialogHistory,
     ExpandableCardButton,
     ExpandableCard,
     DogDewormingForm,

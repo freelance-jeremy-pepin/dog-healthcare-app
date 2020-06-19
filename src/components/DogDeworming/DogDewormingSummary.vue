@@ -1,37 +1,10 @@
 <template>
-  <div>
-    <item-icon
-      :value="lastDeworming ? $options.filters.toDate(lastDeworming.date) : 'Jamais'"
-      icon="history"
-      title="Dernière prise"
-    />
-
-    <item-icon
-      v-if="reminder && reminder.nextReminder"
-      :color="reminder.nextReminder | color"
-      :value="reminder ? `${reminder.nextReminder} (${$options.filters.ago(reminder.nextReminder)})`
-       : 'Non planifié'"
-      icon="schedule"
-      title="Prochaine prise"
-      clickable
-    >
-      <reminder-next-reminder :reminder="reminder"></reminder-next-reminder>
-    </item-icon>
-
-    <item-icon
-      v-if="reminder"
-      :title="this.$options.filters.formatPeriodicity(
-        reminder.numberTimeInterval,
-        reminder.timeIntervalDetails)"
-      icon="notifications"
-      clickable
-    >
-      <reminder-time-interval-form
-        :last-date="lastDeworming ? lastDeworming.date : null"
-        :reminder="reminder"
-      />
-    </item-icon>
-  </div>
+  <reminder-summary
+    :last-date="lastDeworming ? lastDeworming.date : null"
+    :reminder="reminder"
+    label-last-date="Dernière prise"
+    label-next-reminder="Prochaine prise"
+  ></reminder-summary>
 </template>
 
 <script lang="ts">
@@ -51,9 +24,12 @@ import ActiveDogModule from 'src/store/modules/active-dog-module';
 import DateIntervalMixin from 'src/mixins/dateIntervalMixin';
 import ReminderTimeIntervalForm from 'components/Reminder/ReminderTimeIntervalForm.vue';
 import ReminderNextReminder from 'components/Reminder/ReminderNextReminder.vue';
+import ReminderSummary from 'components/Reminder/ReminderSummary.vue';
 
 @Component({
-  components: { ReminderNextReminder, ReminderTimeIntervalForm, ItemIcon },
+  components: {
+    ReminderSummary, ReminderNextReminder, ReminderTimeIntervalForm, ItemIcon,
+  },
 })
 export default class DogDewormingSummary extends Mixins(DateTimeMixin, DateIntervalMixin) {
   // *** Props ***

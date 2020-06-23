@@ -2,18 +2,18 @@
   <div>
     <table-edit
       :columns="columns"
-      :data="dewormings"
-      @delete="deleteDeworming"
-      @edit="editDeworming"
-      title="Vermifuges"
+      :data="antiParasitics"
+      @delete="deleteAntiParasitic"
+      @edit="editAntiParasitic"
+      title="Anti-parasitaires"
     >
       <template v-slot:rows="props">
         <q-td :props="props.props" key="date">
           {{ props.props.row.date | toDate }}
         </q-td>
 
-        <q-td :props="props.props" key="dewormingName">
-          {{ props.props.row.dewormingName }}
+        <q-td :props="props.props" key="antiParasiticName">
+          {{ props.props.row.antiParasiticName }}
         </q-td>
 
         <q-td :props="props.props" key="caredBy">
@@ -46,10 +46,10 @@
       </template>
     </table-edit>
 
-    <dog-deworming-form
-      :deworming="dogDewormingForm.deworming"
-      v-model="dogDewormingForm.display"
-    ></dog-deworming-form>
+    <dog-anti-parasitic-form
+      :anti-parasitic="dogAntiParasiticForm.antiParasitic"
+      v-model="dogAntiParasiticForm.display"
+    ></dog-anti-parasitic-form>
   </div>
 </template>
 
@@ -61,20 +61,22 @@ import {
 } from 'vue-property-decorator';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
 import DateTimeMixin from 'src/mixins/dateTimeMixin';
-import { Deworming } from 'src/models/deworming';
-import DewormingRepository from 'src/repositories/DewormingRepository';
-import DogDewormingForm from 'components/DogDeworming/DogDewormingForm.vue';
 import { getIdFromIRI } from 'src/utils/stringFormat';
 import ProfessionalIdentityCard
   from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityCard.vue';
 import TableEdit from 'components/common/TableEdit.vue';
+import { AntiParasitic } from 'src/models/antiParasitic';
+import AntiParasiticRepository from 'src/repositories/AntiParasiticRepository';
+import DogAntiParasiticForm from 'components/DogAntiParasitic/DogAntiParasiticForm.vue';
 
 @Component({
-  components: { TableEdit, ProfessionalIdentityCard, DogDewormingForm },
+  components: {
+    DogAntiParasiticForm, TableEdit, ProfessionalIdentityCard,
+  },
 })
-export default class DogDewormingTable extends Mixins(DateTimeMixin) {
+export default class DogAntiParasiticTable extends Mixins(DateTimeMixin) {
   // *** Props ***
-  @Prop({ required: true }) dewormings: Deworming[] | undefined;
+  @Prop({ required: true }) antiParasitics: AntiParasitic[] | undefined;
 
   // *** Data ***
   private columns = [
@@ -84,8 +86,8 @@ export default class DogDewormingTable extends Mixins(DateTimeMixin) {
       align: 'left',
     },
     {
-      name: 'dewormingName',
-      label: 'Nom du vermifuge',
+      name: 'antiParasiticName',
+      label: 'Nom de l\'anti-parasitaire',
       align: 'left',
     },
     {
@@ -100,22 +102,22 @@ export default class DogDewormingTable extends Mixins(DateTimeMixin) {
     },
   ];
 
-  private dogDewormingForm = {
+  private dogAntiParasiticForm = {
     display: false,
-    deworming: {} as Deworming,
+    antiParasitic: {} as AntiParasitic,
   }
 
   // *** Methods ***
-  public deleteDeworming = (deworming: Deworming) => {
-    const dewormingRepository = new DewormingRepository();
-    dewormingRepository.delete(deworming).then(() => {
-      ActiveDogModule.fetchDewormings();
+  public deleteAntiParasitic = (antiParasitic: AntiParasitic) => {
+    const antiParasiticRepository = new AntiParasiticRepository();
+    antiParasiticRepository.delete(antiParasitic).then(() => {
+      ActiveDogModule.fetchAntiParasitics();
     });
   };
 
-  public editDeworming = (deworming: Deworming) => {
-    this.dogDewormingForm.deworming = deworming;
-    this.dogDewormingForm.display = true;
+  public editAntiParasitic = (antiParasitic: AntiParasitic) => {
+    this.dogAntiParasiticForm.antiParasitic = antiParasitic;
+    this.dogAntiParasiticForm.display = true;
   };
 
   public getIdFromIRI = (iri: string): number => getIdFromIRI(iri);

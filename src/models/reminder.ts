@@ -3,6 +3,7 @@ import { TimeInterval } from 'src/models/timeInterval';
 
 export enum ReminderTableName {
   deworming = 'deworming',
+  antiParasitic = 'anti_parasitic',
 }
 
 export interface Reminder extends BaseModel {

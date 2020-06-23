@@ -2,7 +2,8 @@
   <div>
     <item-icon
       :title="labelLastDate"
-      :value="lastDate ? $options.filters.toDate(lastDate) : 'Jamais'"
+      :value="lastDate ? `${$options.filters.toDate(lastDate)} (${$options.filters.ago(lastDate)})`
+      : 'Jamais'"
       icon="history"
     />
 
@@ -15,10 +16,7 @@
       icon="schedule"
       v-if="reminder && reminder.nextReminder"
     >
-      <reminder-next-reminder
-        :reminder=" reminder
-    "
-      ></reminder-next-reminder>
+      <reminder-next-reminder :reminder="reminder" />
     </item-icon>
 
     <item-icon

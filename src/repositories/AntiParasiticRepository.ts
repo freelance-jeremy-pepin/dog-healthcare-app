@@ -1,19 +1,20 @@
 import BaseRepository from 'src/repositories/BaseRepository';
-import { Deworming } from 'src/models/deworming';
 import { Dog } from 'src/models/dog';
 import { Reminder } from 'src/models/reminder';
 import ReminderRepository from 'src/repositories/ReminderRepository';
 import { getIdFromIRI } from 'src/utils/stringFormat';
 import ProfessionalRepository from 'src/repositories/ProfessionalRepository';
 import { Professional } from 'src/models/professional';
+import { AntiParasitic } from 'src/models/antiParasitic';
 
-export default class DewormingRepository extends BaseRepository<Deworming> {
+export default class AntiParasiticRepository extends BaseRepository<AntiParasitic> {
   constructor() {
-    super('dewormings');
+    super('anti_parasitics');
     this.date = ['date'];
   }
 
-  public getByDog = (dog: Dog, withCaredByProfessionalDetails = false): Promise<Deworming[]> => {
+  // eslint-disable-next-line max-len
+  public getByDog = (dog: Dog, withCaredByProfessionalDetails = false): Promise<AntiParasitic[]> => {
     if (withCaredByProfessionalDetails) {
       return new Promise((resolve, reject) => {
         const professionalRepository = new ProfessionalRepository();
@@ -23,8 +24,8 @@ export default class DewormingRepository extends BaseRepository<Deworming> {
             params: {
               dog: dog.id,
             },
-          }).then((dewormings: Deworming[]) => {
-            dewormings = dewormings.map((d: Deworming) => {
+          }).then((antiParasitics: AntiParasitic[]) => {
+            antiParasitics = antiParasitics.map((d: AntiParasitic) => {
               if (d.caredByProfessional) {
                 const professionalId: number = getIdFromIRI(d.caredByProfessional);
                 // eslint-disable-next-line max-len
@@ -33,7 +34,7 @@ export default class DewormingRepository extends BaseRepository<Deworming> {
 
               return d;
             });
-            resolve(dewormings);
+            resolve(antiParasitics);
           });
         }).catch((error) => {
           reject(error);
@@ -48,15 +49,15 @@ export default class DewormingRepository extends BaseRepository<Deworming> {
     });
   };
 
-  public getLast = (): Promise<Deworming | null> => new Promise((resolve, reject) => {
+  public getLast = (): Promise<AntiParasitic | null> => new Promise((resolve, reject) => {
     this.fetchMany(this.baseIri, {
       params: {
         'order[date]': 'desc',
         page: 1,
       },
-    }).then((dewormings: Deworming[]) => {
-      if (dewormings.length > 0) {
-        resolve(dewormings[0]);
+    }).then((antiParasitics: AntiParasitic[]) => {
+      if (antiParasitics.length > 0) {
+        resolve(antiParasitics[0]);
       } else {
         resolve(null);
       }
@@ -67,9 +68,9 @@ export default class DewormingRepository extends BaseRepository<Deworming> {
 
   public updateNextReminder(reminder: Reminder): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      this.getLast().then((lastDeworming: Deworming | null) => {
+      this.getLast().then((lastAntiParasitic: AntiParasitic | null) => {
         const reminderRepository = new ReminderRepository();
-        reminderRepository.updateNextReminder(reminder, lastDeworming?.date).then(() => {
+        reminderRepository.updateNextReminder(reminder, lastAntiParasitic?.date).then(() => {
           resolve(true);
         }).catch((error) => {
           reject(error);

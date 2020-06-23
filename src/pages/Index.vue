@@ -5,6 +5,7 @@
         <dog-identity :dog="activeDog"></dog-identity>
         <dog-weight :weights="weights"></dog-weight>
         <dog-deworming :dewormings="dewormings"></dog-deworming>
+        <dog-anti-parasitic :anti-parasitics="antiParasitics"></dog-anti-parasitic>
       </div>
     </q-page>
   </div>
@@ -27,12 +28,15 @@ import store from 'src/store';
 import DogDewormingForm from 'components/DogDeworming/DogDewormingForm.vue';
 import DogDeworming from 'components/DogDeworming/DogDeworming.vue';
 import { Deworming } from 'src/models/deworming';
+import { AntiParasitic } from 'src/models/antiParasitic';
+import DogAntiParasitic from 'components/DogAntiParasitic/DogAntiParasitic.vue';
 import ActiveDogModule from '../store/modules/active-dog-module';
 import UserModule from '../store/modules/user-module';
 import DogModule from '../store/modules/dog-module';
 
 @Component({
   components: {
+    DogAntiParasitic,
     DogDeworming,
     DogDewormingForm,
     DogWeightAdd,
@@ -60,6 +64,11 @@ export default class Index extends Vue {
   // eslint-disable-next-line class-methods-use-this
   public get dewormings(): Deworming[] | undefined {
     return ActiveDogModule.Dewormings;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  public get antiParasitics(): AntiParasitic[] | undefined {
+    return ActiveDogModule.AntiParasitics;
   }
 
   // *** Hooks ***

@@ -4,6 +4,7 @@ import { Reminder } from 'src/models/reminder';
 import { getIdFromIRI } from 'src/utils/stringFormat';
 import TimeIntervalRepository from 'src/repositories/TimeIntervalRepository';
 import { TimeInterval } from 'src/models/timeInterval';
+import DateInterval from 'src/utils/dateInterval';
 
 export default class ReminderRepository extends BaseRepository<Reminder> {
   constructor() {
@@ -42,4 +43,29 @@ export default class ReminderRepository extends BaseRepository<Reminder> {
       },
     });
   };
+
+  // eslint-disable-next-line max-len
+  updateNextReminder = (reminder: Reminder, date?: string): Promise<boolean> => new Promise((resolve, reject) => {
+    if (date && reminder.timeIntervalDetails) {
+      const newDate: string = DateInterval.add(
+        date,
+        reminder.numberTimeInterval,
+        reminder.timeIntervalDetails,
+      );
+
+      if (newDate !== reminder.nextReminder) {
+        reminder.nextReminder = newDate;
+        const reminderRepository = new ReminderRepository();
+        reminderRepository.update(reminder).then(() => {
+          resolve(true);
+        }).catch((error) => {
+          reject(error);
+        });
+      } else {
+        resolve(true);
+      }
+    } else {
+      resolve(true);
+    }
+  })
 }

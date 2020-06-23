@@ -15,6 +15,8 @@ import {
   ReminderTableName,
 } from 'src/models/reminder';
 import ReminderRepository from 'src/repositories/ReminderRepository';
+import { AntiParasitic } from 'src/models/antiParasitic';
+import AntiParasiticRepository from 'src/repositories/AntiParasiticRepository';
 import store from '../index';
 
 @Module({
@@ -29,6 +31,8 @@ class ActiveDogModule extends VuexModule {
   public weights?: Weight[] = undefined;
 
   public dewormings?: Deworming[] = undefined;
+
+  public antiParasitics?: AntiParasitic[] = undefined;
 
   public reminders?: Reminder[] = undefined;
 
@@ -55,6 +59,18 @@ class ActiveDogModule extends VuexModule {
   public get LastDeworming(): Deworming | null {
     if (this.Dewormings && this.Dewormings.length > 0) {
       return this.Dewormings[0];
+    }
+
+    return null;
+  }
+
+  public get AntiParasitics(): AntiParasitic[] | undefined {
+    return this.antiParasitics;
+  }
+
+  public get LastAntiParasitic(): AntiParasitic | null {
+    if (this.AntiParasitics && this.AntiParasitics.length > 0) {
+      return this.AntiParasitics[0];
     }
 
     return null;
@@ -98,12 +114,27 @@ class ActiveDogModule extends VuexModule {
   }
 
   @Mutation
-  public setDeworming(dewormings: Deworming) {
+  public setDeworming(deworming: Deworming) {
     if (this.dewormings) {
       // eslint-disable-next-line max-len
-      this.dewormings = this.dewormings.map((d: Deworming) => (d.id === dewormings.id ? dewormings : d));
+      this.dewormings = this.dewormings.map((d: Deworming) => (d.id === deworming.id ? deworming : d));
     } else {
-      this.dewormings = [dewormings];
+      this.dewormings = [deworming];
+    }
+  }
+
+  @Mutation
+  public setAntiParasitics(antiParasitics: AntiParasitic[] | undefined) {
+    this.antiParasitics = antiParasitics;
+  }
+
+  @Mutation
+  public setAntiParasitic(antiParasitic: AntiParasitic) {
+    if (this.antiParasitics) {
+      // eslint-disable-next-line max-len
+      this.antiParasitics = this.antiParasitics.map((ap: AntiParasitic) => (ap.id === antiParasitic.id ? antiParasitic : ap));
+    } else {
+      this.antiParasitics = [antiParasitic];
     }
   }
 
@@ -117,10 +148,12 @@ class ActiveDogModule extends VuexModule {
     this.setDog(dog);
     this.setWeights(undefined);
     this.setDewormings(undefined);
+    this.setAntiParasitics(undefined);
     this.setReminders(undefined);
 
     this.fetchWeights();
     this.fetchDewormings();
+    this.fetchAntiParasitics();
     this.fetchReminders();
   }
 
@@ -157,6 +190,24 @@ class ActiveDogModule extends VuexModule {
     const dewormingRepository = new DewormingRepository();
     dewormingRepository.update(deworming).then(() => {
       this.fetchDewormings();
+    });
+  }
+
+  @Action
+  public fetchAntiParasitics() {
+    if (this.Dog) {
+      const antiParasiticRepository = new AntiParasiticRepository();
+      antiParasiticRepository.getByDog(this.Dog, true).then((antiParasitics) => {
+        this.setAntiParasitics(antiParasitics);
+      });
+    }
+  }
+
+  @Action
+  public updateAntiParasitic(antiParasitic: AntiParasitic) {
+    const antiParasiticRepository = new AntiParasiticRepository();
+    antiParasiticRepository.update(antiParasitic).then(() => {
+      this.fetchAntiParasitics();
     });
   }
 

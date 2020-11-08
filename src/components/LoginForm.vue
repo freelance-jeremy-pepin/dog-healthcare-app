@@ -68,19 +68,18 @@ export default class LoginForm extends Vue {
     public handleSubmit() {
         this.loading = true;
 
-        axios.post('authentication_token', {
+        axios.post('login', {
             email: this.email,
             password: this.password,
         }).then((response) => {
-            localStorage.setItem('rememberMe', this.rememberMe.toString());
-            this.login(response.data.token, response.data.refresh_token, false);
+            this.login(response.data.token, false);
         }).finally(() => {
             this.loading = false;
         });
     }
 
-    public login(tokenPlainText: string, refreshToken: string, noRedirect: boolean) {
-        Auth.login(tokenPlainText, refreshToken);
+    public login(tokenPlainText: string, noRedirect: boolean) {
+        Auth.login(tokenPlainText);
 
         if (!noRedirect) {
             this.$router.push('/');

@@ -1,5 +1,8 @@
 import { BaseModel } from 'src/models/baseModel';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, {
+    AxiosError,
+    AxiosRequestConfig
+} from 'axios';
 import Date from 'src/utils/date';
 import DateTime from 'src/utils/dateTime';
 
@@ -11,11 +14,34 @@ export default abstract class BaseRepository<T extends BaseModel> {
     protected baseIri = '';
 
     protected constructor(endpoint: string) {
-        this.baseIri = `api/${endpoint}`;
+        this.baseIri = `${endpoint}`;
     }
 
     public get BaseIri(): string {
         return this.baseIri;
+    }
+
+    private static addRelationsToConfig(
+        relations: string[],
+        config?: AxiosRequestConfig,
+    ): AxiosRequestConfig | undefined {
+        if (relations) {
+            if (!config) {
+                config = {};
+            }
+
+            const relationsParams = {
+                relations: relations.join(','),
+            };
+
+            if (config.params) {
+                config.params = { ...config.params, ...relationsParams };
+            } else {
+                config.params = relationsParams;
+            }
+        }
+
+        return config;
     }
 
     public buildIri(model: T): string {
@@ -39,11 +65,11 @@ export default abstract class BaseRepository<T extends BaseModel> {
 
     // *** READ ***
     public getAll(): Promise<T[]> {
-        return this.fetchMany(this.baseIri);
+        return this.fetchMany();
     }
 
     public getById(id: number): Promise<T> {
-        return this.fetchOne(`${this.baseIri}/${id}`);
+        return this.fetchOne(`${id}`);
     }
 
     // *** UPDATE ***
@@ -70,23 +96,43 @@ export default abstract class BaseRepository<T extends BaseModel> {
     }
 
     // *** Protected methods ***
-    protected fetchMany(url: string, config?: AxiosRequestConfig): Promise<T[]> {
+    protected fetchMany(
+        url?: string,
+        relations?: string[],
+        config?: AxiosRequestConfig,
+    ): Promise<T[]> {
+        if (relations) {
+            config = BaseRepository.addRelationsToConfig(relations, config);
+        }
+
+        url = `${this.baseIri}${url ? `/${url}` : ''}`;
+
         return new Promise((resolve, reject) => {
             axios.get(url, config).then(({ data }: { data: T[] }) => {
                 data = data.map((d: T) => this.formatDateDatabaseToApp(d));
                 resolve(data);
-            }).catch((error) => {
+            }).catch((error: AxiosError) => {
                 reject(error);
             });
         });
     }
 
-    protected fetchOne(url: string): Promise<T> {
+    protected fetchOne(
+        url: string,
+        relations?: string[],
+        config?: AxiosRequestConfig,
+    ): Promise<T> {
+        if (relations) {
+            config = BaseRepository.addRelationsToConfig(relations, config);
+        }
+
+        url = `${this.baseIri}${url ? `/${url}` : ''}`;
+
         return new Promise((resolve, reject) => {
-            axios.get(url).then(({ data }: { data: T }) => {
+            axios.get(url, config).then(({ data }: { data: T }) => {
                 data = this.formatDateDatabaseToApp(data);
                 resolve(data);
-            }).catch((error) => {
+            }).catch((error: AxiosError) => {
                 reject(error);
             });
         });

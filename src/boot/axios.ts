@@ -13,6 +13,8 @@ declare module 'vue/types/vue' {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
 export default boot(({ Vue }) => {
     axios.defaults.headers.common.Accept = 'application/json';
 
@@ -22,7 +24,7 @@ export default boot(({ Vue }) => {
         }
 
 
-        config.baseURL = 'http://api.dog-healthcare.com';
+        config.baseURL = 'http://api.dog-healthcare.com/api';
         return config;
     });
 

@@ -1,42 +1,33 @@
 import { User } from 'src/models/user';
 import { Dog } from 'src/models/dog';
 import DogRepository from 'src/repositories/DogRepository';
-import axios from 'axios';
+import axios, {
+    AxiosError,
+} from 'axios';
 import BaseRepository from 'src/repositories/BaseRepository';
-import { getIdFromIRI } from 'src/utils/stringFormat';
 import UserModule from '../store/modules/user-module';
+
+export enum UserRelations {
+    activeDog = 'activeDog',
+    dogs = 'dogs'
+}
 
 export default class UserRepository extends BaseRepository<User> {
     constructor() {
-        super('users');
+        super('user');
     }
 
-    getByEmail = (email: string): Promise<User> => new Promise((resolve, reject) => {
-        axios.get(this.baseIri, {
-            params: {
-                email,
-            },
-        }).then(({ data }) => {
-            if (data.length < 1) {
-                reject();
-            } else {
-                const user: User = data[0];
-
-                // Récupération du chien actif
-                if (data[0].activeDog) {
-                    const dogRepository = new DogRepository();
-                    dogRepository.getById(getIdFromIRI(data[0].activeDog)).then((responseDog: Dog) => {
-                        user.activeDog = responseDog;
-                        resolve(user);
-                    });
-                } else {
-                    resolve(user);
-                }
-            }
-        }).catch(() => {
-            reject();
+    getMe(relations: UserRelations[] = []): Promise<User> {
+        return new Promise((resolve, reject) => {
+            this.fetchOne('me', relations)
+                .then((me) => {
+                    resolve(me);
+                })
+                .catch((e: AxiosError) => {
+                    reject(e);
+                });
         });
-    });
+    }
 
     updateActiveDog = (dog: Dog | undefined) => {
         if (UserModule.User) {

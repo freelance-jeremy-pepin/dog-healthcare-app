@@ -5,7 +5,7 @@ import {
     Mutation,
     VuexModule,
 } from 'vuex-module-decorators';
-import UserRepository from 'src/repositories/UserRepository';
+import UserRepository, { UserRelations } from 'src/repositories/UserRepository';
 import { User } from 'src/models/user';
 import { Dog } from 'src/models/dog';
 import store from '../index';
@@ -39,9 +39,8 @@ class UserModule extends VuexModule {
     }
 
     @Action
-    public fetch(email: string) {
-        const userRepository = new UserRepository();
-        userRepository.getByEmail(email).then((user: User) => {
+    public fetchMe() {
+        new UserRepository().getMe([UserRelations.activeDog]).then((user: User) => {
             this.setUser(user);
         });
     }

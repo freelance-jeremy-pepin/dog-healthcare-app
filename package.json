@@ -17,7 +17,7 @@
     "@vue/composition-api": "^0.5.0",
     "apexcharts": "^3.19.2",
     "axios": "^0.18.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "moment": "^2.26.0",
     "quasar": "^1.9.5",
     "vue-apexcharts": "^1.5.3",
@@ -38,7 +38,8 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-loader": "^3.0.3",
     "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-vue": "^6.1.2"
+    "eslint-plugin-vue": "^6.1.2",
+    "strip-ansi": "^3.0.1"
   },
   "engines": {
     "node": ">= 10.18.1",

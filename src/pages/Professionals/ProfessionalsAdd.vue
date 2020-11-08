@@ -1,16 +1,16 @@
 <template>
-  <professional-form></professional-form>
+    <professional-form></professional-form>
 </template>
 
 <script lang="ts">
 import {
-  Component,
-  Vue,
+    Component,
+    Vue,
 } from 'vue-property-decorator';
 import ProfessionalForm from 'components/Professional/ProfessionalForm.vue';
 
 @Component({
-  components: { ProfessionalForm },
+    components: { ProfessionalForm },
 })
 export default class ProfessionalAdd extends Vue {
 

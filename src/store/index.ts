@@ -11,9 +11,9 @@ Vue.use(Vuex);
 const debug = !!process.env.DEV;
 
 const store: Store<StoreInterface> = new Store<StoreInterface>({
-  state: {},
-  strict: debug,
-  plugins: debug ? [createLogger()] : [],
+    state: {},
+    strict: debug,
+    plugins: debug ? [createLogger()] : [],
 });
 
 export default store;

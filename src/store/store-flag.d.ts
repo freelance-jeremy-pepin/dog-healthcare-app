@@ -3,8 +3,8 @@
 import 'quasar/dist/types/feature-flag';
 
 declare module 'quasar/dist/types/feature-flag' {
-  // noinspection JSUnusedGlobalSymbols
-  interface QuasarFeatureFlags {
-    store: true;
-  }
+    // noinspection JSUnusedGlobalSymbols
+    interface QuasarFeatureFlags {
+        store: true;
+    }
 }

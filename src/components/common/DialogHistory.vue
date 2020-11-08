@@ -1,17 +1,17 @@
 <template>
-  <q-dialog
-    v-bind="$attrs"
-    v-model="$attrs.value"
-    v-on="$listeners"
-  >
-    <slot></slot>
-  </q-dialog>
+    <q-dialog
+        v-model="$attrs.value"
+        v-bind="$attrs"
+        v-on="$listeners"
+    >
+        <slot></slot>
+    </q-dialog>
 </template>
 
 <script lang="ts">
 import {
-  Component,
-  Vue,
+    Component,
+    Vue,
 } from 'vue-property-decorator';
 
 @Component

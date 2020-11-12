@@ -32,22 +32,22 @@ import { AntiParasitic } from 'src/models/antiParasitic';
     },
 })
 export default class DogAntiParasiticSummary extends Mixins(DateTimeMixin, DateIntervalMixin) {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: true }) antiParasitics: AntiParasitic[] | undefined;
 
-    // *** Computed properties ***
-    // eslint-disable-next-line class-methods-use-this
+    // endregion
+
+    // region Computed properties
+
     public get reminder(): Reminder | undefined {
         return ActiveDogModule.Reminder(ReminderTableName.antiParasitic);
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    public get lastAntiParasitic(): AntiParasitic | null {
+    public get lastAntiParasitic(): AntiParasitic | undefined {
         return ActiveDogModule.LastAntiParasitic;
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

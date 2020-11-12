@@ -1,6 +1,5 @@
 import { parseJwt } from 'src/utils/jwt';
 import { stringToBoolean } from 'src/utils/stringFormat';
-import axios from 'axios';
 import UserModule from '../store/modules/user-module';
 import DogModule from '../store/modules/dog-module';
 
@@ -28,25 +27,7 @@ export default class Auth {
         return stringToBoolean(rememberMeLocalStorage);
     }
 
-    public static refreshTokenRequest = (): Promise<boolean> => new Promise((resolve) => {
-        const refreshToken = localStorage.getItem('refreshToken');
-
-        if (refreshToken) {
-            axios.post('refresh_token', {
-                // eslint-disable-next-line @typescript-eslint/camelcase
-                refresh_token: refreshToken,
-            }).then((response) => {
-                Auth.login(response.data.token);
-                resolve(true);
-            }).catch(() => {
-                resolve(false);
-            });
-        } else {
-            resolve(false);
-        }
-    });
-
-    public static login = (token: string) => {
+    public static login(token: string) {
         const tokenParsed = parseJwt(token);
 
         UserModule.fetchMe();
@@ -58,14 +39,9 @@ export default class Auth {
         };
 
         localStorage.setItem('token', token);
+    }
 
-        const refreshTokenIn = Auth.jwtToken.expiry - (Math.floor(Date.now() / 1000));
-        setTimeout(() => {
-            Auth.refreshTokenRequest().then();
-        }, refreshTokenIn * 1000);
-    };
-
-    public static logout = (reload = true) => {
+    public static logout(reload = true) {
         Auth.jwtToken = {
             token: '',
             expiry: 0,
@@ -73,7 +49,7 @@ export default class Auth {
 
         // to support logging out from all windows
         localStorage.setItem('logout', String(Date.now()));
-        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('token');
 
         if (reload) {
             window.location.reload();
@@ -89,7 +65,7 @@ export default class Auth {
         return Auth.jwtToken.token !== ''; // TODO: Vérifier expiration
     }
 
-    public static syncLogout = (event: StorageEvent) => {
+    public static syncLogout(event: StorageEvent) {
         if (event.key === 'logout') {
             window.location.reload();
         }

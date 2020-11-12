@@ -1,7 +1,4 @@
-import {
-    Component,
-    Vue,
-} from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import moment from 'moment';
 import Date from 'src/utils/date';
 import DateTime from 'src/utils/dateTime';

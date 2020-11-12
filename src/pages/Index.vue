@@ -45,41 +45,42 @@ import DogModule from '../store/modules/dog-module';
     },
 })
 export default class Index extends Vue {
-    // *** Computed properties ***
-    // eslint-disable-next-line class-methods-use-this
+    // region Computed properties
+
     public get user(): User | undefined {
         return UserModule.User;
     }
 
-    // eslint-disable-next-line class-methods-use-this
     public get activeDog(): Dog | undefined {
         return UserModule.User?.activeDog;
     }
 
-    // eslint-disable-next-line class-methods-use-this
     public get weights(): Weight[] | undefined {
         return ActiveDogModule.Weights;
     }
 
-    // eslint-disable-next-line class-methods-use-this
     public get dewormings(): Deworming[] | undefined {
         return ActiveDogModule.Dewormings;
     }
 
-    // eslint-disable-next-line class-methods-use-this
     public get antiParasitics(): AntiParasitic[] | undefined {
         return ActiveDogModule.AntiParasitics;
     }
 
-    // *** Hooks ***
+    // endregion
+
+    // region Hooks
+
     public mounted() {
         moment.locale('fr');
         store.registerModule('active-dog', {});
     }
 
-    // *** Watcher ***
+    // endregion
+
+    // region Watcher
+
     @Watch('user', { deep: true })
-    // eslint-disable-next-line class-methods-use-this
     public onUserChanged(user: User | undefined) {
         if (user && !user.activeDog && DogModule.Dogs && DogModule.Dogs.length > 0) {
             UserModule.setActiveDog(DogModule.Dogs[0]);
@@ -87,9 +88,10 @@ export default class Index extends Vue {
     }
 
     @Watch('activeDog')
-    // eslint-disable-next-line class-methods-use-this
     public onActiveDogChanged(newDog: Dog | undefined) {
         ActiveDogModule.refreshDog(newDog);
     }
+
+    // endregion
 }
 </script>

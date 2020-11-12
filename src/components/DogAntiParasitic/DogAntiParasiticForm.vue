@@ -1,17 +1,17 @@
 <template>
     <dialog-form
-        ref="modal"
+        v-if="activeDog"
         v-model="$attrs.value"
         v-bind="$attrs"
         v-on="$listeners"
         :is-editing="!!antiParasitic"
-        title="%labelAction% une prise d'anti-parasitaire pour %activeDog.name%"
+        :title="`${$options.filters.addOrEditLabel(isEditing)} une prise d'anti-parasitaire pour ${activeDog.name}`"
         @reset="reset"
         @submit="onSubmit"
     >
-        <template v-if="antiParasiticEditing" v-slot:form>
+        <template v-if="internalAntiParasitic" v-slot:form>
             <q-input
-                v-model="antiParasiticEditing.date"
+                v-model="internalAntiParasitic.date"
                 :rules="[required]"
                 hide-bottom-space
                 label="Date"
@@ -25,7 +25,7 @@
                             transition-show="scale"
                         >
                             <q-date
-                                v-model="antiParasiticEditing.date"
+                                v-model="internalAntiParasitic.date"
                                 :options="limitDatesNoFutur"
                                 mask="DD/MM/YYYY"
                                 today-btn
@@ -37,7 +37,7 @@
             </q-input>
 
             <q-input
-                v-model="antiParasiticEditing.antiParasiticName"
+                v-model="internalAntiParasitic.antiParasiticName"
                 :rules="[required]"
                 hide-bottom-space
                 label="Nom de l'anti-parasitaire"
@@ -56,13 +56,13 @@
 
             <professional-select
                 v-if="caredBy === 'professional'"
-                v-model="professionalSelected"
+                v-model="internalAntiParasitic.caredByProfessional"
                 :rules="[required]"
-                @get-all-success="onGetAllSuccessProfessional"
+                v-on:input="internalAntiParasitic.caredByProfessionalId = internalAntiParasitic.caredByProfessional ? internalAntiParasitic.caredByProfessional.id : undefined"
             />
 
             <q-input
-                v-model="antiParasiticEditing.notes"
+                v-model="internalAntiParasitic.notes"
                 autogrow
                 label="Notes"
                 outlined
@@ -82,24 +82,19 @@ import {
     Watch,
 } from 'vue-property-decorator';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
-import DogRepository from 'src/repositories/DogRepository';
 import { Dog } from 'src/models/dog';
 import moment from 'moment';
 import Date from 'src/utils/date';
 import ProfessionalSelect from 'components/Professional/ProfessionalSelect.vue';
-import { Professional } from 'src/models/professional';
 import ValidationMixin from 'src/mixins/validationMixin';
-import ProfessionalRepository from 'src/repositories/ProfessionalRepository';
-import {
-    Reminder,
-    ReminderTableName,
-} from 'src/models/reminder';
+import { Reminder, ReminderTableName } from 'src/models/reminder';
 import DateMixin from 'src/mixins/dateMixin';
 import DateTime from 'src/utils/dateTime';
-import { getIdFromIRI } from 'src/utils/stringFormat';
 import DialogForm from 'components/common/DialogForm.vue';
-import { AntiParasitic } from 'src/models/antiParasitic';
-import AntiParasiticRepository from 'src/repositories/AntiParasiticRepository';
+import { AntiParasitic, createDefaultAntiParasitic } from 'src/models/antiParasitic';
+import AntiParasiticRepository from 'src/repositories/antiParasiticRepository';
+import TextFormatMixin from 'src/mixins/textFormatMixin';
+import NotifyMixin from 'src/mixins/notifyMixin';
 
 enum CaredBy {
     owner = 'owner',
@@ -109,52 +104,58 @@ enum CaredBy {
 @Component({
     components: { DialogForm, ProfessionalSelect },
 })
-export default class DogAntiParasiticForm extends Mixins(ValidationMixin, DateMixin) {
-    // *** Props ***
+export default class DogAntiParasiticForm extends Mixins(ValidationMixin, DateMixin, TextFormatMixin, NotifyMixin) {
+    // region Props
+
     @Prop({ required: false, default: undefined }) antiParasitic: AntiParasitic | undefined;
 
-    // *** Data ***
-    private antiParasiticEditing: AntiParasitic | null = null;
+    // endregion
 
-    private professionalSelected: Professional | null = null;
+    // region Data
+
+    private internalAntiParasitic: AntiParasitic | null = null;
 
     private caredBy: CaredBy | null = null;
 
     private updateReminder = true;
 
-    // *** Computed properties ***
-    // eslint-disable-next-line class-methods-use-this
-    public get activeDog(): Dog | undefined {
+    // endregion
+
+    // region Computed properties
+
+    private get isEditing(): boolean {
+        return !!this.antiParasitic;
+    }
+
+    private get activeDog(): Dog | undefined {
         return ActiveDogModule.Dog;
     }
 
-    // *** Events handlers ***
-    public onGetAllSuccessProfessional(professionals: Professional[]) {
-        if (this.antiParasitic && this.antiParasitic.caredByProfessional) {
-            const professionalId: number = getIdFromIRI(this.antiParasitic.caredByProfessional);
-            // eslint-disable-next-line max-len
-            this.professionalSelected = professionals.find((p: Professional) => p.id === professionalId) || null;
+    // endregion
+
+    // region Events handlers
+
+    private onSubmit() {
+        if (this.internalAntiParasitic) {
+            const antiParasitic: AntiParasitic = { ...this.internalAntiParasitic };
+
+            if (this.isEditing) {
+                this.updateAntiParasitic(antiParasitic);
+            } else {
+                this.createAntiParasitic(antiParasitic);
+            }
         }
     }
 
-    // *** Methods ***
-    public emptyAntiParasitic(): AntiParasitic {
-        return {
-            dog: `${(new DogRepository().BaseIri)}/${this.activeDog?.id}`,
-            date: moment().format(Date.appFormat),
-            caredByOwner: true,
-            caredByProfessional: undefined,
-            antiParasiticName: '',
-            notes: undefined,
-        };
-    }
+    // endregion
 
-    public reset() {
+    // region Methods
+
+    private reset() {
         this.updateReminder = true;
-        this.professionalSelected = null;
 
         if (this.antiParasitic) {
-            this.antiParasiticEditing = {
+            this.internalAntiParasitic = {
                 ...this.antiParasitic,
                 date: moment(this.antiParasitic.date, DateTime.appFormat).format(Date.appFormat),
             };
@@ -165,79 +166,67 @@ export default class DogAntiParasiticForm extends Mixins(ValidationMixin, DateMi
                 this.caredBy = CaredBy.owner;
             }
         } else {
-            this.antiParasiticEditing = this.emptyAntiParasitic();
-
-            this.caredBy = CaredBy.owner;
+            this.internalAntiParasitic = createDefaultAntiParasitic();
         }
     }
 
-    public setCaredByProfessional(professional: Professional | null) {
-        if (professional && this.antiParasiticEditing) {
-            const professionalRepository = new ProfessionalRepository();
-            this.antiParasiticEditing.caredByProfessional = this.caredBy === CaredBy.professional
-                ? professionalRepository.buildIri(professional)
-                : undefined;
-        } else if (this.antiParasiticEditing) {
-            this.professionalSelected = null;
-            this.antiParasiticEditing.caredByProfessional = null;
-        }
-    }
-
-    public submitSuccessCallback() {
+    private submitSuccessCallback() {
         ActiveDogModule.fetchAntiParasitics();
 
         if (this.updateReminder) {
-            // eslint-disable-next-line max-len
             const reminder: Reminder | undefined = ActiveDogModule.Reminder(ReminderTableName.antiParasitic);
-            if (reminder) {
-                const antiParasiticRepository = new AntiParasiticRepository();
-                antiParasiticRepository.updateNextReminder({ ...reminder }).then(() => {
-                    ActiveDogModule.fetchReminders();
-                });
+
+            if (!reminder) {
+                throw new Error(`Impossible de mettre à jour le prochain rappel car il n'existe aucun rappel pour ce chien.`);
+            } else if (ActiveDogModule.Dog && this.internalAntiParasitic) {
+                new AntiParasiticRepository().updateNextReminder(ActiveDogModule.Dog, { ...reminder })
+                    .then(() => {
+                        ActiveDogModule.fetchReminders();
+                    })
+                    .catch((e) => {
+                        this.notifyErrorAxios(e);
+                    });
             }
         }
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        this.$refs.modal.hide();
+        this.$emit('input', false);
     }
 
-    // *** Events handlers ***
-    public onSubmit() {
-        if (this.antiParasiticEditing) {
-            const antiParasitic: AntiParasitic = { ...this.antiParasiticEditing };
+    private createAntiParasitic(antiParasitic: AntiParasitic) {
+        if (this.activeDog?.id) {
+            antiParasitic.dogId = this.activeDog.id;
 
-            const antiParasiticRepository = new AntiParasiticRepository();
-            if (this.antiParasitic) {
-                antiParasiticRepository.update(antiParasitic).then(() => {
+            new AntiParasiticRepository().create(antiParasitic)
+                .then(() => {
                     this.submitSuccessCallback();
                 });
-            } else {
-                antiParasiticRepository.add(antiParasitic).then(() => {
-                    this.submitSuccessCallback();
-                });
+        }
+    }
+
+    private updateAntiParasitic(antiParasitic: AntiParasitic) {
+        new AntiParasiticRepository().update(antiParasitic)
+            .then(() => {
+                this.submitSuccessCallback();
+            });
+    }
+
+    // endregion
+
+    // region Watchers
+
+    @Watch('caredBy', { immediate: true })
+    private onCaredByChanged() {
+        if (this.internalAntiParasitic) {
+            if (this.caredBy === CaredBy.owner) {
+                this.internalAntiParasitic.caredByOwner = true;
+                this.internalAntiParasitic.caredByProfessionalId = undefined;
+                this.internalAntiParasitic.caredByProfessional = undefined;
+            } else if (this.caredBy === CaredBy.professional) {
+                this.internalAntiParasitic.caredByOwner = false;
             }
         }
     }
 
-    // *** Watchers ***
-    @Watch('caredBy')
-    public onCaredByChanged() {
-        if (this.caredBy && this.antiParasiticEditing) {
-            this.antiParasiticEditing.caredByOwner = this.caredBy === CaredBy.owner;
-            this.setCaredByProfessional(this.caredBy === CaredBy.professional
-                ? this.professionalSelected
-                : null);
-        }
-    }
-
-    @Watch('professionalSelected', { deep: true })
-    public onProfessionalSelectedChanged() {
-        this.setCaredByProfessional(this.professionalSelected);
-    }
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

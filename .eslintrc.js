@@ -68,7 +68,14 @@ module.exports = {
 
     // add your custom rules here
     rules: {
-        'indent': ['error', 4],
+        'quotes': ['error', 'single', {
+            'avoidEscape': true,
+            'allowTemplateLiterals': true
+        }],
+        'no-underscore-dangle': 'off',
+        'object-curly-newline': 'off',
+        'max-len': 'off',
+        'indent': ['error', 4, { 'SwitchCase': 1 }],
         'no-param-reassign': 'off',
 
         'import/first': 'off',
@@ -83,40 +90,11 @@ module.exports = {
         'prefer-promise-reject-errors': 'off',
 
         // TypeScript
-        'quotes': ['warn', 'single'],
         '@typescript-eslint/explicit-function-return-type': 'off',
 
         // allow debugger during development only
         'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
-        'class-methods-use-this': ['error', {
-            exceptMethods: [
-                // react lifecycle methods, from the airbnb rule
-                'render',
-                'getInitialState',
-                'getDefaultProps',
-                'getChildContext',
-                'componentWillMount',
-                'componentDidMount',
-                'componentWillReceiveProps',
-                'shouldComponentUpdate',
-                'componentWillUpdate',
-                'componentDidUpdate',
-                'componentWillUnmount',
-
-                // vue lifecycle methods
-                'beforeCreate',
-                'created',
-                'beforeMount',
-                'mounted',
-                'beforeUpdate',
-                'updated',
-                'activated',
-                'deactivated',
-                'beforeDestroy',
-                'destroyed',
-                'errorCaptured',
-            ],
-        }],
+        'class-methods-use-this': 'off',
     }
 };

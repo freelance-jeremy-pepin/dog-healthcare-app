@@ -6,7 +6,9 @@
             class="q-pb-md full-width"
             style="max-width: 500px"
         >
-            <q-card v-if="professionalType.professionals && professionalType.professionals.length > 0">
+            <q-card
+                v-if="professionalType.professionals && professionalType.professionals.length > 0"
+            >
                 <q-card-section class="q-px-xs">
                     <div class="text-subtitle2 q-px-md">
                         {{ professionalType.displayLabel }}s
@@ -39,22 +41,29 @@ import ProfessionalIdentityExpandable
     from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityExpandable.vue';
 import { Professional } from 'src/models/professional';
 import { ProfessionalType } from 'src/models/professionalType';
-import ProfessionalTypeRepository from 'src/repositories/ProfessionalTypeRepository';
+import ProfessionalTypeRepository, { ProfessionalTypeRelations } from 'src/repositories/professionalTypeRepository';
 import orderBy from 'lodash/orderBy';
 
 @Component({
     components: { ProfessionalIdentityExpandable },
 })
 export default class Professionals extends Vue {
-    // *** Data ***
+    // region Data
+
     private professionalTypes: ProfessionalType[] | null = null;
 
-    // *** Hooks ***
+    // endregion
+
+    // region Hooks
+
     public mounted() {
         this.refreshList();
     }
 
-    // *** Methods ***
+    // endregion
+
+    // region Methods
+
     public compare = (a: Professional, b: Professional) => {
         if (a.name < b.name) {
             return -1;
@@ -66,19 +75,18 @@ export default class Professionals extends Vue {
     };
 
     public refreshList() {
-        const professionalTypeRepository = new ProfessionalTypeRepository();
-        professionalTypeRepository.getAll(true).then((data) => {
-            data.forEach((d) => {
-                d.professionals = orderBy(d.professionals, [
-                    (professional: Professional) => professional.name.toLowerCase(),
-                ]);
+        new ProfessionalTypeRepository()
+            .getAll([ProfessionalTypeRelations.professionals])
+            .then((data) => {
+                data.forEach((d) => {
+                    d.professionals = orderBy(d.professionals, [
+                        (professional: Professional) => professional.name.toLowerCase(),
+                    ]);
+                });
+                this.professionalTypes = data;
             });
-            this.professionalTypes = data;
-        });
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

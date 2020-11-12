@@ -27,13 +27,7 @@ export default route<StoreInterface>(({ Vue }) => {
 
     Router.beforeEach((to, from, next) => {
         if (to.name !== 'login' && !Auth.isAuthenticate()) {
-            Auth.refreshTokenRequest().then((response: boolean) => {
-                if (response) {
-                    next();
-                } else {
-                    next({ name: 'login' });
-                }
-            });
+            next({ name: 'login' });
         } else {
             next();
         }

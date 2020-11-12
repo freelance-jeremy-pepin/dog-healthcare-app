@@ -72,22 +72,26 @@ import DogAntiParasiticForm from 'components/DogAntiParasitic/DogAntiParasiticFo
     },
 })
 export default class DogAntiParasitic extends Mixins(DateIntervalMixin) {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: true }) antiParasitics: AntiParasitic[] | undefined;
 
-    // *** Data ***
+    // endregion
+
+    // region Data
+
     private formDisplay = false;
 
     private historyDisplay = false;
 
-    // *** Computed properties ***
-    // eslint-disable-next-line class-methods-use-this
+    // endregion
+
+    // region Computed properties
+
     public get reminder(): Reminder | undefined {
         return ActiveDogModule.Reminder(ReminderTableName.antiParasitic);
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

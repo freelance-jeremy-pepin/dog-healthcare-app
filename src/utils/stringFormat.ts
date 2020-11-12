@@ -1,4 +1,4 @@
-export const stringToBoolean = (booleanString: string) => {
+export function stringToBoolean(booleanString: string): boolean {
     switch (booleanString.toLowerCase().trim()) {
         case 'true':
         case 'yes':
@@ -12,7 +12,4 @@ export const stringToBoolean = (booleanString: string) => {
         default:
             return Boolean(booleanString);
     }
-};
-
-// noinspection JSUnusedGlobalSymbols
-export const getIdFromIRI = (iri: string): number => parseInt(iri.substring(iri.lastIndexOf('/') + 1), 10);
+}

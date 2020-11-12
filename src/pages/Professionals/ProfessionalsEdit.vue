@@ -16,7 +16,3 @@ export default class ProfessionalsEdit extends Vue {
 
 }
 </script>
-
-<style scoped>
-
-</style>

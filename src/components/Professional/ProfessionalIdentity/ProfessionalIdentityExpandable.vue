@@ -9,7 +9,10 @@
                 <q-list style="min-width: 100px">
                     <q-item
                         v-close-popup
-                        :to="{ name: 'professionals.edit', params: { professional_id: localProfessional.id } }"
+                        :to="{
+                            name: 'professionals.edit',
+                            params: { professional_id: localProfessional.id }
+                        }"
                         clickable
                     >
                         <q-item-section>
@@ -19,7 +22,7 @@
 
                     <q-separator></q-separator>
 
-                    <q-item v-close-popup clickable @click="deleteProfessionals">
+                    <q-item v-close-popup clickable @click="deleteProfessional">
                         <q-item-section>
                             <q-item-label class="text-negative">Supprimer</q-item-label>
                         </q-item-section>
@@ -41,20 +44,14 @@
 </template>
 
 <script lang="ts">
-import {
-    Component,
-    Prop,
-    Vue,
-} from 'vue-property-decorator';
+import { Component, Mixins, Prop } from 'vue-property-decorator';
 import { Professional } from 'src/models/professional';
-import ProfessionalRepository from 'src/repositories/ProfessionalRepository';
+import ProfessionalRepository from 'src/repositories/professionalRepository';
 import ItemIcon from 'components/common/ItemIcon.vue';
-import ProfessionalIdentityDetails
-    from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityDetails.vue';
-import ProfessionalIdentityAvatar
-    from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityAvatar.vue';
-import ProfessionalIdentityName
-    from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityName.vue';
+import ProfessionalIdentityDetails from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityDetails.vue';
+import ProfessionalIdentityAvatar from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityAvatar.vue';
+import ProfessionalIdentityName from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityName.vue';
+import NotifyMixin from 'src/mixins/notifyMixin';
 
 @Component({
     components: {
@@ -64,39 +61,51 @@ import ProfessionalIdentityName
         ItemIcon,
     },
 })
-export default class ProfessionalIdentityExpandable extends Vue {
-    // *** Props ***
+export default class ProfessionalIdentityExpandable extends Mixins(NotifyMixin) {
+    // region Props
+
     @Prop({ required: false }) professional: Professional | undefined;
 
     @Prop({ required: false }) professionalId: number | undefined;
 
-    // *** Data ***
+    // endregion
+
+    // region Data
+
     private localProfessional: Professional | null = null;
 
-    // *** Hooks ***
+    // endregion
+
+    // region Hooks
+
     public mounted() {
         if (!this.professional && this.professionalId) {
             const professionalRepository = new ProfessionalRepository();
-            professionalRepository.getById(this.professionalId).then((professional: Professional) => {
-                this.localProfessional = professional;
-            });
+            professionalRepository.getById(this.professionalId)
+                .then((professional: Professional) => {
+                    this.localProfessional = professional;
+                });
         } else if (this.professional) {
             this.localProfessional = { ...this.professional };
         }
     }
 
-    // *** Methods ***
-    public deleteProfessionals() {
+    // endregion
+
+    // region Methods
+
+    public deleteProfessional() {
         if (this.professional) {
-            const professionalRepository = new ProfessionalRepository();
-            professionalRepository.delete(this.professional).then(() => {
-                this.$emit('deleted');
-            });
+            new ProfessionalRepository().delete(this.professional)
+                .then(() => {
+                    this.$emit('deleted');
+                })
+                .catch((e) => {
+                    this.notifyErrorAxios(e);
+                });
         }
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

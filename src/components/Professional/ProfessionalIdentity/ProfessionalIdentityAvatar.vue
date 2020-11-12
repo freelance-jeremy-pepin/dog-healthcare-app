@@ -19,11 +19,10 @@ import ItemIcon from 'components/common/ItemIcon.vue';
     components: { ItemIcon },
 })
 export default class ProfessionalIdentityAvatar extends Vue {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: true }) professional: Professional | undefined;
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

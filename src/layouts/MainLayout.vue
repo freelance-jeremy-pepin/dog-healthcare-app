@@ -69,7 +69,8 @@ interface Route {
     },
 })
 export default class MainLayout extends Vue {
-    // *** Data ***
+    // region Data
+
     private drawerLeft = false;
 
     private routes: Route[] = [
@@ -87,11 +88,16 @@ export default class MainLayout extends Vue {
         },
     ];
 
-    // *** Hooks ***
+    // endregion
+
+    // region Hooks
+
     public mounted() {
         window.addEventListener('storage', Auth.syncLogout);
         document.title = 'Carnet de santé pour chiens';
     }
+
+    // endregion
 }
 </script>
 

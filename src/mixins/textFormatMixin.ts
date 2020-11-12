@@ -27,6 +27,10 @@ import {
 
             return [address, zipCodeFormatted].join(', ');
         },
+
+        addOrEditLabel(isEditing: boolean): string {
+            return isEditing ? 'Modifier' : 'Ajouter';
+        },
     },
 })
 export default class TextFormatMixin extends Vue {

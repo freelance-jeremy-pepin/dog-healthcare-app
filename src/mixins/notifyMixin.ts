@@ -2,6 +2,7 @@ import {
     Component,
     Vue,
 } from 'vue-property-decorator';
+import { AxiosError } from 'axios';
 
 @Component
 export default class NotifyMixin extends Vue {
@@ -52,6 +53,30 @@ export default class NotifyMixin extends Vue {
             type: 'info',
             message,
             actions: [{ label: 'Fermer', color: 'white' }],
+        });
+    }
+
+    /**
+     * Affiche une notification d'erreur à partir d'une erreur Axios.
+     * @param {!AxiosError} error Erreur Axios qui sera formatée pour afficher une erreur lisible.
+     */
+    public notifyErrorAxios(error: AxiosError | Error): void {
+        let message = null;
+
+        if (`response` in error && error.response?.data.message) {
+            message = error.response.data.message;
+        } else if (error.message) {
+            message = error.message;
+        } else {
+            message = `Une erreur s'est produite.`;
+        }
+
+        this.$q.notify({
+            type: 'negative',
+            message,
+            actions: [
+                { label: 'Fermer', color: 'white' },
+            ],
         });
     }
 }

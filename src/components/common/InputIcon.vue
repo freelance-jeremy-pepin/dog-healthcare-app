@@ -18,7 +18,3 @@ export default class InputIcon extends Vue {
     @Prop({ required: true }) icon: string | undefined;
 }
 </script>
-
-<style scoped>
-
-</style>

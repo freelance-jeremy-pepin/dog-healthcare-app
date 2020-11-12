@@ -39,7 +39,7 @@
         </q-list>
 
         <div v-else>
-            Aucune information
+            Aucune information.
         </div>
     </div>
 </template>
@@ -58,10 +58,14 @@ import TextFormatMixin from 'src/mixins/textFormatMixin';
     components: { ItemIcon },
 })
 export default class ProfessionalIdentityDetails extends Mixins(TextFormatMixin) {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: true }) professional: Professional | undefined;
 
-    // *** Computed properties ***
+    // endregion
+
+    // region Computed properties
+
     public get isEmpty(): boolean {
         return !this.professional?.phoneNumber
             && !this.professional?.mobileNumber
@@ -71,9 +75,7 @@ export default class ProfessionalIdentityDetails extends Mixins(TextFormatMixin)
             && !this.professional?.email
             && !this.professional?.notes;
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

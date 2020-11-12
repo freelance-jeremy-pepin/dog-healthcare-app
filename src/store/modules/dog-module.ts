@@ -5,7 +5,7 @@ import {
     Mutation,
     VuexModule,
 } from 'vuex-module-decorators';
-import DogRepository from 'src/repositories/DogRepository';
+import DogRepository from 'src/repositories/dogRepository';
 import { Dog } from 'src/models/dog';
 import store from '../index';
 
@@ -29,10 +29,10 @@ class DogModule extends VuexModule {
 
     @Action
     public fetchAll() {
-        const dogRepository = new DogRepository();
-        dogRepository.getAll().then((dogs: Dog[]) => {
-            this.setDogs(dogs);
-        });
+        new DogRepository().getAll()
+            .then((dogs: Dog[]) => {
+                this.setDogs(dogs);
+            });
     }
 }
 

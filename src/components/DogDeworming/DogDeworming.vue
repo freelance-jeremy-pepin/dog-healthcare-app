@@ -6,9 +6,12 @@
             </template>
 
             <template v-slot:header-sub-label>
-        <span v-if="reminder" :class="`text-${$options.filters.color(reminder.nextReminder)}`">
-          {{ $options.filters.ago(reminder.nextReminder) }}
-        </span>
+                <span
+                    v-if="reminder && reminder.nextReminder"
+                    :class="`text-${$options.filters.color(reminder.nextReminder)}`"
+                >
+                    {{ $options.filters.ago(reminder.nextReminder) }}
+                </span>
                 <span v-else>Non planifié</span>
             </template>
 
@@ -65,22 +68,26 @@ import DialogHistory from 'components/common/DialogHistory.vue';
     },
 })
 export default class DogDeworming extends Mixins(DateIntervalMixin) {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: true }) dewormings: Deworming[] | undefined;
 
-    // *** Data ***
+    // endregion
+
+    // region Data
+
     private formDisplay = false;
 
     private historyDisplay = false;
 
-    // *** Computed properties ***
-    // eslint-disable-next-line class-methods-use-this
+    // endregion
+
+    // region Computed properties
+
     public get reminder(): Reminder | undefined {
         return ActiveDogModule.Reminder(ReminderTableName.deworming);
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

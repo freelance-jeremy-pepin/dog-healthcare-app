@@ -19,7 +19,3 @@ import {
 export default class ExpandableCardButton extends Vue {
 }
 </script>
-
-<style scoped>
-
-</style>

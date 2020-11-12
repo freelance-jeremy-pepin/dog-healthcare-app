@@ -1,16 +1,22 @@
 <template>
     <dialog-form
-        ref="modal"
+        v-if="activeDog"
         v-model="$attrs.value"
         v-bind="$attrs"
         v-on="$listeners"
-        :is-editing="!!weight"
-        title="%labelAction% un poids pour %activeDog.name%"
+        :is-editing="isEditing"
+        :title="`${$options.filters.addOrEditLabel(isEditing)} un poids pour ${activeDog.name}`"
         @reset="reset"
         @submit="onSubmit"
     >
-        <template v-if="weightEditing" v-slot:form>
-            <q-input v-model="weightEditing.date" :rules="[required]" label="Date" outlined>
+        <template v-if="internalWeight" v-slot:form>
+            <q-input
+                v-model="internalWeight.date"
+                :rules="[required]"
+                hide-bottom-space
+                label="Date"
+                outlined
+            >
                 <template v-slot:append>
                     <q-icon class="cursor-pointer" name="event">
                         <q-popup-proxy
@@ -19,7 +25,7 @@
                             transition-show="scale"
                         >
                             <q-date
-                                v-model="weightEditing.date"
+                                v-model="internalWeight.date"
                                 :options="limitDatesNoFutur"
                                 mask="DD/MM/YYYY"
                                 today-btn
@@ -31,8 +37,9 @@
             </q-input>
 
             <q-input
-                v-model="weightEditing.weight"
+                v-model="internalWeight.weight"
                 :rules="[required,floatValidation]"
+                hide-bottom-space
                 label="Poids"
                 outlined
             >
@@ -45,83 +52,98 @@
 </template>
 
 <script lang="ts">
-import {
-    Component,
-    Mixins,
-    Prop,
-} from 'vue-property-decorator';
-import { Weight } from 'src/models/weight';
+import { Component, Mixins, Prop } from 'vue-property-decorator';
+import { createDefaultWeight, Weight } from 'src/models/weight';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
-import DogRepository from 'src/repositories/DogRepository';
 import { Dog } from 'src/models/dog';
-import moment from 'moment';
-import WeightRepository from 'src/repositories/WeightRepository';
-import Date from 'src/utils/date';
+import WeightRepository from 'src/repositories/weightRepository';
 import ValidationMixin from 'src/mixins/validationMixin';
 import DateMixin from 'src/mixins/dateMixin';
 import DialogForm from 'components/common/DialogForm.vue';
+import TextFormatMixin from 'src/mixins/textFormatMixin';
 
 @Component({
     components: { DialogForm },
 })
-export default class DogWeightForm extends Mixins(ValidationMixin, DateMixin) {
-    // *** Props ***
+export default class DogWeightForm extends Mixins(ValidationMixin, DateMixin, TextFormatMixin) {
+    // region Props
+
     @Prop({ required: false, default: undefined }) weight: Weight | undefined;
 
-    // *** Data ***
-    private weightEditing: Weight | null = null;
+    // endregion
 
-    // *** Computed properties ***
-    // eslint-disable-next-line class-methods-use-this
-    public get activeDog(): Dog | undefined {
+    // region Data
+
+    private internalWeight: Weight | null = null;
+
+    // endregion
+
+    // region Computed properties
+
+    private get isEditing(): boolean {
+        return !!this.weight;
+    }
+
+    private get activeDog(): Dog | undefined {
         return ActiveDogModule.Dog;
     }
 
-    // *** Methods ***
-    public emptyWeight(): Weight {
-        return {
-            dog: `${(new DogRepository().BaseIri)}/${this.activeDog?.id}`,
-            weight: '',
-            date: moment().format(Date.appFormat),
-        };
-    }
+    // endregion
 
-    public reset() {
+    // region Methods
+
+    private reset() {
         if (this.weight) {
-            this.weightEditing = { ...this.weight };
+            this.internalWeight = { ...this.weight };
         } else {
-            this.weightEditing = this.emptyWeight();
+            this.internalWeight = createDefaultWeight();
         }
     }
 
-    public submitSuccessCallback() {
+    private submitSuccessCallback() {
         ActiveDogModule.fetchWeights();
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        this.$refs.modal.hide();
+        this.$emit('input', false);
     }
 
-    // *** Events handlers ***
-    public onSubmit() {
-        if (this.weightEditing) {
-            const weight: Weight = { ...this.weightEditing };
+    // endregion
 
-            const weightRepository = new WeightRepository();
-            if (this.weight) {
-                weightRepository.update(weight).then(() => {
-                    this.submitSuccessCallback();
-                });
+    // region Events handlers
+
+    private onSubmit() {
+        if (this.internalWeight) {
+            const weight: Weight = { ...this.internalWeight };
+
+            if (this.isEditing) {
+                this.updateDog(weight);
             } else {
-                weightRepository.add(weight).then(() => {
-                    this.submitSuccessCallback();
-                });
+                this.createDog(weight);
             }
         }
     }
+
+    // endregion
+
+    // region Methods
+
+    private createDog(weight: Weight) {
+        if (this.activeDog?.id) {
+            weight.dogId = this.activeDog.id;
+
+            new WeightRepository().create(weight)
+                .then(() => {
+                    this.submitSuccessCallback();
+                });
+        }
+    }
+
+    private updateDog(weight: Weight) {
+        new WeightRepository().update(weight)
+            .then(() => {
+                this.submitSuccessCallback();
+            });
+    }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

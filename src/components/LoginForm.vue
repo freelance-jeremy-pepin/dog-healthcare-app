@@ -31,7 +31,7 @@
                         color="primary"
                         label="Se connecter"
                         size="lg"
-                        @click="handleSubmit"
+                        @click="onSubmit"
                     />
                 </q-card-actions>
             </q-card>
@@ -50,6 +50,8 @@ import axios from 'axios';
 
 @Component
 export default class LoginForm extends Vue {
+    // region Data
+
     private email = '';
 
     private password = '';
@@ -58,25 +60,38 @@ export default class LoginForm extends Vue {
 
     private loading = false;
 
-    // noinspection JSUnusedGlobalSymbols
+    // endregion
+
+    // region Hooks
+
     public mounted() {
         Auth.logout(false);
 
         this.rememberMe = Auth.rememberMe;
     }
 
-    public handleSubmit() {
+    // endregion
+
+    // region Events listeners
+
+    public onSubmit() {
         this.loading = true;
 
         axios.post('login', {
             email: this.email,
             password: this.password,
-        }).then((response) => {
-            this.login(response.data.token, false);
-        }).finally(() => {
-            this.loading = false;
-        });
+        })
+            .then((response) => {
+                this.login(response.data.token, false);
+            })
+            .finally(() => {
+                this.loading = false;
+            });
     }
+
+    // endregion
+
+    // region Methods
 
     public login(tokenPlainText: string, noRedirect: boolean) {
         Auth.login(tokenPlainText);
@@ -85,6 +100,8 @@ export default class LoginForm extends Vue {
             this.$router.push('/');
         }
     }
+
+    // endregion
 }
 </script>
 

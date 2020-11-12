@@ -7,16 +7,16 @@ import {
 } from 'vuex-module-decorators';
 import { Dog } from 'src/models/dog';
 import { Weight } from 'src/models/weight';
-import WeightRepository from 'src/repositories/WeightRepository';
+import WeightRepository from 'src/repositories/weightRepository';
 import { Deworming } from 'src/models/deworming';
-import DewormingRepository from 'src/repositories/DewormingRepository';
+import DewormingRepository, { DewormingRelations } from 'src/repositories/dewormingRepository';
 import {
     Reminder,
     ReminderTableName,
 } from 'src/models/reminder';
-import ReminderRepository from 'src/repositories/ReminderRepository';
+import ReminderRepository, { ReminderRelations } from 'src/repositories/reminderRepository';
 import { AntiParasitic } from 'src/models/antiParasitic';
-import AntiParasiticRepository from 'src/repositories/AntiParasiticRepository';
+import AntiParasiticRepository, { AntiParasiticRelations } from 'src/repositories/antiParasiticRepository';
 import store from '../index';
 
 @Module({
@@ -44,36 +44,36 @@ class ActiveDogModule extends VuexModule {
         return this.weights;
     }
 
-    public get LastWeight(): Weight | null {
+    public get LastWeight(): Weight | undefined {
         if (this.Weights && this.Weights.length > 0) {
-            return this.Weights[0];
+            return this.Weights[this.Weights.length - 1];
         }
 
-        return null;
+        return undefined;
     }
 
     public get Dewormings(): Deworming[] | undefined {
         return this.dewormings;
     }
 
-    public get LastDeworming(): Deworming | null {
+    public get LastDeworming(): Deworming | undefined {
         if (this.Dewormings && this.Dewormings.length > 0) {
-            return this.Dewormings[0];
+            return this.Dewormings[this.Dewormings.length - 1];
         }
 
-        return null;
+        return undefined;
     }
 
     public get AntiParasitics(): AntiParasitic[] | undefined {
         return this.antiParasitics;
     }
 
-    public get LastAntiParasitic(): AntiParasitic | null {
+    public get LastAntiParasitic(): AntiParasitic | undefined {
         if (this.AntiParasitics && this.AntiParasitics.length > 0) {
-            return this.AntiParasitics[0];
+            return this.AntiParasitics[this.AntiParasitics.length - 1];
         }
 
-        return null;
+        return undefined;
     }
 
     public get Reminders(): Reminder[] | undefined {
@@ -160,73 +160,76 @@ class ActiveDogModule extends VuexModule {
     @Action
     public fetchWeights() {
         if (this.Dog) {
-            const weightRepository = new WeightRepository();
-            weightRepository.getByDog(this.Dog).then((weights) => {
-                this.setWeights(weights);
-            });
+            new WeightRepository().getAllByDog(this.Dog)
+                .then((weights) => {
+                    this.setWeights(weights);
+                });
         }
     }
 
     @Action
     public updateWeight(weight: Weight) {
-        const weightRepository = new WeightRepository();
-        weightRepository.update(weight).then(() => {
-            this.fetchWeights();
-        });
+        new WeightRepository().update(weight)
+            .then(() => {
+                this.fetchWeights();
+            });
     }
 
     @Action
     public fetchDewormings() {
         if (this.Dog) {
-            const dewormingRepository = new DewormingRepository();
-            dewormingRepository.getByDog(this.Dog, true).then((dewormings) => {
-                this.setDewormings(dewormings);
-            });
+            new DewormingRepository().getAllByDog(this.Dog, [DewormingRelations.professional])
+                .then((dewormings) => {
+                    this.setDewormings(dewormings);
+                });
         }
     }
 
     @Action
     public updateDeworming(deworming: Deworming) {
-        const dewormingRepository = new DewormingRepository();
-        dewormingRepository.update(deworming).then(() => {
-            this.fetchDewormings();
-        });
+        new DewormingRepository().update(deworming)
+            .then(() => {
+                this.fetchDewormings();
+            });
     }
 
     @Action
     public fetchAntiParasitics() {
         if (this.Dog) {
-            const antiParasiticRepository = new AntiParasiticRepository();
-            antiParasiticRepository.getByDog(this.Dog, true).then((antiParasitics) => {
-                this.setAntiParasitics(antiParasitics);
-            });
+            new AntiParasiticRepository()
+                .getAllByDog(this.Dog, [AntiParasiticRelations.professional])
+                .then((antiParasitics) => {
+                    this.setAntiParasitics(antiParasitics);
+                });
         }
     }
 
     @Action
     public updateAntiParasitic(antiParasitic: AntiParasitic) {
         const antiParasiticRepository = new AntiParasiticRepository();
-        antiParasiticRepository.update(antiParasitic).then(() => {
-            this.fetchAntiParasitics();
-        });
+        antiParasiticRepository.update(antiParasitic)
+            .then(() => {
+                this.fetchAntiParasitics();
+            });
     }
 
     @Action
     public fetchReminders() {
         if (this.Dog) {
-            const reminderRepository = new ReminderRepository();
-            reminderRepository.getByDog(this.Dog, true).then((reminders) => {
-                this.setReminders(reminders);
-            });
+            new ReminderRepository().getAllByDog(this.Dog, [ReminderRelations.timeInterval])
+                .then((reminders) => {
+                    this.setReminders(reminders);
+                });
         }
     }
 
     @Action
     public updateReminder(reminder: Reminder) {
         const reminderRepository = new ReminderRepository();
-        reminderRepository.update(reminder).then(() => {
-            this.fetchReminders();
-        });
+        reminderRepository.update(reminder)
+            .then(() => {
+                this.fetchReminders();
+            });
     }
 }
 

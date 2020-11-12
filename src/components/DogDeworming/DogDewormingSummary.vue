@@ -32,22 +32,22 @@ import ReminderSummary from 'components/Reminder/ReminderSummary.vue';
     },
 })
 export default class DogDewormingSummary extends Mixins(DateTimeMixin, DateIntervalMixin) {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: true }) dewormings: Deworming[] | undefined;
 
-    // *** Computed properties ***
-    // eslint-disable-next-line class-methods-use-this
+    // endregion
+
+    // region Computed properties
+
     public get reminder(): Reminder | undefined {
         return ActiveDogModule.Reminder(ReminderTableName.deworming);
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    public get lastDeworming(): Deworming | null {
+    public get lastDeworming(): Deworming | undefined {
         return ActiveDogModule.LastDeworming;
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

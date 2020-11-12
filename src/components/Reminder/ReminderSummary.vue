@@ -2,8 +2,7 @@
     <div>
         <item-icon
             :title="labelLastDate"
-            :value="lastDate ? `${$options.filters.toDate(lastDate)} (${$options.filters.ago(lastDate)})`
-      : 'Jamais'"
+            :value="lastDate ? `${$options.filters.toDate(lastDate)} (${$options.filters.ago(lastDate)})` : 'Jamais'"
             icon="history"
         />
 
@@ -11,8 +10,7 @@
             v-if="reminder && reminder.nextReminder"
             :color="reminder.nextReminder | color"
             :title="labelNextReminder"
-            :value="reminder ? `${reminder.nextReminder} (${$options.filters.ago(reminder.nextReminder)})`
-       : 'Non planifié'"
+            :value="reminder ? `${reminder.nextReminder} (${$options.filters.ago(reminder.nextReminder)})` : 'Non planifié'"
             clickable
             icon="schedule"
         >
@@ -21,9 +19,7 @@
 
         <item-icon
             v-if="reminder"
-            :title="this.$options.filters.formatPeriodicity(
-        reminder.numberTimeInterval,
-        reminder.timeIntervalDetails)"
+            :title="this.$options.filters.formatPeriodicity(reminder.numberTimeInterval, reminder.timeInterval)"
             clickable
             icon="notifications"
         >
@@ -61,7 +57,3 @@ export default class ReminderSummary extends Mixins(DateTimeMixin, DateIntervalM
     @Prop({ required: true }) labelNextReminder: string | undefined;
 }
 </script>
-
-<style scoped>
-
-</style>

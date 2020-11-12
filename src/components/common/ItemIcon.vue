@@ -28,7 +28,8 @@ import NotifyMixin from 'src/mixins/notifyMixin';
 
 @Component
 export default class ItemIcon extends Mixins(NotifyMixin) {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: true }) icon: string | undefined;
 
     @Prop({ required: true }) title: string | undefined;
@@ -45,7 +46,10 @@ export default class ItemIcon extends Mixins(NotifyMixin) {
         Vue.use(VueClipboard);
     }
 
-    // *** Methods ***
+    // endregion
+
+    // region Methods
+
     public copy() {
         if (this.value && this.copyValue !== false) {
             this.$copyText(this.value);
@@ -59,9 +63,7 @@ export default class ItemIcon extends Mixins(NotifyMixin) {
         }
         return classToAdd;
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -11,7 +11,7 @@
         hide-bottom-space
         hide-selected
         input-debounce="0"
-        label="Professionnels"
+        label="Professionnel"
         option-label="name"
         option-value="id"
         outlined
@@ -40,31 +40,41 @@ import {
     Vue,
 } from 'vue-property-decorator';
 import { Professional } from 'src/models/professional';
-import ProfessionalRepository from 'src/repositories/ProfessionalRepository';
+import ProfessionalRepository, { ProfessionalRelations } from 'src/repositories/professionalRepository';
 
 @Component
 export default class ProfessionalSelect extends Vue {
-    // *** Data ***
+    // region Data
+
     private allProfessionals: Professional[] | null = null;
 
     private professionals: Professional[] | null = null;
 
-    // *** Hooks ***
-    public mounted() {
-        const professionalRepository = new ProfessionalRepository();
-        professionalRepository.getAll(true).then((data) => {
-            this.allProfessionals = data;
-            this.$emit('get-all-success', this.allProfessionals);
-        }).finally(() => {
-            if (!this.allProfessionals) {
-                this.allProfessionals = [];
-            }
+    // endregion
 
-            this.professionals = this.allProfessionals;
-        });
+    // region Hooks
+
+    public mounted() {
+        new ProfessionalRepository().getAll(
+            [ProfessionalRelations.professionalType],
+        )
+            .then((data) => {
+                this.allProfessionals = data;
+                this.$emit('get-all-success', this.allProfessionals);
+            })
+            .finally(() => {
+                if (!this.allProfessionals) {
+                    this.allProfessionals = [];
+                }
+
+                this.professionals = this.allProfessionals;
+            });
     }
 
-    // *** Methods ***
+    // endregion
+
+    // region Methods
+
     public filterFn(val: string, update: (fn: unknown) => void) {
         update(() => {
             const needle = val.toLowerCase();
@@ -74,9 +84,7 @@ export default class ProfessionalSelect extends Vue {
             }
         });
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

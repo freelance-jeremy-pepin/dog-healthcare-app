@@ -53,7 +53,3 @@ export default class ProfessionalLayout extends Vue {
     }
 }
 </script>
-
-<style scoped>
-
-</style>

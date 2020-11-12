@@ -55,7 +55,3 @@ export default class TableEdit extends Vue {
     @Prop({ required: true }) title: string | undefined;
 }
 </script>
-
-<style scoped>
-
-</style>

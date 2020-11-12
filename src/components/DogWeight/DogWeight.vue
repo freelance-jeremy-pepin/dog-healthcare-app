@@ -71,24 +71,27 @@ import DialogHistory from 'components/common/DialogHistory.vue';
     },
 })
 export default class DogWeight extends Vue {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: true }) weights: Weight[] | undefined;
 
-    // *** Data ***
+    // endregion
+
+    // region Data
+
     private formDisplay = false;
+
+    // endregion
 
     private historyDisplay = false;
 
     private chartDisplay = false;
 
-    // *** Computed properties ***
-    // eslint-disable-next-line class-methods-use-this
-    public get lastWeight(): Weight | null {
+    // region Computed properties
+    public get lastWeight(): Weight | undefined {
         return ActiveModule.LastWeight;
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

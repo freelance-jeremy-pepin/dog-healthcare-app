@@ -66,10 +66,14 @@ import { Dog } from '../models/dog';
 
 @Component
 export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin, DateIntervalMixin) {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: true }) dog: Dog | undefined;
 
-    // *** Computed properties ***
+    // endregion
+
+    // region Computed properties
+
     public get age(): string {
         if (this.dog && this.$options && this.$options.filters) {
             const a = moment();
@@ -96,7 +100,6 @@ export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin, Date
         return '';
     }
 
-    // eslint-disable-next-line class-methods-use-this
     public get dogs(): Dog[] {
         if (DogModule.Dogs) {
             return DogModule.Dogs;
@@ -104,7 +107,6 @@ export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin, Date
         return [];
     }
 
-    // eslint-disable-next-line class-methods-use-this
     public get activeDog(): Dog | undefined {
         if (UserModule.User?.activeDog) {
             return UserModule.User.activeDog;
@@ -112,18 +114,18 @@ export default class DogIdentity extends Mixins(DateMixin, TextFormatMixin, Date
         return undefined;
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    public get lastWeight(): Weight | null {
+    public get lastWeight(): Weight | undefined {
         return ActiveDogModule.LastWeight;
     }
 
-    // *** Methods ***
-    setActiveDog = (dog: Dog | undefined) => {
+    // endregion
+
+    // region Methods
+
+    public setActiveDog(dog: Dog | undefined) {
         UserModule.setActiveDog(dog);
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

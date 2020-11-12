@@ -40,7 +40,7 @@ import {
     Vue,
 } from 'vue-property-decorator';
 import { Professional } from 'src/models/professional';
-import ProfessionalRepository from 'src/repositories/ProfessionalRepository';
+import ProfessionalRepository from 'src/repositories/professionalRepository';
 import ItemIcon from 'components/common/ItemIcon.vue';
 import ProfessionalIdentityDetails
     from 'components/Professional/ProfessionalIdentity/ProfessionalIdentityDetails.vue';
@@ -58,28 +58,34 @@ import ProfessionalIdentityName
     },
 })
 export default class ProfessionalIdentityCard extends Vue {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: false }) professional: Professional | undefined;
 
     @Prop({ required: false }) professionalId: number | undefined;
 
-    // *** Data ***
+    // endregion
+
+    // region Data
+
     private localProfessional: Professional | null = null;
 
-    // *** Hooks ***
+    // endregion
+
+    // region Hooks
+
     public mounted() {
         if (!this.professional && this.professionalId) {
             const professionalRepository = new ProfessionalRepository();
-            professionalRepository.getById(this.professionalId).then((professional: Professional) => {
-                this.localProfessional = professional;
-            });
+            professionalRepository.getById(this.professionalId)
+                .then((professional: Professional) => {
+                    this.localProfessional = professional;
+                });
         } else if (this.professional) {
             this.localProfessional = { ...this.professional };
         }
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

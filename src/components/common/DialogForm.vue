@@ -5,77 +5,59 @@
         v-bind="$attrs"
         v-on="$listeners"
         no-refocus
-        position="bottom"
         @before-show="$emit('reset')"
     >
         <q-card>
-            <q-card-section>
-                <div class="text-subtitle2 q-mb-sm">
-                    {{ titleFormatted }}
-                </div>
-                <q-form
-                    class="column q-gutter-md"
-                    @submit="$emit('submit')"
-                >
-                    <slot name="form"></slot>
-
-                    <q-btn :label="labelAction" color="positive" type="submit" />
-                </q-form>
+            <q-card-section class="row">
+                <div class="text-h6 wrap">{{ title }}</div>
             </q-card-section>
+
+            <q-separator></q-separator>
+
+            <q-form @submit="$emit('submit')">
+                <q-card-section class="q-gutter-md">
+                    <slot name="form"></slot>
+                </q-card-section>
+
+                <q-separator></q-separator>
+
+                <q-card-actions align="right">
+                    <q-btn v-close-popup color="grey" flat label="Fermer" />
+                    <q-btn :label="labelAction" color="positive" flat type="submit" />
+                </q-card-actions>
+            </q-form>
         </q-card>
     </q-dialog>
 </template>
 
 <script lang="ts">
-import {
-    Component,
-    Prop,
-    Vue,
-} from 'vue-property-decorator';
-import { Dog } from 'src/models/dog';
-import ActiveDogModule from 'src/store/modules/active-dog-module';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class DialogForm extends Vue {
+    // region Props
+
     @Prop({ required: true }) title: string | undefined;
 
     @Prop({ required: true }) isEditing: boolean | undefined;
 
-    // *** Computed properties ***
-    // eslint-disable-next-line class-methods-use-this
-    public get activeDog(): Dog | undefined {
-        return ActiveDogModule.Dog;
-    }
+    // endregion
 
-    public get titleFormatted(): string {
-        if (this.title) {
-            let titleFormatted = this.title;
-
-            titleFormatted = titleFormatted.replace('%labelAction%', this.labelAction);
-
-            if (this.activeDog) {
-                titleFormatted = titleFormatted.replace('%activeDog.name%', this.activeDog.name);
-            }
-
-            return titleFormatted;
-        }
-
-        return '';
-    }
+    // region Computed properties
 
     public get labelAction(): string {
         return this.isEditing ? 'Modifier' : 'Ajouter';
     }
 
-    // *** Methods ***
+    // endregion
+
+    // region Methods
     public hide() {
         // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         this.$refs.modal.hide();
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

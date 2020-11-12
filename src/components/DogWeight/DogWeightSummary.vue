@@ -25,14 +25,12 @@ import DateIntervalMixin from 'src/mixins/dateIntervalMixin';
 
 @Component
 export default class DogWeightSummary extends Mixins(DateIntervalMixin) {
-    // *** Computed properties ***
-    // eslint-disable-next-line class-methods-use-this
-    public get lastWeight(): Weight | null {
+    // region Computed properties
+
+    public get lastWeight(): Weight | undefined {
         return ActiveDogModule.LastWeight;
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

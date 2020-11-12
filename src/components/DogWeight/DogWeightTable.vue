@@ -63,7 +63,7 @@ import { Weight } from 'src/models/weight';
 import DogWeightChart from 'components/DogWeight/DogWeightChart.vue';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
 import moment from 'moment';
-import WeightRepository from 'src/repositories/WeightRepository';
+import WeightRepository from 'src/repositories/weightRepository';
 import DateTimeMixin from 'src/mixins/dateTimeMixin';
 import DateMixin from 'src/mixins/dateMixin';
 import DogWeightForm from 'components/DogWeight/DogWeightForm.vue';
@@ -77,10 +77,14 @@ import TableEdit from 'components/common/TableEdit.vue';
     },
 })
 export default class DogWeightTable extends Mixins(DateTimeMixin, DateMixin) {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: true }) weights: Weight[] | undefined;
 
-    // *** Data ***
+    // endregion
+
+    // region Data
+
     private weightEditing: Weight | null = this.weights ? this.weights[0] : null;
 
     private columns = [
@@ -100,7 +104,10 @@ export default class DogWeightTable extends Mixins(DateTimeMixin, DateMixin) {
         weight: {} as Weight,
     }
 
-    // *** Methods ***
+    // endregion
+
+    // region Methods
+
     public setWeightEditing(weight: Weight) {
         this.weightEditing = { ...weight };
     }
@@ -112,18 +119,17 @@ export default class DogWeightTable extends Mixins(DateTimeMixin, DateMixin) {
 
     public deleteWeight = (weight: Weight) => {
         const weightRepository = new WeightRepository();
-        weightRepository.delete(weight).then(() => {
-            ActiveDogModule.fetchWeights();
-        });
+        weightRepository.delete(weight)
+            .then(() => {
+                ActiveDogModule.fetchWeights();
+            });
     };
 
     public editWeight = (weight: Weight) => {
         this.dogWeightForm.weight = weight;
         this.dogWeightForm.display = true;
     };
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

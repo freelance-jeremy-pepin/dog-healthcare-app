@@ -1,17 +1,17 @@
 <template>
     <dialog-form
-        ref="modal"
+        v-if="activeDog"
         v-model="$attrs.value"
         v-bind="$attrs"
         v-on="$listeners"
         :is-editing="!!deworming"
-        title="%labelAction% une prise de vermifuge pour %activeDog.name%"
+        :title="`${$options.filters.addOrEditLabel(isEditing)} une prise de vermifuge pour ${activeDog.name}`"
         @reset="reset"
         @submit="onSubmit"
     >
-        <template v-if="dewormingEditing" v-slot:form>
+        <template v-if="internalDeworming" v-slot:form>
             <q-input
-                v-model="dewormingEditing.date"
+                v-model="internalDeworming.date"
                 :rules="[required]"
                 hide-bottom-space
                 label="Date"
@@ -25,7 +25,7 @@
                             transition-show="scale"
                         >
                             <q-date
-                                v-model="dewormingEditing.date"
+                                v-model="internalDeworming.date"
                                 :options="limitDatesNoFutur"
                                 mask="DD/MM/YYYY"
                                 today-btn
@@ -37,7 +37,7 @@
             </q-input>
 
             <q-input
-                v-model="dewormingEditing.dewormingName"
+                v-model="internalDeworming.dewormingName"
                 :rules="[required]"
                 hide-bottom-space
                 label="Nom du vermifuge"
@@ -56,13 +56,13 @@
 
             <professional-select
                 v-if="caredBy === 'professional'"
-                v-model="professionalSelected"
+                v-model="internalDeworming.caredByProfessional"
                 :rules="[required]"
-                @get-all-success="onGetAllSuccessProfessional"
+                v-on:input="internalDeworming.caredByProfessionalId = internalDeworming.caredByProfessional ? internalDeworming.caredByProfessional.id : undefined"
             />
 
             <q-input
-                v-model="dewormingEditing.notes"
+                v-model="internalDeworming.notes"
                 autogrow
                 label="Notes"
                 outlined
@@ -82,24 +82,19 @@ import {
     Watch,
 } from 'vue-property-decorator';
 import ActiveDogModule from 'src/store/modules/active-dog-module';
-import DogRepository from 'src/repositories/DogRepository';
 import { Dog } from 'src/models/dog';
 import moment from 'moment';
-import { Deworming } from 'src/models/deworming';
+import { createDefaultDeworming, Deworming } from 'src/models/deworming';
 import Date from 'src/utils/date';
-import DewormingRepository from 'src/repositories/DewormingRepository';
+import DewormingRepository from 'src/repositories/dewormingRepository';
 import ProfessionalSelect from 'components/Professional/ProfessionalSelect.vue';
-import { Professional } from 'src/models/professional';
 import ValidationMixin from 'src/mixins/validationMixin';
-import ProfessionalRepository from 'src/repositories/ProfessionalRepository';
-import {
-    Reminder,
-    ReminderTableName,
-} from 'src/models/reminder';
+import { Reminder, ReminderTableName } from 'src/models/reminder';
 import DateMixin from 'src/mixins/dateMixin';
 import DateTime from 'src/utils/dateTime';
-import { getIdFromIRI } from 'src/utils/stringFormat';
 import DialogForm from 'components/common/DialogForm.vue';
+import TextFormatMixin from 'src/mixins/textFormatMixin';
+import NotifyMixin from 'src/mixins/notifyMixin';
 
 enum CaredBy {
     owner = 'owner',
@@ -109,52 +104,58 @@ enum CaredBy {
 @Component({
     components: { DialogForm, ProfessionalSelect },
 })
-export default class DogDewormingForm extends Mixins(ValidationMixin, DateMixin) {
-    // *** Props ***
+export default class DogDewormingForm extends Mixins(ValidationMixin, DateMixin, TextFormatMixin, NotifyMixin) {
+    // region Props
+
     @Prop({ required: false, default: undefined }) deworming: Deworming | undefined;
 
-    // *** Data ***
-    private dewormingEditing: Deworming | null = null;
+    // endregion
 
-    private professionalSelected: Professional | null = null;
+    // region Data
+
+    private internalDeworming: Deworming | null = null;
 
     private caredBy: CaredBy | null = null;
 
     private updateReminder = true;
 
-    // *** Computed properties ***
-    // eslint-disable-next-line class-methods-use-this
-    public get activeDog(): Dog | undefined {
+    // endregion
+
+    // region Computed properties
+
+    private get isEditing(): boolean {
+        return !!this.deworming;
+    }
+
+    private get activeDog(): Dog | undefined {
         return ActiveDogModule.Dog;
     }
 
-    // *** Events handlers ***
-    public onGetAllSuccessProfessional(professionals: Professional[]) {
-        if (this.deworming && this.deworming.caredByProfessional) {
-            const professionalId: number = getIdFromIRI(this.deworming.caredByProfessional);
-            // eslint-disable-next-line max-len
-            this.professionalSelected = professionals.find((p: Professional) => p.id === professionalId) || null;
+    // endregion
+
+    // region Events handlers
+
+    private onSubmit() {
+        if (this.internalDeworming) {
+            const deworming: Deworming = { ...this.internalDeworming };
+
+            if (this.isEditing) {
+                this.updateDeworming(deworming);
+            } else {
+                this.createDeworming(deworming);
+            }
         }
     }
 
-    // *** Methods ***
-    public emptyDeworming(): Deworming {
-        return {
-            dog: `${(new DogRepository().BaseIri)}/${this.activeDog?.id}`,
-            date: moment().format(Date.appFormat),
-            caredByOwner: true,
-            caredByProfessional: undefined,
-            dewormingName: '',
-            notes: undefined,
-        };
-    }
+    // endregion
 
-    public reset() {
+    // region Methods
+
+    private reset() {
         this.updateReminder = true;
-        this.professionalSelected = null;
 
         if (this.deworming) {
-            this.dewormingEditing = {
+            this.internalDeworming = {
                 ...this.deworming,
                 date: moment(this.deworming.date, DateTime.appFormat).format(Date.appFormat),
             };
@@ -165,79 +166,67 @@ export default class DogDewormingForm extends Mixins(ValidationMixin, DateMixin)
                 this.caredBy = CaredBy.owner;
             }
         } else {
-            this.dewormingEditing = this.emptyDeworming();
-
-            this.caredBy = CaredBy.owner;
+            this.internalDeworming = createDefaultDeworming();
         }
     }
 
-    public setCaredByProfessional(professional: Professional | null) {
-        if (professional && this.dewormingEditing) {
-            const professionalRepository = new ProfessionalRepository();
-            this.dewormingEditing.caredByProfessional = this.caredBy === CaredBy.professional
-                ? professionalRepository.buildIri(professional)
-                : undefined;
-        } else if (this.dewormingEditing) {
-            this.professionalSelected = null;
-            this.dewormingEditing.caredByProfessional = null;
-        }
-    }
-
-    public submitSuccessCallback() {
+    private submitSuccessCallback() {
         ActiveDogModule.fetchDewormings();
 
         if (this.updateReminder) {
-            // eslint-disable-next-line max-len
             const reminder: Reminder | undefined = ActiveDogModule.Reminder(ReminderTableName.deworming);
-            if (reminder) {
-                const dewormingRepository = new DewormingRepository();
-                dewormingRepository.updateNextReminder({ ...reminder }).then(() => {
-                    ActiveDogModule.fetchReminders();
-                });
+
+            if (!reminder) {
+                throw new Error(`Impossible de mettre à jour le prochain rappel car il n'existe aucun rappel pour ce chien.`);
+            } else if (ActiveDogModule.Dog && this.internalDeworming) {
+                new DewormingRepository().updateNextReminder(ActiveDogModule.Dog, { ...reminder })
+                    .then(() => {
+                        ActiveDogModule.fetchReminders();
+                    })
+                    .catch((e) => {
+                        this.notifyErrorAxios(e);
+                    });
             }
         }
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        this.$refs.modal.hide();
+        this.$emit('input', false);
     }
 
-    // *** Events handlers ***
-    public onSubmit() {
-        if (this.dewormingEditing) {
-            const deworming: Deworming = { ...this.dewormingEditing };
+    private createDeworming(deworming: Deworming) {
+        if (this.activeDog?.id) {
+            deworming.dogId = this.activeDog.id;
 
-            const dewormingRepository = new DewormingRepository();
-            if (this.deworming) {
-                dewormingRepository.update(deworming).then(() => {
+            new DewormingRepository().create(deworming)
+                .then(() => {
                     this.submitSuccessCallback();
                 });
-            } else {
-                dewormingRepository.add(deworming).then(() => {
-                    this.submitSuccessCallback();
-                });
+        }
+    }
+
+    private updateDeworming(deworming: Deworming) {
+        new DewormingRepository().update(deworming)
+            .then(() => {
+                this.submitSuccessCallback();
+            });
+    }
+
+    // endregion
+
+    // region Watchers
+
+    @Watch('caredBy', { immediate: true })
+    private onCaredByChanged() {
+        if (this.internalDeworming) {
+            if (this.caredBy === CaredBy.owner) {
+                this.internalDeworming.caredByOwner = true;
+                this.internalDeworming.caredByProfessionalId = undefined;
+                this.internalDeworming.caredByProfessional = undefined;
+            } else if (this.caredBy === CaredBy.professional) {
+                this.internalDeworming.caredByOwner = false;
             }
         }
     }
 
-    // *** Watchers ***
-    @Watch('caredBy')
-    public onCaredByChanged() {
-        if (this.caredBy && this.dewormingEditing) {
-            this.dewormingEditing.caredByOwner = this.caredBy === CaredBy.owner;
-            this.setCaredByProfessional(this.caredBy === CaredBy.professional
-                ? this.professionalSelected
-                : null);
-        }
-    }
-
-    @Watch('professionalSelected', { deep: true })
-    public onProfessionalSelectedChanged() {
-        this.setCaredByProfessional(this.professionalSelected);
-    }
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

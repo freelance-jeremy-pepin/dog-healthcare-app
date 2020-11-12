@@ -22,8 +22,13 @@ import DateTimeMixin from 'src/mixins/dateTimeMixin';
     },
 })
 export default class DogWeightChart extends Mixins(DateTimeMixin) {
+    // region Props
+
     @Prop({ required: true }) weights: Weight[] | undefined;
 
+    // endregion
+
+    // region Computed properties
     public get options() {
         let categories: string[] = [];
 
@@ -61,9 +66,7 @@ export default class DogWeightChart extends Mixins(DateTimeMixin) {
             data,
         }];
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

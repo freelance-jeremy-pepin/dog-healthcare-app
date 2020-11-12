@@ -46,15 +46,13 @@ import UserModule from '../store/modules/user-module';
 
 @Component
 export default class UserAvatar extends Vue {
-    // eslint-disable-next-line class-methods-use-this
     public get letter(): string {
-        if (UserModule.User) {
+        if (UserModule.User && UserModule.User.firstname && UserModule.User.lastname) {
             return UserModule.User.firstname[0].toUpperCase() + UserModule.User.lastname[0].toUpperCase();
         }
         return '';
     }
 
-    // eslint-disable-next-line class-methods-use-this
     public get firstname(): string {
         if (UserModule.User) {
             return UserModule.User.firstname;
@@ -62,7 +60,6 @@ export default class UserAvatar extends Vue {
         return '';
     }
 
-    // eslint-disable-next-line class-methods-use-this
     public get lastname(): string {
         if (UserModule.User) {
             return UserModule.User.lastname;
@@ -70,7 +67,6 @@ export default class UserAvatar extends Vue {
         return '';
     }
 
-    // eslint-disable-next-line class-methods-use-this
     public get isLoading(): boolean {
         return !UserModule.User;
     }
@@ -80,7 +76,3 @@ export default class UserAvatar extends Vue {
     }
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -3,10 +3,7 @@
 </template>
 
 <script lang="ts">
-import {
-    Component,
-    Vue,
-} from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import ProfessionalForm from 'components/Professional/ProfessionalForm.vue';
 
 @Component({
@@ -16,7 +13,3 @@ export default class ProfessionalAdd extends Vue {
 
 }
 </script>
-
-<style scoped>
-
-</style>

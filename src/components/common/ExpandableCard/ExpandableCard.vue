@@ -60,13 +60,20 @@ import {
 
 @Component
 export default class ExpandableCard extends Vue {
-    // *** Props ***
+    // region Props
+
     @Prop({ required: true }) keyLocalStorage: string | undefined;
 
-    // *** Data ***
+    // endregion
+
+    // region Data
+
     private expanded = false;
 
-    // *** Hooks ***
+    // endregion
+
+    // region Hooks
+
     public mounted() {
         const expandedLocalStorage = localStorage.getItem(`${this.keyLocalStorage}.expanded`);
         if (expandedLocalStorage) {
@@ -74,15 +81,15 @@ export default class ExpandableCard extends Vue {
         }
     }
 
-    // *** Watchers ***
+    // endregion
+
+    // region Watchers
+
     @Watch('expanded')
-    // eslint-disable-next-line class-methods-use-this
     public onExpandedChanged(value: boolean) {
         localStorage.setItem(`${this.keyLocalStorage}.expanded`, value.toString());
     }
+
+    // endregion
 }
 </script>
-
-<style scoped>
-
-</style>

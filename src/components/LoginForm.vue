@@ -1,79 +1,145 @@
 <template>
-  <q-page class="bg-grey-green window-height window-width row justify-center items-center">
-    <div class="column">
-      <div class="row">
-        <h5 class="text-h5 text-accent q-my-md">Dog Healthcare</h5>
-      </div>
-      <div class="row">
-        <q-card bordered class="q-pa-lg shadow-1" square>
-          <q-card-section>
-            <q-form class="q-gutter-md">
-              <q-input clearable filled label="email" square type="email" v-model="email" />
-              <q-input
-                clearable
-                filled
-                label="password"
-                square
-                type="password"
-                v-model="password"
-              />
-            </q-form>
-          </q-card-section>
-          <q-card-actions class="q-px-md">
-            <q-btn
-              @click="handleSubmit"
-              class="full-width"
-              color="light-green-7"
-              label="Login"
-              size="lg"
-              unelevated
-            />
-          </q-card-actions>
-          <q-card-section class="text-center q-pa-none">
-            <p class="text-grey-6">Not registered? Created an Account</p>
-          </q-card-section>
-        </q-card>
-      </div>
+    <div>
+        <div class="bg-image window-height window-width"></div>
+
+        <q-page class="page window-height window-width row justify-center items-center">
+            <q-card bordered class="card text-primary">
+                <q-card-section class="q-pa-lg">
+                    <div class="text-accent text-h6">Carnet de santé pour chiens</div>
+                </q-card-section>
+
+                <q-separator></q-separator>
+
+                <q-card-section class="q-pa-lg">
+                    <q-form class="q-gutter-md">
+                        <q-input v-model="email" clearable label="E-mail" outlined type="email" />
+                        <q-input
+                            v-model="password"
+                            clearable
+                            label="Mot de passe"
+                            outlined
+                            type="password"
+                        />
+                    </q-form>
+                    <q-checkbox v-model="rememberMe" label="Se souvenir de moi" />
+                </q-card-section>
+
+                <q-card-actions class="q-px-lg q-pb-lg q-pt-none">
+                    <q-btn
+                        :loading="loading"
+                        class="full-width"
+                        color="primary"
+                        label="Se connecter"
+                        size="lg"
+                        @click="onSubmit"
+                    />
+                </q-card-actions>
+            </q-card>
+        </q-page>
     </div>
-  </q-page>
+
 </template>
 
-<script lang='ts'>
-import { Component, Vue } from 'vue-property-decorator';
-import { login, logout } from 'src/api/auth';
-import { api } from 'src/api/appApi';
+<script lang="ts">
+import {
+    Component,
+    Vue,
+} from 'vue-property-decorator';
+import Auth from 'src/api/auth';
+import axios from 'axios';
 
 @Component
 export default class LoginForm extends Vue {
-  private email = '';
+    // region Data
 
-  private password = '';
+    private email = '';
 
-  public mounted() {
-    logout(false);
-  }
+    private password = '';
 
-  public handleSubmit() {
-    api.post('authentication_token', {
-      email: this.email,
-      password: this.password,
-    }).then((response) => {
-      this.login(response.data.token, response.data.refresh_token, false);
-    });
-  }
+    private rememberMe = false;
 
-  public login(tokenPlainText: string, refreshToken: string, noRedirect: boolean) {
-    login(tokenPlainText, refreshToken);
+    private loading = false;
 
-    if (!noRedirect) {
-      this.$router.push('/');
+    // endregion
+
+    // region Hooks
+
+    public mounted() {
+        Auth.logout(false);
+
+        this.rememberMe = Auth.rememberMe;
     }
-  }
+
+    // endregion
+
+    // region Events listeners
+
+    public onSubmit() {
+        this.loading = true;
+
+        axios.post('login', {
+            email: this.email,
+            password: this.password,
+        })
+            .then((response) => {
+                this.login(response.data.token, false);
+            })
+            .finally(() => {
+                this.loading = false;
+            });
+    }
+
+    // endregion
+
+    // region Methods
+
+    public login(tokenPlainText: string, noRedirect: boolean) {
+        Auth.login(tokenPlainText);
+
+        if (!noRedirect) {
+            this.$router.push('/');
+        }
+    }
+
+    // endregion
 }
 </script>
 
 <style scoped>
-  .q-card {
-    width: 360px;
-  }
+.card {
+    width: 100%;
+    max-width: 396px;
+}
+
+.bg-image {
+    background-image: url("../assets/noky2.jpg");
+
+    /* Add the blur effect */
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+
+    /* Full height */
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.page {
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/opacity/see-through */
+    color: white;
+    font-weight: bold;
+    /*border: 3px solid #f1f1f1;*/
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    width: 80%;
+    padding: 20px;
+    text-align: center;
+}
 </style>
